@@ -1,5 +1,5 @@
 Rectilinear Floorplan Legalizer: [36mO[0mverlap [36mM[0migration via [36mG[0mraph Traversal
-Run at: Mon Apr 22 17:20:52 2024
+Run at: Tue Apr 23 01:51:41 2024
 
 Input file: inputs/case02-best.txt
 Output directory: ./outputs
@@ -30,4 +30,4 @@ Legalization mode = 2,resolve overlaps near center -> outer edge (euclidean dist
 [DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case02-best_legal.txt"
 [DFSL] INFO   : Print floorplan to "./outputs/case02-best_legal_fp.txt"
 Final Score = 18479538.000000
-CPU time used: 1.54925 seconds.
+CPU time used: 0.553731 seconds.

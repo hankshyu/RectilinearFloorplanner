@@ -1,4 +1,5 @@
-CXX = /usr/bin/g++
+# CXX = /usr/bin/g++
+CXX = g++
 FLAGS = -std=c++17
 CFLAGS = -c -w
 OPTFLAGS = -o3
@@ -18,11 +19,12 @@ LINKFLAGS = -lglpk -lm
 GLPKLINKPATH = /usr/local/lib
 
 _OBJS =	main.o \
-		connection.o cord.o cornerStitching.o cSException.o \
-		DFSLConfig.o DFSLEdge.o DFSLegalizer.o DFSLNode.o \
-		doughnutPolygon.o doughnutPolygonSet.o floorplan.o globalResult.o units.o \
-		line.o rectangle.o rectilinear.o Segment.o tile.o eVector.o refineEngine.o lineTile.o \
-		legalResult.o
+ 	cSException.o units.o cord.o rectangle.o doughnutPolygon.o doughnutPolygonSet.o \
+	tile.o line.o lineTile.o Segment.o eVector.o \
+	connection.o  globalResult.o legalResult.o cornerStitching.o rectilinear.o floorplan.o \
+	DFSLConfig.o DFSLEdge.o DFSLegalizer.o DFSLNode.o \
+	refineEngine.o  
+		       
 
 
 OBJS = $(patsubst %,$(OBJPATH)/%,$(_OBJS))

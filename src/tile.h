@@ -4,7 +4,6 @@
 #include "boost/polygon/polygon.hpp"
 #include "units.h"
 #include "cord.h"
-#include "line.h"
 #include "rectangle.h"
 
 namespace gtl = boost::polygon;

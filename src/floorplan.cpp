@@ -11,7 +11,6 @@
 #include "cSException.h"
 #include "doughnutPolygon.h"
 #include "doughnutPolygonSet.h"
-#include "legaliseEngine.h"
 
 #include "glpk.h"
 
@@ -1612,7 +1611,6 @@ void Floorplan::visualizeTiledFloorplan(const std::string& outputFileName){
 }
 
 void Floorplan::visualiseFloorplan(const std::string &outputFileName) const {
-    LegaliseEngine lle((Floorplan*)this);
     using namespace boost::polygon::operators;
 	std::ofstream ofs;
 	ofs.open(outputFileName, std::fstream::out);
@@ -1626,7 +1624,6 @@ void Floorplan::visualiseFloorplan(const std::string &outputFileName) const {
     for(Rectilinear *const &rect : softRectilinears){
         
         ofs << rect->getName() << " " << rect->calculateActualArea() - rect->getLegalArea() << std::endl;
-        // ofs << rect->getName() << " " << lle.rateRectilinearCriticality(rect) << std::endl;
         Rectangle boundingBox = rect->calculateBoundingBox();
         Cord bbCords [4];
         bbCords[0] = rec::getLL(boundingBox);

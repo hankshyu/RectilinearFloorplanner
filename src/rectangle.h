@@ -6,7 +6,6 @@
 #include "boost/polygon/polygon.hpp"
 #include "units.h"
 #include "cord.h"
-#include "line.h"
 
 typedef boost::polygon::rectangle_data<len_t> Rectangle;
 
