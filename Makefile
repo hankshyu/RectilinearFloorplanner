@@ -1,6 +1,6 @@
-CXX = g++
+CXX = /usr/bin/g++
 FLAGS = -std=c++17
-CFLAGS = -c
+CFLAGS = -c -w
 OPTFLAGS = -o3
 DEBUGFLAGS = -g
 
@@ -10,24 +10,25 @@ OBJPATH = ./obj
 BOOSTPATH = ./lib/boost_1_84_0/ # ! Specify boost library path
 GLPKPATH = ./lib/glpk-5.0/src/  # ! Sepcify glpk
 
-all: csrun
-debug: csrun_debug
+all: rfrun
+debug: rfrun_debug
 
 # LINKFLAGS = -pedantic -Wall -fomit-frame-pointer -funroll-all-loops -O3
 LINKFLAGS = -lglpk -lm 
 GLPKLINKPATH = /usr/local/lib
 
 _OBJS =	main.o \
-		cSException.o globalResult.o \
-		cord.o rectangle.o doughnutPolygon.o doughnutPolygonSet.o tile.o \
-		cornerStitching.o rectilinear.o connection.o \
-		eVector.o legalResult.o line.o units.o lineTile.o \
-		floorplan.o legaliseEngine.o refineEngine.o
-		
+		connection.o cord.o cornerStitching.o cSException.o \
+		DFSLConfig.o DFSLEdge.o DFSLegalizer.o DFSLNode.o \
+		doughnutPolygon.o doughnutPolygonSet.o floorplan.o globalResult.o units.o \
+		line.o rectangle.o rectilinear.o Segment.o tile.o eVector.o refineEngine.o lineTile.o \
+		legalResult.o
+
+
 OBJS = $(patsubst %,$(OBJPATH)/%,$(_OBJS))
 DBG_OBJS = $(patsubst %.o, $(OBJPATH)/%_dbg.o, $(_OBJS))
 
-csrun: $(OBJS)
+rfrun: $(OBJS)
 	$(CXX) $(FLAGS) -L $(GLPKLINKPATH) $(LINKFLAGS) $^ -o $(BINPATH)/$@
 
 $(OBJPATH)/main.o: $(SRCPATH)/main.cpp 
@@ -37,7 +38,7 @@ $(OBJPATH)/%.o: $(SRCPATH)/%.cpp $(SRCPATH)/%.h
 	$(CXX) $(FLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $(OPTFLAGS) $< -o $@
 
 
-csrun_debug: $(DBG_OBJS)
+rfrun_debug: $(DBG_OBJS)
 	$(CXX) $(DEBUGFLAGS) -L $(GLPKLINKPATH) $(LINKFLAGS) $^ -o $(BINPATH)/$@
 
 $(OBJPATH)/main_dbg.o: $(SRCPATH)/main.cpp 
