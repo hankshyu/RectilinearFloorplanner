@@ -1,0 +1,16 @@
+.DS_Store
+.vscode/
+bin/*
+!bin/.gitkeep
+inputs/*
+!inputs/.gitkeep
+lib/boost*.tar
+lib/boost*/*
+lib/glpk*/*
+!lib/boost*/.gitkeep
+!lib/glpk*/.gitkeep
+obj/*
+!obj/.gitkeep
+outputs/*
+!outputs/.gitkeep
+rf/*
