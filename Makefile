@@ -1,7 +1,7 @@
 # CXX = /usr/bin/g++
 CXX = g++
 FLAGS = -std=c++17
-CFLAGS = -c -w
+CFLAGS = -c
 OPTFLAGS = -o3
 DEBUGFLAGS = -g
 

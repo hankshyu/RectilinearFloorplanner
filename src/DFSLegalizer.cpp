@@ -608,7 +608,7 @@ RESULT DFSLegalizer::legalize(int mode){
         
         if (!recti->isLegalUtilization()){
             double util = recti->calculateUtilization();
-            DFSLPrint(1, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, UTIL_RULE);
+            DFSLPrint(1, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, this->mFP->getGlobalUtilizationMin());
             result = RESULT::CONSTRAINT_FAIL;
             violations++;
         }
@@ -621,11 +621,11 @@ RESULT DFSLegalizer::legalize(int mode){
 
         if (!recti->isLegalAspectRatio()){
             double aspectRatio = rec::calculateAspectRatio(recti->calculateBoundingBox());
-            if (aspectRatio > ASPECT_RATIO_RULE){
-                DFSLPrint(1, "Aspect ratio for %1% fail (%2$3.2f > %3$3.2f)\n", block.nodeName.c_str(), aspectRatio, ASPECT_RATIO_RULE);
+            if (aspectRatio > this->mFP->getGlobalAspectRatioMax()){
+                DFSLPrint(1, "Aspect ratio for %1% fail (%2$3.2f > %3$3.2f)\n", block.nodeName.c_str(), aspectRatio, this->mFP->getGlobalAspectRatioMax());
             }
             else {
-                DFSLPrint(1, "Aspect ratio for %1% fail (%2$3.2f > %3$3.2f)\n", block.nodeName.c_str(), aspectRatio, 1.0 / ASPECT_RATIO_RULE);
+                DFSLPrint(1, "Aspect ratio for %1% fail (%2$3.2f > %3$3.2f)\n", block.nodeName.c_str(), aspectRatio, this->mFP->getGlobalAspectRatioMin());
             }
             result = RESULT::CONSTRAINT_FAIL; 
             violations++;  
@@ -658,7 +658,7 @@ RESULT DFSLegalizer::legalize(int mode){
         
         if (!recti->isLegalUtilization()){
             double util = recti->calculateUtilization();
-            DFSLPrint(1, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, UTIL_RULE);
+            DFSLPrint(1, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, this->mFP->getGlobalUtilizationMin());
             result = RESULT::CONSTRAINT_FAIL;
             violations++;
         }

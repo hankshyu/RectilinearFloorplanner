@@ -17,10 +17,9 @@
 #include "DFSLEdge.h"
 #include "DFSLUnits.h"
 
-#define PI 3.14159265358979323846
 #define EPSILON 0.0001
-#define UTIL_RULE 0.8
-#define ASPECT_RATIO_RULE 2.0 
+// #define UTIL_RULE 0.8
+// #define ASPECT_RATIO_RULE 2.0 
 
 namespace DFSL {
 
@@ -43,7 +42,7 @@ private:
     int mFixedModuleNum;
     int mSoftModuleNum;
     int mOverlapNum;
-    
+
     // initialize related functions
     void getSoftNeighbors(int nodeId);
     void addBlockNode(Rectilinear* tess, bool isFixed);

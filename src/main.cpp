@@ -4,15 +4,15 @@
 #include <cfloat>
 #include <stdio.h>
 #include <unistd.h>
-#include <ctime>
+#include <chrono>
 
-// legalizer
-#include "DFSLegalizer.h"
-
-// fp
 #include "cSException.h"
 #include "globalResult.h"
 #include "floorplan.h"
+#include "colours.h"
+#include "DFSLegalizer.h"
+
+std::string showChange(double before, double after);
 
 int main(int argc, char *argv[]) {
     int legalStrategy = 0;
@@ -25,13 +25,7 @@ int main(int argc, char *argv[]) {
     bool debugMode = false;
     bool useCustomConf = false;
     
-    // print current time and date
-    const char* cyanText = "\u001b[36m";
-    const char* resetText = "\u001b[0m";
-    printf("Rectilinear Floorplan Legalizer: %sO%sverlap %sM%sigration via %sG%sraph Traversal\n", cyanText, resetText, cyanText, resetText, cyanText, resetText);
-
-    const std::time_t now = std::time(nullptr);
-    std::cout << "Run at: " << std::asctime(std::localtime(&now)) << '\n';
+    printf("%sIRIS Lab Rectilinear Floorplanner (Backend)%s\n", CYAN, COLORRST);
 
     int cmd_opt;
     // "a": -a doesn't require argument
@@ -88,7 +82,7 @@ int main(int argc, char *argv[]) {
 
     if (inputFilePath == ""){
         std::cout << "Usage: " << argv[0] << " [-h] [-i <input file>] [-o <output directory>] [-f <floorplan name>] [-m <legalization mode 0-3>] [-s <legalization strategy 0-4>] [-c <custom .conf file>]\n";
-        std::cerr << "Where is your input file?🤨🤨🤨\n";
+        std::cerr << "Where is your input file?\n";
         return 1;
     }    
 
@@ -133,9 +127,20 @@ int main(int argc, char *argv[]) {
     GlobalResult gr;
     gr.readGlobalResult(inputFilePath);
 
+    std::chrono::steady_clock::time_point CSInsertionTimePoint = std::chrono::steady_clock::now(); 
+
     // convert global to FP
     std::cout << "Creating Floorplan..." << std::endl;
-    Floorplan fp(gr, 1.0 / ASPECT_RATIO_RULE, ASPECT_RATIO_RULE, UTIL_RULE);
+    Floorplan fp(gr, 0.5, 2.0, 0.8);
+    flen_t CSInsertionHPWL = fp.calculateHPWL();
+    std::cout << "Global Floorplanning HPWL = " << CSInsertionHPWL << std::endl;
+
+    fp.removePrimitiveOvelaps(true);
+    std::chrono::steady_clock::time_point DonePORTimePoint = std::chrono::steady_clock::now(); 
+    flen_t DonePORHPWL = fp.calculateHPWL();
+    std::cout << CYAN << "Primitive OverlapRemoval" << COLORRST << "HPWL = " << DonePORHPWL << " " << showChange(CSInsertionHPWL, DonePORHPWL) << std::endl;
+    std::cout << "Runtime = " << std::chrono::duration_cast<std::chrono::milliseconds>(DonePORTimePoint - CSInsertionTimePoint).count() / 1000.0 << " s" << std::endl;
+
 
     // create object
     DFSL::DFSLegalizer dfsl;
@@ -190,9 +195,6 @@ int main(int argc, char *argv[]) {
     std::cout << "Initializing Legalizer..." << std::endl;
     dfsl.initDFSLegalizer(&(fp), &(configs));
 
-    // get HPWL before legal
-    double initScore = fp.calculateHPWL();
-    printf("Initial Score = %12.6f\n", initScore);
 
     // visualize initial floorplan
     const std::string initFloorplanPath = outputDir + "/" + casename + "_init.txt";
@@ -235,7 +237,6 @@ int main(int argc, char *argv[]) {
         std::cerr << e.what() << std::endl;
     }
     // Stop measuring CPU time
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 
     // output result
     dfsl.printTiledFloorplan(outputDir + "/" + casename + "_legal.txt", casename);
@@ -246,6 +247,18 @@ int main(int argc, char *argv[]) {
     double finalScore = fp.calculateHPWL();
     printf("Final Score = %12.6f\n", finalScore);
 
-    double elapsed = ( end.tv_sec - start.tv_sec ) + ( end.tv_nsec - start.tv_nsec ) / 1e9;
-    std::cout << "CPU time used: " << elapsed << " seconds." << std::endl;
+    std::chrono::steady_clock::time_point exitTimePoint = std::chrono::steady_clock::now(); 
+    flen_t exitHPWL = fp.calculateHPWL();
+    std::cout << CYAN << "Legalization " << COLORRST << "HPWL = " << exitHPWL << " " << showChange(DonePORHPWL, exitHPWL) << std::endl;
+    std::cout << "Runtime = " << std::chrono::duration_cast<std::chrono::milliseconds>(exitTimePoint - DonePORTimePoint).count() / 1000.0 << " s" << std::endl;
+}
+
+std::string showChange(double before, double after){
+    double delta = before - after;
+    if(delta >= 0){
+        printf("%s+%.2f(%.2f%)%s", GREEN, delta, delta / before, COLORRST);
+    }else{
+        printf("%s%.2f(%.2f%)%s", RED, delta, delta / before, COLORRST);
+    }
+    return "";
 }

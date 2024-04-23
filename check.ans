@@ -1,0 +1,17 @@
+g++ -std=c++17 -L /usr/local/lib -lglpk -lm  obj/main.o obj/cSException.o obj/units.o obj/cord.o obj/rectangle.o obj/doughnutPolygon.o obj/doughnutPolygonSet.o obj/tile.o obj/line.o obj/lineTile.o obj/Segment.o obj/eVector.o obj/connection.o obj/globalResult.o obj/legalResult.o obj/cornerStitching.o obj/rectilinear.o obj/floorplan.o obj/DFSLConfig.o obj/DFSLEdge.o obj/DFSLegalizer.o obj/DFSLNode.o obj/refineEngine.o -o ./bin/rfrun
+Command: ./legal -i inputs/case02-best.txt -c configs/case02.conf -m 2
+[36mIRIS Lab Rectilinear Floorplanner (Backend)[0m
+Input file: inputs/case02-best.txt
+Output directory: ./outputs
+Case Name: case02-best
+Legalization mode: 2
+Reading Configs from: configs/case02.conf
+
+Reading Global Input...
+Creating Floorplan...
+Global Floorplanning HPWL = 1.824e+07
+
+Drawing output:
+outputs/case02-best_init.png
+outputs/case02-best_solution.png
+outputs/case02-best_solution_fp.png

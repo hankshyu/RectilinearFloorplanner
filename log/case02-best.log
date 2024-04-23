@@ -1,6 +1,4 @@
-Rectilinear Floorplan Legalizer: [36mO[0mverlap [36mM[0migration via [36mG[0mraph Traversal
-Run at: Tue Apr 23 01:51:41 2024
-
+[36mIRIS Lab Rectilinear Floorplanner (Backend)[0m
 Input file: inputs/case02-best.txt
 Output directory: ./outputs
 Case Name: case02-best
@@ -9,25 +7,31 @@ Reading Configs from: configs/case02.conf
 
 Reading Global Input...
 Creating Floorplan...
+Global Floorplanning HPWL = 1.824e+07
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(638, 1389), 2, 10, (640, 1399)]] with M3 (298 -> 278)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(1927, 1197), 2, 2, (1929, 1199)]] with M10 (243 -> 239)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(1203, 1702), 1, 44, (1204, 1746)]] with M14 (48 -> 4)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(1707, 1197), 2, 138, (1709, 1335)]] with M5 (420 -> 144)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(1949, 1201), 1, 3, (1950, 1204)]] with M15 (7 -> 4)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(1949, 1204), 1, 131, (1950, 1335)]] with M0 (131 -> 0)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(1949, 1197), 1, 4, (1950, 1201)]] with M8 (10 -> 6)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(638, 1702), 2, 2, (640, 1704)]] with M7 (25 -> 21)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(638, 1385), 2, 4, (640, 1389)]] with M7 (21 -> 13)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(638, 1704), 2, 6, (640, 1710)]] with M7 (13 -> 1)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(635, 1702), 3, 8, (638, 1710)]] with M11 (373 -> 349)
+[36mPrimitive OverlapRemoval[0mHPWL = 1.824e+07 [32m+0.00(0.00)[0m
+Runtime = 0.024 s
 Initializing Legalizer...
-Initial Score = 18240041.000000
 Visualizing initial floorplan: ./outputs/case02-best_init.txt
 [DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case02-best_init.txt"
 Legalization mode = 2,resolve overlaps near center -> outer edge (euclidean distance)
 
 [DFSL] INFO   : Starting Legalization
-[DFSL] INFO   : Remaining overlaps: 24
-[DFSL] INFO   : Total Overlap Area:  74568	(o/d = 1.4096%	o/p = 1.5594%)
-[DFSL] INFO   : Remaining overlaps: 19
-[DFSL] INFO   : Total Overlap Area:  63227	(o/d = 1.1952%	o/p = 1.3157%)
-[DFSL] INFO   : Remaining overlaps: 15
-[DFSL] INFO   : Total Overlap Area:  47395	(o/d = 0.8959%	o/p = 0.9794%)
+[DFSL] INFO   : Remaining overlaps: 22
+[DFSL] INFO   : Total Overlap Area:  74007	(o/d = 1.3990%	o/p = 1.5475%)
+[DFSL] INFO   : Remaining overlaps: 17
+[DFSL] INFO   : Total Overlap Area:  62936	(o/d = 1.1897%	o/p = 1.3096%)
+[DFSL] INFO   : Remaining overlaps: 14
+[DFSL] INFO   : Total Overlap Area:  53487	(o/d = 1.0111%	o/p = 1.1083%)
 [DFSL] INFO   : Remaining overlaps: 12
-[DFSL] INFO   : Total Overlap Area:  26188	(o/d = 0.4950%	o/p = 0.5364%)
-[DFSL] INFO   : Remaining overlaps: 6
-[DFSL] INFO   : Total Overlap Area:  15700	(o/d = 0.2968%	o/p = 0.3202%)
-[DFSL] INFO   : Total Violations: 0
-[DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case02-best_legal.txt"
-[DFSL] INFO   : Print floorplan to "./outputs/case02-best_legal_fp.txt"
-Final Score = 18479538.000000
-CPU time used: 0.553731 seconds.
+[DFSL] INFO   : Total Overlap Area:  30951	(o/d = 0.5851%	o/p = 0.6353%)
