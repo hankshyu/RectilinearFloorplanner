@@ -1,0 +1,8 @@
+[36mIRIS Lab Rectilinear Floorplanner (Backend)[0m
+Input file: inputs/case10-best.txt
+Output directory: ./outputs
+Case Name: case10-best
+Legalization mode: 2
+Reading Configs from: configs/case02.conf
+
+Reading Global Input...

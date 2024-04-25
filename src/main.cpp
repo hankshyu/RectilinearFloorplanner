@@ -11,6 +11,7 @@
 #include "floorplan.h"
 #include "colours.h"
 #include "DFSLegalizer.h"
+#include "refineEngine.h"
 
 std::string showChange(double before, double after);
 
@@ -230,6 +231,11 @@ int main(int argc, char *argv[]) {
     // start legalizing
     try{
         legalResult = dfsl.legalize(legalMode);
+        if(legalResult == DFSL::RESULT::SUCCESS){
+            std::cout << "legalise Success, run refiner << HPWL = " << fp.calculateHPWL() << std::endl;
+            RefineEngine re(&fp);
+            re.refine();
+        }
     }
     catch (CSException& e){
         std::cout << std::flush;
@@ -242,8 +248,10 @@ int main(int argc, char *argv[]) {
     dfsl.printTiledFloorplan(outputDir + "/" + casename + "_legal.txt", casename);
     if (legalResult != DFSL::RESULT::OVERLAP_NOT_RESOLVED){
         dfsl.printCompleteFloorplan(outputDir + "/" + casename + "_legal_fp.txt", casename);
+        
     }
     // get hpwl
+    fp.visualiseFloorplan("./outputs/myoutput.txt");
     double finalScore = fp.calculateHPWL();
     printf("Final Score = %12.6f\n", finalScore);
 
@@ -256,9 +264,9 @@ int main(int argc, char *argv[]) {
 std::string showChange(double before, double after){
     double delta = before - after;
     if(delta >= 0){
-        printf("%s+%.2f(%.2f%)%s", GREEN, delta, delta / before, COLORRST);
+        printf("%s+%.2f(%.2f%%)%s", GREEN, delta, delta / before, COLORRST);
     }else{
-        printf("%s%.2f(%.2f%)%s", RED, delta, delta / before, COLORRST);
+        printf("%s%.2f(%.2f%%)%s", RED, delta, delta / before, COLORRST);
     }
     return "";
 }

@@ -1,0 +1,42 @@
+[36mIRIS Lab Rectilinear Floorplanner (Backend)[0m
+Input file: inputs/case05-best.txt
+Output directory: ./outputs
+Case Name: case05-best
+Legalization mode: 2
+Reading Configs from: configs/case05.conf
+
+Reading Global Input...
+Creating Floorplan...
+Global Floorplanning HPWL = 1.49592e+07
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(3711, 752), 1, 212, (3712, 964)]] with EU0 (220 -> 8)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(2268, 961), 190, 1, (2458, 962)]] with ME1 (948 -> 758)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(2619, 663), 2, 298, (2621, 961)]] with GCL (880 -> 284)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(2619, 961), 2, 1, (2621, 962)]] with GCL (284 -> 282)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(2458, 961), 161, 1, (2619, 962)]] with TMU1 (246 -> 85)
+[36mPrimitive OverlapRemoval[0mHPWL = 1.49592e+07 [32m+0.00(0.00)[0m
+Runtime = 0.026 s
+Initializing Legalizer...
+Visualizing initial floorplan: ./outputs/case05-best_init.txt
+[DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case05-best_init.txt"
+Legalization mode = 2,resolve overlaps near center -> outer edge (euclidean distance)
+
+[DFSL] INFO   : Starting Legalization
+[DFSL] INFO   : Remaining overlaps: 17
+[DFSL] INFO   : Total Overlap Area: 332972	(o/d = 1.9271%	o/p = 2.4770%)
+[DFSL] INFO   : Remaining overlaps: 16
+[DFSL] INFO   : Total Overlap Area: 193625	(o/d = 1.1206%	o/p = 1.4110%)
+[DFSL] INFO   : Remaining overlaps: 10
+[DFSL] INFO   : Total Overlap Area:  65972	(o/d = 0.3818%	o/p = 0.4719%)
+[DFSL] INFO   : Remaining overlaps: 2
+[DFSL] INFO   : Total Overlap Area:  13624	(o/d = 0.0788%	o/p = 0.0967%)
+[DFSL] WARNING: util for ME1 fail (0.716 < 0.800)
+[DFSL] INFO   : Total Violations: 1
+legalise Success, run refiner << HPWL = 1.52238e+07
+Iteration 1 Current HPwL = 1.47358e+07[32m +488000[0m
+Iteration 2 Current HPwL = 1.47288e+07[32m +6900[0m
+Iteration 3 Current HPwL = 1.47288e+07 [31m0[0m
+[DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case05-best_legal.txt"
+[DFSL] INFO   : Print floorplan to "./outputs/case05-best_legal_fp.txt"
+Final Score = 14728850.000000
+[36mLegalization [0mHPWL = 1.47288e+07 [32m+230350.00(0.02)[0m
+Runtime = 0.667 s

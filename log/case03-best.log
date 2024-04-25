@@ -11,7 +11,7 @@ Global Floorplanning HPWL = 1.79809e+06
 [PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(1664, 2118), 33, 1, (1697, 2119)]] with M13 (64 -> 31)
 [PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(1273, 2118), 391, 1, (1664, 2119)]] with M3 (400 -> 9)
 [36mPrimitive OverlapRemoval[0mHPWL = 1.79809e+06 [32m+0.00(0.00)[0m
-Runtime = 0.012 s
+Runtime = 0.02 s
 Initializing Legalizer...
 Visualizing initial floorplan: ./outputs/case03-best_init.txt
 [DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case03-best_init.txt"
@@ -30,8 +30,4 @@ Legalization mode = 2,resolve overlaps near center -> outer edge (euclidean dist
 [DFSL] WARNING: util for M5 fail (0.725 < 0.800)
 [DFSL] WARNING: Aspect ratio for M18 fail (0.50 > 0.50)
 [DFSL] INFO   : Total Violations: 3
-[DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case03-best_legal.txt"
-[DFSL] INFO   : Print floorplan to "./outputs/case03-best_legal_fp.txt"
-Final Score = 1832393.000000
-[36mLegalization [0mHPWL = 1.83239e+06 [31m-34298.50(-0.02)[0m
-Runtime = 0.18 s
+legalise Success, run refiner << HPWL = 1.83239e+06

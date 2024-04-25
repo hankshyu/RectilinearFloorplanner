@@ -1,34 +1,40 @@
-# CXX = /usr/bin/g++
-CXX = g++
-FLAGS = -std=c++17
-CFLAGS = -c
-OPTFLAGS = -o3
-DEBUGFLAGS = -g
-
 SRCPATH = ./src
+GBL_SRCPATH = $(SRCPATH)/globalFloorplanner
+INF_SRCPATH = $(SRCPATH)/infrastructure
+LEG_SRCPATH = $(SRCPATH)/legaliser
+REF_SRCPATH = $(SRCPATH)/refiner
 BINPATH = ./bin
 OBJPATH = ./obj
-BOOSTPATH = ./lib/boost_1_84_0/ # ! Specify boost library path
-GLPKPATH = ./lib/glpk-5.0/src/  # ! Sepcify glpk
+BOOSTPATH = ./lib/boost_1_84_0/
+GLPKPATH = ./lib/glpk-5.0/src/
 
-all: rfrun
-debug: rfrun_debug
-
-# LINKFLAGS = -pedantic -Wall -fomit-frame-pointer -funroll-all-loops -O3
+# CXX = /usr/bin/g++
+CXX = g++
+FLAGS = -std=c++17 -I $(GBL_SRCPATH) -I $(INF_SRCPATH) -I $(LEG_SRCPATH) -I $(REF_SRCPATH)
+CFLAGS = -c 
+OPTFLAGS = -o3
+DEBUGFLAGS = -g
 LINKFLAGS = -lglpk -lm 
 GLPKLINKPATH = /usr/local/lib
 
-_OBJS =	main.o \
- 	cSException.o units.o cord.o rectangle.o doughnutPolygon.o doughnutPolygonSet.o \
-	tile.o line.o lineTile.o Segment.o eVector.o \
-	connection.o  globalResult.o legalResult.o cornerStitching.o rectilinear.o floorplan.o \
-	DFSLConfig.o DFSLEdge.o DFSLegalizer.o DFSLNode.o \
-	refineEngine.o  
-		       
 
+GBL_OBJS = 
+
+INF_OBJS = cSException.o units.o cord.o rectangle.o doughnutPolygon.o doughnutPolygonSet.o \
+	tile.o line.o lineTile.o Segment.o eVector.o \
+	connection.o  globalResult.o legalResult.o cornerStitching.o rectilinear.o floorplan.o
+
+LEG_OBJS = DFSLConfig.o DFSLEdge.o DFSLegalizer.o DFSLNode.o
+
+REF_OBJS = refineEngine.o
+
+_OBJS = main.o $(GBL_OBJS) $(INF_OBJS) $(LEG_OBJS) $(REF_OBJS)
 
 OBJS = $(patsubst %,$(OBJPATH)/%,$(_OBJS))
 DBG_OBJS = $(patsubst %.o, $(OBJPATH)/%_dbg.o, $(_OBJS))
+
+all: rfrun
+debug: rfrun_debug
 
 rfrun: $(OBJS)
 	$(CXX) $(FLAGS) -L $(GLPKLINKPATH) $(LINKFLAGS) $^ -o $(BINPATH)/$@
@@ -36,22 +42,36 @@ rfrun: $(OBJS)
 $(OBJPATH)/main.o: $(SRCPATH)/main.cpp 
 	$(CXX) $(FLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $(OPTFLAGS) -DCOMPILETIME="\"`date`\"" $^ -o $@
 
-$(OBJPATH)/%.o: $(SRCPATH)/%.cpp $(SRCPATH)/%.h
+$(OBJPATH)/%.o: $(GBL_SRCPATH)/%.cpp $(GBL_SRCPATH)/%.h
+	$(CXX) $(FLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $(OPTFLAGS) $< -o $@
+
+$(OBJPATH)/%.o: $(INF_SRCPATH)/%.cpp $(INF_SRCPATH)/%.h
+	$(CXX) $(FLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $(OPTFLAGS) $< -o $@
+
+$(OBJPATH)/%.o: $(LEG_SRCPATH)/%.cpp $(LEG_SRCPATH)/%.h
+	$(CXX) $(FLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $(OPTFLAGS) $< -o $@
+
+$(OBJPATH)/%.o: $(REF_SRCPATH)/%.cpp $(REF_SRCPATH)/%.h
 	$(CXX) $(FLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $(OPTFLAGS) $< -o $@
 
 
 rfrun_debug: $(DBG_OBJS)
-	$(CXX) $(DEBUGFLAGS) -L $(GLPKLINKPATH) $(LINKFLAGS) $^ -o $(BINPATH)/$@
+	$(CXX) $(FLAGS) $(DEBUGFLAGS) -L $(GLPKLINKPATH) $(LINKFLAGS) $^ -o $(BINPATH)/$@
 
 $(OBJPATH)/main_dbg.o: $(SRCPATH)/main.cpp 
-	$(CXX) $(DEBUGFLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) -DCOMPILETIME="\"`date`\"" $^ -o $@
+	$(CXX) $(FLAGS) $(DEBUGFLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) -DCOMPILETIME="\"`date`\"" $^ -o $@
 
-$(OBJPATH)/%_dbg.o: $(SRCPATH)/%.cpp $(SRCPATH)/%.h
-	$(CXX) $(DEBUGFLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $< -o $@
+$(OBJPATH)/%_dbg.o: $(GBL_SRCPATH)/%.cpp $(GBL_SRCPATH)/%.h
+	$(CXX) $(FLAGS) $(DEBUGFLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $< -o $@
 
+$(OBJPATH)/%_dbg.o: $(INF_SRCPATH)/%.cpp $(INF_SRCPATH)/%.h
+	$(CXX) $(FLAGS) $(DEBUGFLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $< -o $@
 
+$(OBJPATH)/%_dbg.o: $(LEG_SRCPATH)/%.cpp $(LEG_SRCPATH)/%.h
+	$(CXX) $(FLAGS) $(DEBUGFLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $< -o $@
 
+$(OBJPATH)/%_dbg.o: $(REF_SRCPATH)/%.cpp $(REF_SRCPATH)/%.h
+	$(CXX) $(FLAGS) $(DEBUGFLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $< -o $@
 .PHONY: clean
 clean:
-	rm -rf *.gch *.out $(OBJPATH)/* $(BINPATH)/* 
-
+	rm -rf $(OBJPATH)/* $(BINPATH)/* 

@@ -1,0 +1,35 @@
+[36mIRIS Lab Rectilinear Floorplanner (Backend)[0m
+Input file: inputs/case01-best.txt
+Output directory: ./outputs
+Case Name: case01-best
+Legalization mode: 2
+Reading Configs from: configs/case01.conf
+
+Reading Global Input...
+Creating Floorplan...
+Global Floorplanning HPWL = 1.5096e+08
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(3333, 2354), 1, 895, (3334, 3249)]] with CPU (4000 -> 3105)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(5642, 4360), 1, 1990, (5643, 6350)]] with H0 (2089 -> 99)
+[36mPrimitive OverlapRemoval[0mHPWL = 1.5096e+08 [32m+0.00(0.00)[0m
+Runtime = 0.003 s
+Initializing Legalizer...
+Visualizing initial floorplan: ./outputs/case01-best_init.txt
+[DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case01-best_init.txt"
+Legalization mode = 2,resolve overlaps near center -> outer edge (euclidean distance)
+
+[DFSL] INFO   : Starting Legalization
+[DFSL] INFO   : Remaining overlaps: 6
+[DFSL] INFO   : Total Overlap Area: 2163460	(o/d = 1.8375%	o/p = 2.4742%)
+[DFSL] INFO   : Remaining overlaps: 0
+[DFSL] INFO   : Total Overlap Area:      0	(o/d = 0.0000%	o/p = 0.0000%)
+[DFSL] INFO   : Total Violations: 0
+legalise Success, run refiner << HPWL = 1.49128e+08
+Iteration 1 Current HPwL = 1.43572e+08[32m +5.55588e+06[0m
+Iteration 2 Current HPwL = 1.43145e+08[32m +427643[0m
+Iteration 3 Current HPwL = 1.43126e+08[32m +18650[0m
+Iteration 4 Current HPwL = 1.43126e+08 [31m0[0m
+[DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case01-best_legal.txt"
+[DFSL] INFO   : Print floorplan to "./outputs/case01-best_legal_fp.txt"
+Final Score = 143126051.000000
+[36mLegalization [0mHPWL = 1.43126e+08 [32m+7834133.00(0.05)[0m
+Runtime = 1.82 s

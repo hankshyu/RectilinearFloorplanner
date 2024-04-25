@@ -9,6 +9,7 @@ lib/boost*/*
 lib/glpk*/*
 !lib/boost*/.gitkeep
 !lib/glpk*/.gitkeep
+utils/__pycache__
 obj/*
 !obj/.gitkeep
 outputs/*

@@ -54,7 +54,7 @@ private:
     // related to neighbor graph
     void updateGraph();
     void updateOverlapNode(DFSLNode& overlapNode);
-    void updateBlockNode(DFSLNode& blockNode);
+    void updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext);
 
     // DFS path finding
     void dfs(DFSLEdge& edge, double currentCost);

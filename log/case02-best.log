@@ -19,7 +19,7 @@ Global Floorplanning HPWL = 1.824e+07
 [PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(638, 1385), 2, 4, (640, 1389)]] with M7 (21 -> 13)
 [PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(638, 1704), 2, 6, (640, 1710)]] with M7 (13 -> 1)
 [PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(635, 1702), 3, 8, (638, 1710)]] with M11 (373 -> 349)
-[36mPrimitive OverlapRemoval[0mHPWL = 1.824e+07 [32m+0.00(0.00)[0m
+[36mPrimitive OverlapRemoval[0mHPWL = 1.824e+07 [32m+0.00(0.00%)[0m
 Runtime = 0.024 s
 Initializing Legalizer...
 Visualizing initial floorplan: ./outputs/case02-best_init.txt
@@ -32,6 +32,24 @@ Legalization mode = 2,resolve overlaps near center -> outer edge (euclidean dist
 [DFSL] INFO   : Remaining overlaps: 17
 [DFSL] INFO   : Total Overlap Area:  62936	(o/d = 1.1897%	o/p = 1.3096%)
 [DFSL] INFO   : Remaining overlaps: 14
-[DFSL] INFO   : Total Overlap Area:  53487	(o/d = 1.0111%	o/p = 1.1083%)
+[DFSL] INFO   : Total Overlap Area:  53667	(o/d = 1.0145%	o/p = 1.1122%)
 [DFSL] INFO   : Remaining overlaps: 12
 [DFSL] INFO   : Total Overlap Area:  30951	(o/d = 0.5851%	o/p = 0.6353%)
+[DFSL] INFO   : Remaining overlaps: 6
+[DFSL] INFO   : Total Overlap Area:  15559	(o/d = 0.2941%	o/p = 0.3173%)
+[DFSL] INFO   : Total Violations: 0
+legalise Success, run refiner << HPWL = 1.84687e+07
+Iteration 1 Current HPwL = 1.81408e+07[32m +327913[0m
+Iteration 2 Current HPwL = 1.80504e+07[32m +90393[0m
+Iteration 3 Current HPwL = 1.80369e+07[32m +13485[0m
+Iteration 4 Current HPwL = 1.80244e+07[32m +12554[0m
+Iteration 5 Current HPwL = 1.80153e+07[32m +9065[0m
+Iteration 6 Current HPwL = 1.8008e+07[32m +7252[0m
+Iteration 7 Current HPwL = 1.80048e+07[32m +3261[0m
+Iteration 8 Current HPwL = 1.79954e+07[32m +9338[0m
+Iteration 9 Current HPwL = 1.79954e+07 [31m0[0m
+[DFSL] INFO   : Print floorplan (with tile info) to "./outputs/case02-best_legal.txt"
+[DFSL] INFO   : Print floorplan to "./outputs/case02-best_legal_fp.txt"
+Final Score = 17995445.500000
+[36mLegalization [0mHPWL = 1.79954e+07 [32m+244595.50(0.01%)[0m
+Runtime = 2.081 s

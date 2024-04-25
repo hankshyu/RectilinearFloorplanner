@@ -50,5 +50,4 @@ namespace std{
 std::ostream &operator << (std::ostream &os, const GlobalResultBlock &grb);
 std::ostream &operator << (std::ostream &os, const GlobalResultConnection &grc);
 std::ostream &operator << (std::ostream &os, const GlobalResult &gr);
-
 #endif // __GLOBALRESULT_H__

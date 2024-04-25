@@ -950,17 +950,20 @@ bool DFSLegalizer::migrateOverlap(int overlapIndex){
     return true;
 }
 
+// April 25: Bug Fix by Ryan 
 void DFSLegalizer::updateGraph(){
     DFSLPrint(4, "Updating graph\n");
     // go along mBestPath, (the path just traversed), and update 
     // neighbors of each block along the way
-    for (MigrationEdge& edge: mBestPath){
+    for (int i = 0; i < mBestPath.size(); i++){
+        MigrationEdge& edge = mBestPath[i];
         DFSLNode& fromNode = mAllNodes[edge.fromIndex];
         if (fromNode.nodeType == DFSLNodeType::OVERLAP){
             updateOverlapNode(fromNode);
         }
         else if (fromNode.nodeType == DFSLNodeType::SOFT){
-            updateBlockNode(fromNode);
+            DFSLNode& ignoreNext = mAllNodes[edge.toIndex];
+            updateBlockNode(fromNode, ignoreNext);
         }
     }
 }
@@ -1119,7 +1122,8 @@ void DFSLegalizer::updateBlockNode(DFSLNode& blockNode){
 }
 */
 
-void DFSLegalizer::updateBlockNode(DFSLNode& blockNode){
+// April 25, Bug fix by Ryan Lin
+void DFSLegalizer::updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext){
     // re-find neighbors of block
     std::vector<DFSLEdge> oldEdgeListCopy = blockNode.edgeList;
     std::vector<bool> oldEdgeExists(oldEdgeListCopy.size(), false);
@@ -1141,14 +1145,21 @@ void DFSLegalizer::updateBlockNode(DFSLNode& blockNode){
             if (oldEdge.getTo() == newEdge.getTo()){
                 oldEdgeExists[i] = true;
                 discrepancy = false;
-                // if two edges are the same, then in theory the ordering of each tangent segment
-                // should be the same too
-                for (int i = 0; i < oldEdge.tangentSegments().size(); i++){
-                    Segment& oldSegment = oldEdge.tangentSegments()[i];
-                    Segment& newSegment = newEdge.tangentSegments()[i];
-                    if (oldSegment.getSegStart() != newSegment.getSegStart() || oldSegment.getSegEnd() != newSegment.getSegEnd()){
-                        discrepancy = true;
-                        break;
+
+                // if old edge points to the NEXT NODE in mBestPath, then
+                // don't update that node now, otherwise when updateBlockNode is called
+                // on NEXT NODE, then there will be no discrepancies (because getSoftNeighbors)
+                // was already called now 
+                if (newEdge.getTo() != ignoreNext.index){
+                    // if two edges are the same, then in theory the ordering of each tangent segment
+                    // should be the same too
+                    for (int i = 0; i < oldEdge.tangentSegments().size(); i++){
+                        Segment& oldSegment = oldEdge.tangentSegments()[i];
+                        Segment& newSegment = newEdge.tangentSegments()[i];
+                        if (oldSegment.getSegStart() != newSegment.getSegStart() || oldSegment.getSegEnd() != newSegment.getSegEnd()){
+                            discrepancy = true;
+                            break;
+                        }
                     }
                 }
 
