@@ -18,7 +18,7 @@ LINKFLAGS = -lglpk -lm
 GLPKLINKPATH = /usr/local/lib
 
 
-GBL_OBJS = 
+GBL_OBJS = parser.o cluster.o globmodule.o rgsolver.o
 
 INF_OBJS = cSException.o units.o cord.o rectangle.o doughnutPolygon.o doughnutPolygonSet.o \
 	tile.o line.o lineTile.o Segment.o eVector.o \
