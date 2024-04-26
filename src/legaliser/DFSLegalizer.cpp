@@ -644,8 +644,7 @@ RESULT DFSLegalizer::legalize(int mode){
         }
     }
 
-    // test fixed blocks for legality
-    result = RESULT::SUCCESS;
+    // test fixed blocks for legalit
     int fixedStart = getFixedBegin();
     int fixedEnd = getFixedEnd();
     for (int i = fixedStart; i < fixedEnd; i++){

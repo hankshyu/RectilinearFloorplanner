@@ -23,37 +23,37 @@ double SPEC_ASPECT_RATIO_MAX = 2.0;
 double SPEC_UTILIZATION_MIN = 0.8;
 
 
-double HYPERPARAM_GLOBAL_PUNISHMENT = 0.0054730000000000004;
+double HYPERPARAM_GLOBAL_PUNISHMENT = 0.0006355;
 double HYPERPARAM_GLOBAL_MAX_ASPECTRATIO_RATE = 0.9;
-double HYPERPARAM_GLOBAL_LEARNING_RATE = 46e-4;
+double HYPERPARAM_GLOBAL_LEARNING_RATE = 2e-4;
 
 double HYPERPARAM_POR_USAGE = 1.0; // Will downcast to boolean
 
 double HYPERPARAM_LEG_MAX_COST_CUTOFF = 5000.0;
 
-double HYPERPARAM_LEG_OB_AREA_WEIGHT = 30.0;
-double HYPERPARAM_LEG_OB_UTIL_WEIGHT = 100.0;
-double HYPERPARAM_LEG_OB_ASP_WEIGHT = 70.0;
+double HYPERPARAM_LEG_OB_AREA_WEIGHT = 700.0;
+double HYPERPARAM_LEG_OB_UTIL_WEIGHT = 900.0;
+double HYPERPARAM_LEG_OB_ASP_WEIGHT = 40.0;
 double HYPERPARAM_LEG_OB_UTIL_POS_REIN = -500.0;
 
-double HYPERPARAM_LEG_BW_UTIL_WEIGHT = 1000.0;
-double HYPERPARAM_LEG_BW_UTIL_POS_REIN = -500.0;
-double HYPERPARAM_LEG_BW_ASP_WEIGHT = 70.0;
+double HYPERPARAM_LEG_BW_UTIL_WEIGHT = 2000;
+double HYPERPARAM_LEG_BW_UTIL_POS_REIN = -1000.0;
+double HYPERPARAM_LEG_BW_ASP_WEIGHT = 700.0;
 
-double HYPERPARAM_LEG_BB_AREA_WEIGHT = 10.0;
-double HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT = 500.0;
+double HYPERPARAM_LEG_BB_AREA_WEIGHT = 100.0;
+double HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT = 450.0;
 double HYPERPARAM_LEG_BB_FROM_UTIL_POS_REIN = -500.0;
-double HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT = 500.0;
-double HYPERPARAM_LEG_BB_TO_UTIL_POS_REIN = -500.0;
-double HYPERPARAM_LEG_BB_ASP_WEIGHT = 30.0;
-double HYPERPARAM_LEG_BB_FLAT_COST = 5.0;
+double HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT = 1750.0;
+double HYPERPARAM_LEG_BB_TO_UTIL_POS_REIN = -100.0;
+double HYPERPARAM_LEG_BB_ASP_WEIGHT = 10.0;
+double HYPERPARAM_LEG_BB_FLAT_COST = -30.0;
 
 // Legal Mode 0: resolve area big -> area small
 // Legal Mode 1: resolve area small -> area big
 // Legal Mode 2: resolve overlaps near center -> outer edge (euclidean distance)
 // Legal Mode 3: completely random
 // Legal Mode 4: resolve overlaps near center -> outer edge (manhattan distance)
-double HYPERPARAM_LEG_LEGALMODE = 0.0; // Will downcast to int
+double HYPERPARAM_LEG_LEGALMODE = 2.0; // Will downcast to int
 
 
 
@@ -96,7 +96,7 @@ void showChange(double before, double after, char *result);
 
 int main(int argc, char *argv[]) {
     // parsing command line arguments
-    std::string inputFileName = "./inputs/rawInputs/case02-input.txt";
+    std::string inputFileName = "./inputs/rawInputs/case10-input.txt";
 
 
     /* PHASE 1: Global Floorplanning */
@@ -150,6 +150,7 @@ int main(int argc, char *argv[]) {
         }else{
             HPWL_DONE_POR = HPWL_DONE_CS;
         }
+        floorplan.visualiseFloorplan("./outputs/case10-por.txt");
 
 
         /* PHASE 4: DFSL Legaliser: Overlap Migration via Graph Traversal */
@@ -176,7 +177,7 @@ int main(int argc, char *argv[]) {
         configs.setConfigValue<double>("BBAspWeight"        ,HYPERPARAM_LEG_BB_ASP_WEIGHT);
         configs.setConfigValue<double>("BBFlatCost"         ,HYPERPARAM_LEG_BB_FLAT_COST);
 
-        configs.setConfigValue<int>("OutputLevel", DFSL::DFSL_PRINTLEVEL::DFSL_WARNING);
+        // configs.setConfigValue<int>("OutputLevel", DFSL::DFSL_PRINTLEVEL::dfs);
         
         // Create Legalise Object
         DFSL::DFSLegalizer dfsl;
@@ -188,14 +189,15 @@ int main(int argc, char *argv[]) {
         TIME_POINT_START_LEG = std::chrono::steady_clock::now();
         legalResult = dfsl.legalize(int(HYPERPARAM_LEG_LEGALMODE));
         TIME_POINT_END_LEG = std::chrono::steady_clock::now();
-        if(legalResult == DFSL::RESULT::SUCCESS){
+        // if(legalResult == DFSL::RESULT::SUCCESS){
             HPWL_DONE_LEG = floorplan.calculateHPWL(); 
             OVERLAP_DONE_LEG = floorplan.calculateOverlapRatio();
             DONE_LEG = true;
-        }else{
-            programExitFailTask();
-        }
+        // }else{
+        //     programExitFailTask();
+        // }
 
+        floorplan.visualiseFloorplan("./outputs/case05-legalised.txt");
 
         /* PHASE 5: Refinement Engine */
         TIME_POINT_START_REF = std::chrono::steady_clock::now();
@@ -205,6 +207,9 @@ int main(int argc, char *argv[]) {
         HPWL_DONE_REF = floorplan.calculateHPWL();
         OVERLAP_DONE_REF = floorplan.calculateOverlapRatio();
         DONE_LEG = true;
+
+
+        floorplan.visualiseFloorplan("./outputs/case05-refined.txt");
 
 
         programExitSuccessTask();

@@ -66,48 +66,45 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 	hasImprovements |= growRefineImproves;
 	
 	double hpwl1 = fp->calculateHPWL();	
-	// if(!growRefineImproves){
-	// 	std::cout << "Grow: " << BLUE << "x" << COLORRST;
-	// }else{
-	// 	double netimprove = hpwl0 - hpwl1;
-	// 	if(netimprove > 0){
-	// 		std::cout << " Grow: " << GREEN << netimprove << COLORRST;
-	// 	}else{
-	// 		std::cout << " Grow: " << RED << netimprove << COLORRST;
-	// 	}
-	// }
+	if(!growRefineImproves){
+		std::cout << "Grow: " << BLUE << "x" << COLORRST;
+	}else{
+		double netimprove = hpwl0 - hpwl1;
+		if(netimprove > 0){
+			std::cout << " Grow: " << GREEN << netimprove << COLORRST;
+		}else{
+			std::cout << " Grow: " << RED << netimprove << COLORRST;
+		}
+	}
 	
 	
-	// bool shrinkRefineImproves = refineByShrinking(rect);
-	// hasImprovements |= shrinkRefineImproves;
-
-
 
 	fillBoundingBox(rect);
 	double hpwl2 = fp->calculateHPWL();
 	double imp2 = hpwl1 - hpwl2;
 
-	// if(imp2 > 0){
-	// 	std::cout << " Fill: " << GREEN << imp2 << COLORRST;
-	// }else{
-	// 	std::cout << " Fill: " << RED << imp2 << COLORRST;
-	// }
+	if(imp2 > 0){
+		std::cout << " Fill: " << GREEN << imp2 << COLORRST;
+	}else{
+		std::cout << " Fill: " << RED << imp2 << COLORRST;
+	}
 
 	bool trimRefineImproves = refineByTrimming(rect);
 	hasImprovements |= trimRefineImproves;
 
 	double hpwl3 = fp->calculateHPWL();
-	// if(!trimRefineImproves){
-	// 	std::cout << "Shrink: " << BLUE << "x" << COLORRST;
-	// }else{
-	// 	double netimprove = hpwl2 - hpwl3;
-	// 	if(netimprove > 0){
-	// 		std::cout << " Shrink: " << GREEN << netimprove << COLORRST;
-	// 	}else{
-	// 		std::cout << " Shrink: " << RED << netimprove << COLORRST;
-	// 	}
-	// }
-	// std::cout << "End HPWL = " << fp->calculateHPWL() << std::endl;
+
+	if(!trimRefineImproves){
+		std::cout << "Shrink: " << BLUE << "x" << COLORRST;
+	}else{
+		double netimprove = hpwl2 - hpwl3;
+		if(netimprove > 0){
+			std::cout << " Shrink: " << GREEN << netimprove << COLORRST;
+		}else{
+			std::cout << " Shrink: " << RED << netimprove << COLORRST;
+		}
+	}
+	std::cout << "End HPWL = " << fp->calculateHPWL() << std::endl;
 
 	return hasImprovements;
 }
@@ -644,6 +641,7 @@ bool RefineEngine::growingTowardNorth(Rectilinear *rect, len_t depth) const {
 		if(dResidualLen > 0){
 			len_t residualLen = len_t(dResidualLen); // round down naturally
 			len_t boundingBoxYLMax = rec::getYL(currentBB) + residualLen;
+			if(boundingBoxYLMax == rec::getYL(currentBB)) return false;
 			assert(boundingBoxYLMax < rec::getYH(currentBB));
 
 			// shed off the marked part at negative shrink area, by an incremental method
@@ -880,6 +878,7 @@ bool RefineEngine::growingTowardSouth(Rectilinear *rect, len_t depth) const {
 		if(dResidualLen > 0){
 			len_t residualLen = len_t(dResidualLen); // round down naturally
 			len_t boundingBoxYHMin = rec::getYH(currentBB) - residualLen;
+			if(boundingBoxYHMin == rec::getYL(currentBB)) return false;
 			assert(boundingBoxYHMin > rec::getYL(currentBB));
 			// shed off the marked part at negative shrink area, by an incremental method
 			len_t roundShedOffLen = REFINE_INITIAL_MOMENTUM;
@@ -1117,6 +1116,7 @@ bool RefineEngine::growingTowardEast(Rectilinear *rect, len_t depth) const {
 		if(dResidualLen > 0){
 			len_t residualLen = len_t(dResidualLen); // round down naturally
 			len_t boundingBoxXLMax = rec::getXL(currentBB) + residualLen;
+			if(boundingBoxXLMax == rec::getXL(currentBB)) return false;
 			assert(boundingBoxXLMax < rec::getXH(currentBB));
 			// shed off the marked part at negative shrink area, by an incremental method
 			len_t roundShedOffLen = REFINE_INITIAL_MOMENTUM;
@@ -1359,6 +1359,8 @@ bool RefineEngine::growingTowardWest(Rectilinear *rect, len_t depth) const {
 		if(dResidualLen > 0){
 			len_t residualLen = len_t(dResidualLen); // round down naturally
 			len_t boundingBoxXHMin = rec::getXH(currentBB) - residualLen;
+			if(boundingBoxXHMin == rec::getXH(currentBB)) return false;
+			// Bug Fix , ">" -> ">="
 			assert(boundingBoxXHMin > rec::getXL(currentBB));
 			// shed off the marked part at negative shrink area, by an incremental method
 			len_t roundShedOffLen = REFINE_INITIAL_MOMENTUM;

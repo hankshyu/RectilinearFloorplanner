@@ -14,10 +14,11 @@ private:
     // the most dense connection at [0], ... last is the most loosely connected
     std::vector<Rectilinear *> rectConnOrder;
 
-    const angle_t DUE_ANGLE = M_PI / double(6);
-
-    const len_t REFINE_INITIAL_MOMENTUM = 2;
-    const double REFINE_MOMENTUM_GROWTH = 4;
+    const int REFINE_MAX_RUN = 30;
+    
+    const double REFINE_ATTATCHED_MIN = 0.3;
+    const len_t REFINE_INITIAL_MOMENTUM = 1;
+    const double REFINE_MOMENTUM_GROWTH = 2;
 
     
 public:
