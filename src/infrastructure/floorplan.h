@@ -119,7 +119,7 @@ public:
     Cord calculateOptimalCentre(Rectilinear *rect) const;
     void calculateAllOptimalCentre(std::unordered_map<Rectilinear *, Cord> &optCentre) const;
     
-
+    double calculateOverlapRatio() const;
 
     // use area rounding residuals to remove certain easy to remove overlaps
     void removePrimitiveOvelaps(bool verbose);

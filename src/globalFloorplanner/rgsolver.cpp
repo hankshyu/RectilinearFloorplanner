@@ -1022,6 +1022,53 @@ double GlobalSolver::calcEstimatedHPWL() {
     return HPWL;
 }
 
+double GlobalSolver::calcOverlapRatio() {
+ double totalOverlapArea = 0;
+    double totalArea = 0;
+
+    for ( int i = 0; i < moduleNum_ - 1; i++ ) {
+        for ( int j = i + 1; j < moduleNum_; j++ ) {
+            GlobalModule *mod1 = modules_[i];
+            GlobalModule *mod2 = modules_[j];
+
+            if ( mod1->fixed && mod2->fixed ) {
+                continue;
+            }
+
+            double overlappedWidth, overlappedHeight;
+
+            double mod1Width = mod1->width;
+            double mod2Width = mod2->width;
+            double mod1Height = mod1->height;
+            double mod2Height = mod2->height;
+
+            double max_xl = std::max(mod1->centerX - mod1Width / 2., mod2->centerX - mod2Width / 2.);
+            double min_xr = std::min(mod1->centerX + mod1Width / 2., mod2->centerX + mod2Width / 2.);
+            double max_yd = std::max(mod1->centerY - mod1Height / 2., mod2->centerY - mod2Height / 2.);
+            double min_yu = std::min(mod1->centerY + mod1Height / 2., mod2->centerY + mod2Height / 2.);
+
+            overlappedWidth = min_xr - max_xl;
+            overlappedHeight = min_yu - max_yd;
+
+            if ( overlappedWidth > 0. && overlappedHeight > 0. ) {
+                // std::cout << mod1->name << " & " << mod2->name << "\t: " << overlappedWidth * overlappedHeight << std::endl;
+                // std::cout << "Mod1 Width: " << mod1Width << " Height: " << mod1Height << std::endl;
+                // std::cout << "Mod2 Width: " << mod2Width << " Height: " << mod2Height << std::endl;
+                // std::cout << std::endl;
+                totalOverlapArea += overlappedWidth * overlappedHeight;
+            }
+        }
+    }
+
+    for ( GlobalModule *&mod : modules_ ) {
+        if ( !mod->fixed ) {
+            totalArea += ( double ) mod->area;
+        }
+    }
+
+    return totalOverlapArea / totalArea;
+}
+
 bool GlobalSolver::isAreaLegal() {
     for ( GlobalModule *mod : modules_ ) {
         if ( mod->fixed ) {
@@ -1227,8 +1274,8 @@ bool GlobalSolver::exportGlobalFloorplan(GlobalResult &result) {
         result.blocks.push_back(tmp);
     }
 
-    GlobalResultConnection tmpC;
     for ( ConnectionInfo *conn : connectionList_ ) {
+        GlobalResultConnection tmpC;
         for ( std::string name : conn->modules ) {
             tmpC.vertices.push_back(name);
         }

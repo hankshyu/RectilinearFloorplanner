@@ -1087,6 +1087,21 @@ void Floorplan::calculateAllOptimalCentre(std::unordered_map<Rectilinear *, Cord
 	}
 }
 
+double Floorplan::calculateOverlapRatio() const {
+    area_t sumLegalArea = 0;
+    area_t sumOverlapArea = 0;
+
+    for(Rectilinear *const &rt : this->allRectilinears){
+        sumLegalArea += rt->getLegalArea();
+    }
+
+    for(std::unordered_map<Tile *, std::vector<Rectilinear *>>::const_iterator it = overlapTilePayload.begin(); it != overlapTilePayload.end(); ++it){
+        sumOverlapArea += (it->first->getArea() * it->second.size());
+    }
+
+    return double(sumOverlapArea) / double(sumLegalArea);
+}
+
 void Floorplan::removePrimitiveOvelaps(bool verbose){
 
     /* 

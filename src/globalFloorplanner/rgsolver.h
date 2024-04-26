@@ -78,6 +78,7 @@ public:
     void currentPosition2txt(std::string file_name);
     double calcDeadspace();
     double calcEstimatedHPWL();
+    double calcOverlapRatio();
     bool isAreaLegal();
     bool isAspectRatioLegal();
     void reportOverlap();

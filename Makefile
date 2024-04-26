@@ -8,8 +8,8 @@ OBJPATH = ./obj
 BOOSTPATH = ./lib/boost_1_84_0/
 GLPKPATH = ./lib/glpk-5.0/src/
 
-# CXX = /usr/bin/g++
-CXX = g++
+CXX = /usr/bin/g++
+# CXX = g++
 FLAGS = -std=c++17 -I $(GBL_SRCPATH) -I $(INF_SRCPATH) -I $(LEG_SRCPATH) -I $(REF_SRCPATH)
 CFLAGS = -c 
 OPTFLAGS = -o3
@@ -72,6 +72,7 @@ $(OBJPATH)/%_dbg.o: $(LEG_SRCPATH)/%.cpp $(LEG_SRCPATH)/%.h
 
 $(OBJPATH)/%_dbg.o: $(REF_SRCPATH)/%.cpp $(REF_SRCPATH)/%.h
 	$(CXX) $(FLAGS) $(DEBUGFLAGS) -I $(BOOSTPATH) -I $(GLPKPATH) $(CFLAGS) $< -o $@
+
 .PHONY: clean
 clean:
 	rm -rf $(OBJPATH)/* $(BINPATH)/* 
