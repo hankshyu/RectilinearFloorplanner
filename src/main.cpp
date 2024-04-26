@@ -126,76 +126,93 @@ int main(int argc, char *argv[]) {
     OVERLAP_DONE_GLOBAL = solver.calcOverlapRatio();
     if(!DONE_GLOBAL) programExitFailTask();
 
+    try{
 
-    /* PHASE 2: Port Global Result to infrastructure */
-    TIME_POINT_START_CS = std::chrono::steady_clock::now();
-    Floorplan floorplan(globalResult, SPEC_ASPECT_RATIO_MIN, SPEC_ASPECT_RATIO_MAX, SPEC_UTILIZATION_MIN);
-    TIME_POINT_END_CS = std::chrono::steady_clock::now();
-    HPWL_DONE_CS = floorplan.calculateHPWL();
-    OVERLAP_DONE_CS = floorplan.calculateOverlapRatio();
-    DONE_CS = true;
-
-
-    /* PHASE 3: Primitive Overlap Removal */
-    if(bool(HYPERPARAM_POR_USAGE)){
-        std::cout << std::endl;
-        TIME_POINT_START_POR = std::chrono::steady_clock::now();
-        floorplan.removePrimitiveOvelaps(true);
-        TIME_POINT_END_POR = std::chrono::steady_clock::now();
-        HPWL_DONE_POR = floorplan.calculateHPWL();
-        OVERLAP_DONE_POR = floorplan.calculateOverlapRatio();
-        DONE_POR = true;
-        std::cout << std::endl;
-    }else{
-        HPWL_DONE_POR = HPWL_DONE_CS;
-    }
+        /* PHASE 2: Port Global Result to infrastructure */
+        TIME_POINT_START_CS = std::chrono::steady_clock::now();
+        Floorplan floorplan(globalResult, SPEC_ASPECT_RATIO_MIN, SPEC_ASPECT_RATIO_MAX, SPEC_UTILIZATION_MIN);
+        TIME_POINT_END_CS = std::chrono::steady_clock::now();
+        HPWL_DONE_CS = floorplan.calculateHPWL();
+        OVERLAP_DONE_CS = floorplan.calculateOverlapRatio();
+        DONE_CS = true;
 
 
-    /* PHASE 4: DFSL Legaliser: Overlap Migration via Graph Traversal */
+        /* PHASE 3: Primitive Overlap Removal */
+        if(bool(HYPERPARAM_POR_USAGE)){
+            std::cout << std::endl;
+            TIME_POINT_START_POR = std::chrono::steady_clock::now();
+            floorplan.removePrimitiveOvelaps(true);
+            TIME_POINT_END_POR = std::chrono::steady_clock::now();
+            HPWL_DONE_POR = floorplan.calculateHPWL();
+            OVERLAP_DONE_POR = floorplan.calculateOverlapRatio();
+            DONE_POR = true;
+            std::cout << std::endl;
+        }else{
+            HPWL_DONE_POR = HPWL_DONE_CS;
+        }
 
-    // read config file 
-    DFSL::ConfigList configs;
-    configs.initAllConfigs();
-    configs.setConfigValue<double>("MaxCostCutoff"      , HYPERPARAM_LEG_MAX_COST_CUTOFF);
 
-    configs.setConfigValue<double>("OBAreaWeight"       , HYPERPARAM_LEG_OB_AREA_WEIGHT);
-    configs.setConfigValue<double>("OBUtilWeight"       , HYPERPARAM_LEG_OB_UTIL_WEIGHT);
-    configs.setConfigValue<double>("OBAspWeight"        , HYPERPARAM_LEG_OB_ASP_WEIGHT);
-    configs.setConfigValue<double>("OBUtilPosRein"      , HYPERPARAM_LEG_OB_UTIL_POS_REIN);
+        /* PHASE 4: DFSL Legaliser: Overlap Migration via Graph Traversal */
 
-    configs.setConfigValue<double>("BWUtilWeight"       ,HYPERPARAM_LEG_BW_UTIL_WEIGHT);
-    configs.setConfigValue<double>("BWUtilPosRein"      ,HYPERPARAM_LEG_BW_UTIL_POS_REIN);
-    configs.setConfigValue<double>("BWAspWeight"        ,HYPERPARAM_LEG_BW_ASP_WEIGHT);
+        // read config file 
+        DFSL::ConfigList configs;
+        configs.initAllConfigs();
+        configs.setConfigValue<double>("MaxCostCutoff"      , HYPERPARAM_LEG_MAX_COST_CUTOFF);
 
-    configs.setConfigValue<double>("BBAreaWeight"       ,HYPERPARAM_LEG_BB_AREA_WEIGHT);
-    configs.setConfigValue<double>("BBFromUtilWeight"   ,HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT);
-    configs.setConfigValue<double>("BBFromUtilPosRein"  ,HYPERPARAM_LEG_BB_FROM_UTIL_POS_REIN);
-    configs.setConfigValue<double>("BBToUtilWeight"     ,HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT);
-    configs.setConfigValue<double>("BBToUtilPosRein"    ,HYPERPARAM_LEG_BB_TO_UTIL_POS_REIN);
-    configs.setConfigValue<double>("BBAspWeight"        ,HYPERPARAM_LEG_BB_ASP_WEIGHT);
-    configs.setConfigValue<double>("BBFlatCost"         ,HYPERPARAM_LEG_BB_FLAT_COST);
+        configs.setConfigValue<double>("OBAreaWeight"       , HYPERPARAM_LEG_OB_AREA_WEIGHT);
+        configs.setConfigValue<double>("OBUtilWeight"       , HYPERPARAM_LEG_OB_UTIL_WEIGHT);
+        configs.setConfigValue<double>("OBAspWeight"        , HYPERPARAM_LEG_OB_ASP_WEIGHT);
+        configs.setConfigValue<double>("OBUtilPosRein"      , HYPERPARAM_LEG_OB_UTIL_POS_REIN);
 
-    configs.setConfigValue<int>("OutputLevel", DFSL::DFSL_PRINTLEVEL::DFSL_WARNING);
-    
-    // Create Legalise Object
-    DFSL::DFSLegalizer dfsl;
-    dfsl.initDFSLegalizer(&floorplan, &configs);
-    // dfsl.printTiledFloorplan(initFloorplanPath, (const std::string)casename);
-    DFSL::RESULT legalResult = DFSL::RESULT::OVERLAP_NOT_RESOLVED;
+        configs.setConfigValue<double>("BWUtilWeight"       ,HYPERPARAM_LEG_BW_UTIL_WEIGHT);
+        configs.setConfigValue<double>("BWUtilPosRein"      ,HYPERPARAM_LEG_BW_UTIL_POS_REIN);
+        configs.setConfigValue<double>("BWAspWeight"        ,HYPERPARAM_LEG_BW_ASP_WEIGHT);
 
-    // start legalizing
-    TIME_POINT_START_LEG = std::chrono::steady_clock::now();
-    legalResult = dfsl.legalize(int(HYPERPARAM_LEG_LEGALMODE));
-    TIME_POINT_END_LEG = std::chrono::steady_clock::now();
-    if(legalResult == DFSL::RESULT::SUCCESS){
-        HPWL_DONE_LEG = floorplan.calculateHPWL(); 
-        OVERLAP_DONE_LEG = floorplan.calculateOverlapRatio();
+        configs.setConfigValue<double>("BBAreaWeight"       ,HYPERPARAM_LEG_BB_AREA_WEIGHT);
+        configs.setConfigValue<double>("BBFromUtilWeight"   ,HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT);
+        configs.setConfigValue<double>("BBFromUtilPosRein"  ,HYPERPARAM_LEG_BB_FROM_UTIL_POS_REIN);
+        configs.setConfigValue<double>("BBToUtilWeight"     ,HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT);
+        configs.setConfigValue<double>("BBToUtilPosRein"    ,HYPERPARAM_LEG_BB_TO_UTIL_POS_REIN);
+        configs.setConfigValue<double>("BBAspWeight"        ,HYPERPARAM_LEG_BB_ASP_WEIGHT);
+        configs.setConfigValue<double>("BBFlatCost"         ,HYPERPARAM_LEG_BB_FLAT_COST);
+
+        configs.setConfigValue<int>("OutputLevel", DFSL::DFSL_PRINTLEVEL::DFSL_WARNING);
+        
+        // Create Legalise Object
+        DFSL::DFSLegalizer dfsl;
+        dfsl.initDFSLegalizer(&floorplan, &configs);
+        // dfsl.printTiledFloorplan(initFloorplanPath, (const std::string)casename);
+        DFSL::RESULT legalResult = DFSL::RESULT::OVERLAP_NOT_RESOLVED;
+
+        // start legalizing
+        TIME_POINT_START_LEG = std::chrono::steady_clock::now();
+        legalResult = dfsl.legalize(int(HYPERPARAM_LEG_LEGALMODE));
+        TIME_POINT_END_LEG = std::chrono::steady_clock::now();
+        if(legalResult == DFSL::RESULT::SUCCESS){
+            HPWL_DONE_LEG = floorplan.calculateHPWL(); 
+            OVERLAP_DONE_LEG = floorplan.calculateOverlapRatio();
+            DONE_LEG = true;
+        }else{
+            programExitFailTask();
+        }
+
+
+        /* PHASE 5: Refinement Engine */
+        TIME_POINT_START_REF = std::chrono::steady_clock::now();
+        RefineEngine refineEngine(&floorplan);
+        refineEngine.refine();
+        TIME_POINT_END_REF = std::chrono::steady_clock::now();
+        HPWL_DONE_REF = floorplan.calculateHPWL();
+        OVERLAP_DONE_REF = floorplan.calculateOverlapRatio();
         DONE_LEG = true;
-    }else{
-        programExitFailTask();
-    }
 
-    programExitSuccessTask();
+
+        programExitSuccessTask();
+
+    }catch(CSException& e){
+        std::cout << std::flush;
+        std::cerr << "CS Excpetion Caught -> " << e.what() << std::endl;
+    }
 }
 
 void programExitSuccessTask(){
@@ -265,7 +282,7 @@ void printTimingHPWLReport(){
     printf("║ DFSL Legaliser            │ %11.3lf (%5.2lf%%) │ %14.2lf %s │ %7.4lf%% %s ║\n",
         legRuntimeS, legRuntimePTG, HPWL_DONE_LEG, legDeltaHPWL, 100 * OVERLAP_DONE_LEG, legDeltaOVERLAP);
     printf("║ Refine Engine             │ %11.3lf (%5.2lf%%) │ %14.2lf %s │ %7.4lf%% %s ║\n",
-        refRuntimeS, refRuntimePTG, HPWL_DONE_REF, refDeltaHPWL, 100 * OVERLAP_DONE_LEG, legDeltaOVERLAP);
+        refRuntimeS, refRuntimePTG, HPWL_DONE_REF, refDeltaHPWL, 100 * OVERLAP_DONE_REF, refDeltaOVERLAP);
 
     printf("╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝\n");
 }
@@ -273,7 +290,9 @@ void printTimingHPWLReport(){
  void showChange(double before, double after, char *result){
     
     double delta = after - before;
-    if(delta >= 0){
+    if(delta == 0){
+        snprintf(result, 12, "(    -    )");
+    }else if(delta > 0){
         snprintf(result, 12,  "(+%7.4f%%)", 100 * delta/before);
         
     }else{
