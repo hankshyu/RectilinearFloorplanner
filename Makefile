@@ -8,8 +8,8 @@ OBJPATH = ./obj
 BOOSTPATH = ./lib/boost_1_84_0/
 GLPKPATH = ./lib/glpk-5.0/src/
 
-# CXX = /usr/bin/g++
-CXX = g++
+CXX = /usr/bin/g++
+# CXX = g++
 FLAGS = -std=c++17 -I $(GBL_SRCPATH) -I $(INF_SRCPATH) -I $(LEG_SRCPATH) -I $(REF_SRCPATH)
 CFLAGS = -c 
 OPTFLAGS = -o3

@@ -27,7 +27,7 @@ using namespace boost::polygon::operators;
 
 struct MigrationEdge;
 
-enum class RESULT : unsigned char { SUCCESS, OVERLAP_NOT_RESOLVED, CONSTRAINT_FAIL };
+enum class RESULT : unsigned char { SUCCESS, OVERLAP_NOT_RESOLVED, AREA_CONSTRAINT_FAIL, OTHER_CONSTRAINT_FAIL };
 
 class DFSLegalizer{
 private:
@@ -54,7 +54,8 @@ private:
     // related to neighbor graph
     void updateGraph();
     void updateOverlapNode(DFSLNode& overlapNode);
-    void updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext);
+    void checkNeighborDiscrepancies(DFSLNode& blockNode, std::set<int>& toUpdate);
+    void updateBlockNodes(std::set<int>& toUpdate);
 
     // DFS path finding
     void dfs(DFSLEdge& edge, double currentCost);
@@ -67,7 +68,16 @@ private:
     bool splitSoftBlock(MigrationEdge& edge, std::vector<Tile*>& newTiles);
     bool placeInBlank(MigrationEdge& edge, std::vector<Tile*>& newTiles);
     void restructureRectis();
-    void legalizeArea();
+
+    // end of flow last-ditch efforts to legalize
+    void lastDitchLegalize();
+    void legalizeArea(DFSLNode& block, Rectilinear* recti);
+    void legalizeAspectRatio(Rectilinear* recti, double aspectRatio);
+    void legalizeUtil(Rectilinear* recti);
+    void legalizeHole(Rectilinear* recti);
+    void legalizeFragmented(Rectilinear* recti);
+    void fillBoundingBox(Rectilinear* recti, Rectangle& Bbox);
+    RESULT checkLegal();
 
     // misc
     int overlapsRemaining();

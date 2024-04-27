@@ -23,9 +23,9 @@ double SPEC_ASPECT_RATIO_MAX = 2.0;
 double SPEC_UTILIZATION_MIN = 0.8;
 
 
-double HYPERPARAM_GLOBAL_PUNISHMENT = 0.001764;
+double HYPERPARAM_GLOBAL_PUNISHMENT = 0.0054730000000000004;
 double HYPERPARAM_GLOBAL_MAX_ASPECTRATIO_RATE = 0.9;
-double HYPERPARAM_GLOBAL_LEARNING_RATE = 2e-4;
+double HYPERPARAM_GLOBAL_LEARNING_RATE = 46e-4;
 
 double HYPERPARAM_POR_USAGE = 1.0; // Will downcast to boolean
 
@@ -36,16 +36,16 @@ double HYPERPARAM_LEG_OB_UTIL_WEIGHT = 100.0;
 double HYPERPARAM_LEG_OB_ASP_WEIGHT = 70.0;
 double HYPERPARAM_LEG_OB_UTIL_POS_REIN = -500.0;
 
-double HYPERPARAM_LEG_BW_UTIL_WEIGHT = 300;
-double HYPERPARAM_LEG_BW_UTIL_POS_REIN = -500.0;
+double HYPERPARAM_LEG_BW_UTIL_WEIGHT = 1000;
+double HYPERPARAM_LEG_BW_UTIL_POS_REIN = -500;
 double HYPERPARAM_LEG_BW_ASP_WEIGHT = 70.0;
 
 double HYPERPARAM_LEG_BB_AREA_WEIGHT = 10.0;
-double HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT = 200.0;
+double HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT = 500.0;
 double HYPERPARAM_LEG_BB_FROM_UTIL_POS_REIN = -500.0;
-double HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT = 200.0;
+double HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT = 500.0;
 double HYPERPARAM_LEG_BB_TO_UTIL_POS_REIN = -500.0;
-double HYPERPARAM_LEG_BB_ASP_WEIGHT = 15.0;
+double HYPERPARAM_LEG_BB_ASP_WEIGHT = 30.0;
 double HYPERPARAM_LEG_BB_FLAT_COST = 5.0;
 
 // Legal Mode 0: resolve area big -> area small
@@ -93,7 +93,7 @@ void showChange(double before, double after, char *result);
 
 int main(int argc, char *argv[]) {
     // parsing command line arguments
-    std::string inputFileName = "./inputs/rawInputs/case07-input.txt";
+    std::string inputFileName = "./inputs/rawInputs/case02-input.txt";
 
 
     /* PHASE 1: Global Floorplanning */
@@ -186,17 +186,21 @@ int main(int argc, char *argv[]) {
         TIME_POINT_START_LEG = std::chrono::steady_clock::now();
         legalResult = dfsl.legalize(int(HYPERPARAM_LEG_LEGALMODE));
         TIME_POINT_END_LEG = std::chrono::steady_clock::now();
-        // if(legalResult == DFSL::RESULT::SUCCESS){
+        bool legalResultSuccess = (legalResult == DFSL::RESULT::SUCCESS);
+        bool legalResultAreaFail = (legalResult == DFSL::RESULT::AREA_CONSTRAINT_FAIL);
+        if(legalResultSuccess || legalResultAreaFail){
             HPWL_DONE_LEG = floorplan->calculateHPWL(); 
             OVERLAP_DONE_LEG = floorplan->calculateOverlapRatio();
             DONE_LEG = true;
-        // }else{
-        //     programExitFailTask();
-        // }
+        }else{
+            programExitFailTask();
+        }
 
         floorplan->visualiseFloorplan("./outputs/case07-legalised.txt");
 
         /* PHASE 5: Refinement Engine */
+
+
         /*
         Floorplan *refineBestFloorplan = floorplan;
         flen_t refineBestHPWL = FLEN_T_MAX;
@@ -274,7 +278,7 @@ int main(int argc, char *argv[]) {
 
         TIME_POINT_START_REF = std::chrono::steady_clock::now();
         // RefineEngine refineEngine(floorplan, 0.3, 30, false, 2, 1.75, true, false);
-        RefineEngine refineEngine(floorplan, 0.3, 30, false, 4, 2, true, true);
+        RefineEngine refineEngine(floorplan, 0.3, 30, false, 2, 1.75, true, true);
 
         floorplan = refineEngine.refine();
         TIME_POINT_END_REF = std::chrono::steady_clock::now();
@@ -297,7 +301,6 @@ int main(int argc, char *argv[]) {
 }
 
 void programExitSuccessTask(){
-    std::cout << "Timing Report" << std::endl;
     printTimingHPWLReport();
     std::cout << YELLOW << "Program Terminate successfully" << COLORRST << std::endl;
     exit(0);

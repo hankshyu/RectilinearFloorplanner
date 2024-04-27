@@ -8,8 +8,10 @@
 #include <fstream>
 #include <ctime> 
 #include <cstdarg>
+#include <iostream>
 
 #include "rectilinear.h"
+#include "rectangle.h"
 
 #include "DFSLegalizer.h"
 #include "DFSLConfig.h"
@@ -254,6 +256,7 @@ void DFSLegalizer::findOBEdge(int fromIndex, int toIndex){
 
 void DFSLegalizer::getSoftNeighbors(int fromId){
     DFSLNode& fromNode = mAllNodes[fromId];
+    DFSLPrint(4, "Get Soft Neighbors: %s\n", fromNode.nodeName);
     fromNode.edgeList.clear();
 
     // this takes care of the case where a block is completely covered by overlap tiles,
@@ -418,7 +421,7 @@ void DFSLegalizer::printFloorplanStats(){
 // mode 4: completely random
 RESULT DFSLegalizer::legalize(int mode){
     // todo: create backup (deep copy)
-    RESULT result;
+    RESULT result = RESULT::SUCCESS;
     int iteration = 0;
     std::srand(69);
     
@@ -591,8 +594,358 @@ RESULT DFSLegalizer::legalize(int mode){
     // mLF->visualiseArtpiece("debug_DFSL_result.txt", true);
     
     // do end of legalization, simple area legalization
-    legalizeArea();
+    lastDitchLegalize();
 
+    result = checkLegal();
+    return result;
+}
+
+void DFSLegalizer::lastDitchLegalize(){
+    int softStart = getSoftBegin();
+    int softEnd = getSoftEnd();
+
+    // fragmented -> hole -> legalArea -> aspectRatio -> util
+    for (int i = 0; i < 5; i++){
+        for (int softIndex = softStart; softIndex < softEnd; softIndex++){
+            DFSLNode& block = mAllNodes[softIndex];
+            Rectilinear* recti = block.recti;
+
+            if (recti->getLegalArea() == 0){
+                continue;
+            }
+
+            switch (i)
+            {
+            case 0:
+                if (!recti->isLegalOneShape()){
+                    DFSLPrint(3, "Block %s has disjoint components\n", block.nodeName.c_str());
+                    DFSLPrint(3, "Attempting Fix...\n");
+                    legalizeFragmented(recti);
+                }
+                break;
+            case 1:
+                if (!recti->isLegalNoHole()){
+                    DFSLPrint(3, "Block %s has holes\n", block.nodeName.c_str());
+                    DFSLPrint(3, "Attempting Fix...\n");
+                    legalizeHole(recti);
+                }
+                break;
+            case 2:
+                if (!recti->isLegalEnoughArea()){
+                    DFSLPrint(3, "Required area for soft block %s fail (%d < %d)\n", block.nodeName.c_str(), recti->calculateActualArea(), recti->getLegalArea());
+                    DFSLPrint(3, "Attempting Fix...\n");
+                    legalizeArea(block, recti);
+                }
+                break;
+            case 3:
+                if (!recti->isLegalAspectRatio()){
+                    double aspectRatio = rec::calculateAspectRatio(recti->calculateBoundingBox());
+                    if (aspectRatio > this->mFP->getGlobalAspectRatioMax()){
+                        DFSLPrint(3, "Aspect ratio for %1% fail (%2$3.2f > %3$3.2f)\n", block.nodeName.c_str(), aspectRatio, this->mFP->getGlobalAspectRatioMax());
+                    }
+                    else {
+                        DFSLPrint(3, "Aspect ratio for %1% fail (%2$3.2f > %3$3.2f)\n", block.nodeName.c_str(), aspectRatio, this->mFP->getGlobalAspectRatioMin());
+                    }
+                    DFSLPrint(3, "Attempting Fix...\n");
+                    legalizeAspectRatio(recti, aspectRatio);
+                }
+                break;
+            case 4:
+                if (!recti->isLegalUtilization()){
+                    double util = recti->calculateUtilization();
+                    DFSLPrint(3, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, this->mFP->getGlobalUtilizationMin());
+                    DFSLPrint(3, "Attempting Fix...\n");
+                    legalizeUtil(recti);
+                }
+                break;
+            default:
+                break;
+            }
+        }
+    }
+}
+
+void DFSLegalizer::legalizeArea(DFSLNode& block, Rectilinear* recti){
+    int missingArea = recti->getLegalArea() - recti->calculateActualArea();
+    int BWEdgeIndex = -1;
+    int i = 0;
+    for (DFSLEdge& edge: block.edgeList){
+        if (edge.getType() == EDGETYPE::BW){
+            BWEdgeIndex = i;
+            break; 
+        }
+        i++;
+    }
+    int requiredExpansionLength = 0;
+
+
+    if (BWEdgeIndex == -1){
+        int perimeterLength = 0;
+        Polygon90Set rectiShape;
+        for (Tile* tile: recti->blockTiles){
+            rectiShape += tile->getRectangle();
+        }
+        std::vector<Polygon90WithHoles> polyContainer;
+        rectiShape.get_polygons(polyContainer);
+        for (Polygon90WithHoles& poly: polyContainer){
+            perimeterLength += gtl::perimeter(poly);
+        }
+        requiredExpansionLength = missingArea % perimeterLength == 0 ?  missingArea/perimeterLength : (missingArea / perimeterLength) + 1;
+    }
+    else {
+        DFSLEdge& BWEdge = block.edgeList[BWEdgeIndex];
+        int contourLength = 0;
+        for (Segment& BWSeg: BWEdge.tangentSegments()){
+            contourLength += BWSeg.getLength();
+        }
+        requiredExpansionLength = missingArea % contourLength == 0 ? missingArea/contourLength : (missingArea / contourLength) + 1;
+    }
+
+    Rectangle expandedBbox = recti->calculateBoundingBox();
+    gtl::bloat(expandedBbox, requiredExpansionLength);
+
+    fillBoundingBox(recti, expandedBbox);
+}
+
+void DFSLegalizer::legalizeFragmented(Rectilinear* recti){
+    DoughnutPolygonSet reshapePart;
+
+    for(Tile *const &t : recti->blockTiles){
+        reshapePart += t->getRectangle();
+    }
+
+    // only leave the pargest part, find the largest part and mark it
+    area_t largestPart = boost::polygon::area(reshapePart[0]);
+    int largestPartIdx = 0;
+    for(int i = 1; i < reshapePart.size(); ++i){
+        area_t partArea = boost::polygon::area(reshapePart[i]);
+        if(partArea > largestPart){
+            largestPart = partArea;
+            largestPartIdx = i;
+        }
+    }
+    
+    // load all removal parts to array
+    std::vector<DoughnutPolygon> toRemoveParts;
+    for(int i = 0; i < reshapePart.size(); ++i){
+        if(i != largestPartIdx) {
+            toRemoveParts.push_back(reshapePart[i]);
+            DFSLPrint(3, "Removing area of size %1%\n", gtl::area(reshapePart[i]));
+        }
+    }
+    this->mFP->shrinkRectilinear(toRemoveParts, recti);
+}
+
+void DFSLegalizer::legalizeAspectRatio(Rectilinear* recti, double aspectRatio){
+    Rectangle Bbox = recti->calculateBoundingBox();
+    Polygon90Set rectiPolySet;
+    for (Tile* tile: recti->blockTiles){
+        rectiPolySet += tile->getRectangle();
+    }
+
+    std::vector<Polygon90WithHoles> toDiscard;
+    if (aspectRatio > this->mFP->getGlobalAspectRatioMax()){
+        // too flat
+        int currentHeight = rec::getHeight(Bbox);
+        int maxWidth = floor((double)currentHeight * this->mFP->getGlobalAspectRatioMax());
+
+        Rectangle range1(Bbox), range2(Bbox), range3(Bbox);
+        // range1: cut off right
+        gtl::xh(range1, rec::getXL(Bbox) + maxWidth);
+        // range2: cuh off left
+        gtl::xl(range2, rec::getXH(Bbox) - maxWidth);
+        // range3: stay in middle, cut off a bit of left and a bit of right
+        int xMiddle = (rec::getXL(Bbox) + rec::getXH(Bbox)) / 2;
+        gtl::xl(range3, xMiddle - maxWidth/2);
+        gtl::xh(range3, xMiddle + maxWidth/2);
+
+        Polygon90Set range1Discard = rectiPolySet - range1;
+        Polygon90Set range2Discard = rectiPolySet - range2;
+        Polygon90Set range3Discard = rectiPolySet - range3;
+        int range1DiscardedArea = gtl::area(range1Discard);
+        int range2DiscardedArea = gtl::area(range2Discard);
+        int range3DiscardedArea = gtl::area(range3Discard);
+        if (range1DiscardedArea <= range2DiscardedArea && range1DiscardedArea <= range2DiscardedArea){
+            range1Discard.get_polygons(toDiscard);
+        }
+        else if (range2DiscardedArea <= range1DiscardedArea && range2DiscardedArea <= range3DiscardedArea){
+            range2Discard.get_polygons(toDiscard);
+        }
+        else /*if (range3DiscardedArea <= range2DiscardedArea && range3DiscardedArea <= range1DiscardedArea)*/{
+            range3Discard.get_polygons(toDiscard);
+        }
+    }
+    else {
+        // too tall
+        int currentWidth = rec::getWidth(Bbox);
+        int maxHeight = floor((double)currentWidth / this->mFP->getGlobalAspectRatioMin());
+
+        Rectangle range1(Bbox), range2(Bbox), range3(Bbox);
+        // range1: cut off top
+        gtl::yh(range1, rec::getYL(Bbox) + maxHeight);
+        // range2: cuh off bottom
+        gtl::yl(range2, rec::getYH(Bbox) - maxHeight);
+        // range3: stay in middle, cut off a bit of bottom and a bit of top
+        int yMiddle = (rec::getYL(Bbox) + rec::getYH(Bbox)) / 2;
+        gtl::yl(range3, yMiddle - maxHeight/2);
+        gtl::yh(range3, yMiddle + maxHeight/2);
+
+        Polygon90Set range1Discard = rectiPolySet - range1;
+        Polygon90Set range2Discard = rectiPolySet - range2;
+        Polygon90Set range3Discard = rectiPolySet - range3;
+        int range1DiscardedArea = gtl::area(range1Discard);
+        int range2DiscardedArea = gtl::area(range2Discard);
+        int range3DiscardedArea = gtl::area(range3Discard);
+        if (range1DiscardedArea <= range2DiscardedArea && range1DiscardedArea <= range2DiscardedArea){
+            range1Discard.get_polygons(toDiscard);
+        }
+        else if (range2DiscardedArea <= range1DiscardedArea && range2DiscardedArea <= range3DiscardedArea){
+            range2Discard.get_polygons(toDiscard);
+        }
+        else /*if (range3DiscardedArea <= range2DiscardedArea && range3DiscardedArea <= range1DiscardedArea)*/{
+            range3Discard.get_polygons(toDiscard);
+        }
+    }
+
+    for(int i = 0; i < toDiscard.size(); ++i){
+        DFSLPrint(3, "Removing area of size %1%\n", gtl::area(toDiscard[i]));
+    }
+    this->mFP->shrinkRectilinear(toDiscard, recti);
+}
+
+void DFSLegalizer::legalizeUtil(Rectilinear* recti){
+	Rectangle rectBB = recti->calculateBoundingBox();
+    fillBoundingBox(recti, rectBB);
+}
+
+void DFSLegalizer::fillBoundingBox(Rectilinear* recti, Rectangle& rectBB){
+	using namespace boost::polygon::operators;
+	// This stores the growing shape of rect during the growing process
+	DoughnutPolygonSet currentRectDPS;
+
+	DoughnutPolygonSet petriDishDPS, blankDPS;
+	petriDishDPS += rectBB;
+	blankDPS += rectBB;
+
+	// find all tiles that crosssect the area, find it and sieve those unfit
+	std::vector<Tile *> tilesinPetriDish;	
+	std::unordered_map<Rectilinear *, std::vector<Tile *>> invlovedTiles;
+	this->mFP->cs->enumerateDirectedArea(rectBB, tilesinPetriDish);
+	for(Tile *const &t : tilesinPetriDish){
+		Rectilinear *tilesRectilinear = this->mFP->blockTilePayload[t];
+		Rectangle tileRectangle = t->getRectangle();
+		blankDPS -= tileRectangle;
+		if(tilesRectilinear->getType() == rectilinearType::PREPLACED) continue;
+		if(tilesRectilinear == recti){
+			currentRectDPS += tileRectangle;
+			continue;
+		}
+
+		std::unordered_map<Rectilinear *, std::vector<Tile *>>::iterator it = invlovedTiles.find(tilesRectilinear);
+		if(it == invlovedTiles.end()){ // no entry found
+			invlovedTiles[tilesRectilinear] = {t};			
+		}else{
+			invlovedTiles[tilesRectilinear].push_back(t);
+		}
+	}
+
+	std::vector<Rectilinear *> involvedRectilinears;
+	for(std::unordered_map<Rectilinear *, std::vector<Tile *>>::iterator it = invlovedTiles.begin(); it != invlovedTiles.end(); ++it){
+		involvedRectilinears.push_back(it->first);
+	}
+
+	// start filling the candidates to grow	
+	std::vector<DoughnutPolygon> growCandidates;
+	std::vector<Rectilinear *> growCandidatesRectilinear;
+	// start with the blank tiles 
+	for(int i = 0; i < blankDPS.size(); ++i){
+		growCandidates.push_back(blankDPS[i]);
+		growCandidatesRectilinear.push_back(nullptr);
+	}
+	// then those Rectiliears
+	for(int i = 0; i < involvedRectilinears.size(); ++i){
+		Rectilinear *tgRect = involvedRectilinears[i];
+		DoughnutPolygonSet rectDPS;
+		for(Tile *const &t : invlovedTiles[tgRect]){
+			rectDPS += t->getRectangle();
+		}
+		// trim those are out out of the bounding box
+		rectDPS &= rectBB;
+		int rectDPSSize = rectDPS.size();
+		for(int j = 0; j < rectDPSSize; ++j){
+			growCandidates.push_back(rectDPS[j]);
+			growCandidatesRectilinear.push_back(tgRect);
+		}
+		// put the larger block at first place
+		std::sort(growCandidates.end() - rectDPSSize, growCandidates.end(), 
+			[&](DoughnutPolygon a, DoughnutPolygon b){return boost::polygon::size(a) > boost::polygon::size(b);});
+		
+	}	
+	int growCandidateSize = growCandidates.size();
+	// there exist no conadidate blocks, just return
+	if(growCandidateSize == 0) return;
+
+
+	std::unordered_map<Rectilinear *, DoughnutPolygonSet> rectCurrentShapeDPS;
+	for(Rectilinear *const &ivr : involvedRectilinears){
+		for(Tile *const &t : ivr->blockTiles){
+			rectCurrentShapeDPS[ivr] += t->getRectangle();
+		}
+	}
+	bool keepGrowing = true;		
+	bool hasGrow = false;
+	std::vector<bool> growCandidateSelect(growCandidateSize, false); // This records which candidate is selected
+
+	while(keepGrowing){
+		keepGrowing = false;
+		for(int i = 0; i < growCandidateSize; ++i){
+			if(growCandidateSelect[i]) continue;
+
+			DoughnutPolygon markedDP = growCandidates[i];
+			// test if installing this marked part would turn the current shape strange
+
+			DoughnutPolygonSet xSelfDPS(currentRectDPS);
+			xSelfDPS += markedDP;
+			if(!(dps::oneShape(xSelfDPS) && dps::noHole(xSelfDPS))){
+				// intrducing the markedDP would cause dpSet to generate strange shape, give up on the tile
+				continue;
+			}
+
+			// test if pulling off the marked part would harm the victim too bad, skip if markedDP belongs to blank
+			Rectilinear *victimRect = growCandidatesRectilinear[i];
+			if(victimRect != nullptr){
+				// markedDP belongs to other Rectilinear
+				DoughnutPolygonSet xVictimDPS(rectCurrentShapeDPS[victimRect]);
+				xVictimDPS -= markedDP;
+
+				// if removing the piece makes the victim rectilinear illegal, quit	
+				if(!dps::checkIsLegal(xVictimDPS, victimRect->getLegalArea(), this->mFP->getGlobalAspectRatioMin(), 
+				this->mFP->getGlobalAspectRatioMax(), this->mFP->getGlobalUtilizationMin())){
+					continue;
+				}
+			}
+
+			// pass all tests, distribute the tile
+			growCandidateSelect[i] = true;
+			keepGrowing = true;
+			hasGrow = true;
+			currentRectDPS += markedDP;
+			DoughnutPolygonSet markedDPS;
+			markedDPS += markedDP;
+			if(victimRect != nullptr){ // markedDP belongs to other Rectilienar
+				rectCurrentShapeDPS[victimRect] -= markedDP;
+				this->mFP->shrinkRectilinear(markedDPS, victimRect);
+			}
+			this->mFP->growRectilinear(markedDPS, recti);
+		}
+	}
+
+	return;
+}
+
+
+RESULT DFSLegalizer::checkLegal(){
+    RESULT result = RESULT::SUCCESS;
     int violations = 0;
 
     // test soft blocks for legality 
@@ -605,19 +958,19 @@ RESULT DFSLegalizer::legalize(int mode){
         if (recti->getLegalArea() == 0){
             continue;
         }
+
+        if (!recti->isLegalEnoughArea()){
+            DFSLPrint(1, "Required area for soft block %s fail (%d < %d)\n", block.nodeName.c_str(), recti->calculateActualArea(), recti->getLegalArea());
+            result = RESULT::AREA_CONSTRAINT_FAIL; 
+            violations++;           
+        } 
         
         if (!recti->isLegalUtilization()){
             double util = recti->calculateUtilization();
             DFSLPrint(1, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, this->mFP->getGlobalUtilizationMin());
-            result = RESULT::CONSTRAINT_FAIL;
+            result = RESULT::OTHER_CONSTRAINT_FAIL;
             violations++;
         }
-
-        if (!recti->isLegalEnoughArea()){
-            DFSLPrint(1, "Required area for soft block %s fail (%d < %d)\n", block.nodeName.c_str(), recti->calculateActualArea(), recti->getLegalArea());
-            result = RESULT::CONSTRAINT_FAIL; 
-            violations++;           
-        } 
 
         if (!recti->isLegalAspectRatio()){
             double aspectRatio = rec::calculateAspectRatio(recti->calculateBoundingBox());
@@ -627,19 +980,19 @@ RESULT DFSLegalizer::legalize(int mode){
             else {
                 DFSLPrint(1, "Aspect ratio for %1% fail (%2$3.2f > %3$3.2f)\n", block.nodeName.c_str(), aspectRatio, this->mFP->getGlobalAspectRatioMin());
             }
-            result = RESULT::CONSTRAINT_FAIL; 
+            result = RESULT::OTHER_CONSTRAINT_FAIL; 
             violations++;  
         }
 
         if (!recti->isLegalOneShape()){
             DFSLPrint(1, "Block %s has disjoint components\n", block.nodeName.c_str());
-            result = RESULT::CONSTRAINT_FAIL;
+            result = RESULT::OTHER_CONSTRAINT_FAIL;
             violations++;            
         }
 
         if (!recti->isLegalNoHole()){
             DFSLPrint(1, "Block %s has holes\n", block.nodeName.c_str());
-            result = RESULT::CONSTRAINT_FAIL;
+            result = RESULT::OTHER_CONSTRAINT_FAIL;
             violations++;
         }
     }
@@ -658,25 +1011,25 @@ RESULT DFSLegalizer::legalize(int mode){
         if (!recti->isLegalUtilization()){
             double util = recti->calculateUtilization();
             DFSLPrint(1, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, this->mFP->getGlobalUtilizationMin());
-            result = RESULT::CONSTRAINT_FAIL;
+            result = RESULT::OTHER_CONSTRAINT_FAIL;
             violations++;
         }
 
         if (!recti->isLegalEnoughArea()){
             DFSLPrint(1, "Required area for fixed block %s fail (%d < %d)\n", block.nodeName.c_str(), recti->calculateActualArea(), recti->getLegalArea());
-            result = RESULT::CONSTRAINT_FAIL; 
+            result = RESULT::OTHER_CONSTRAINT_FAIL; 
             violations++;           
         } 
 
         if (!recti->isLegalOneShape()){
             DFSLPrint(1, "Block %s has disjoint components\n", block.nodeName.c_str());
-            result = RESULT::CONSTRAINT_FAIL;
+            result = RESULT::OTHER_CONSTRAINT_FAIL;
             violations++;            
         }
 
         if (!recti->isLegalNoHole()){
             DFSLPrint(1, "Block %s has holes\n", block.nodeName.c_str());
-            result = RESULT::CONSTRAINT_FAIL;
+            result = RESULT::OTHER_CONSTRAINT_FAIL;
             violations++;
         }
     }
@@ -685,84 +1038,23 @@ RESULT DFSLegalizer::legalize(int mode){
     return result;
 }
 
-void DFSLegalizer::legalizeArea(){
-    // test soft blocks for legality 
-    int softStart = getSoftBegin();
-    int softEnd = getSoftEnd();
-    for (int i = softStart; i < softEnd; i++){
-        DFSLNode& block = mAllNodes[i];
-        Rectilinear* recti = block.recti;
-
-        if (recti->getLegalArea() == 0){
-            continue;
+void DFSLegalizer::legalizeHole(Rectilinear* recti){
+    area_t largestArea = AREA_T_MIN;
+    Tile *largestTile;
+    std::vector<Tile *>allTiles; 
+    for(Tile *const &t : recti->blockTiles){
+        allTiles.push_back(t);
+        area_t tileArea = t->getArea();
+        if(tileArea > largestArea){
+            largestArea = tileArea;
+            largestTile = t;
         }
-
-        if (!recti->isLegalEnoughArea()){
-            DFSLPrint(3, "Required area for soft block %s fail (%d < %d)\n", block.nodeName.c_str(), recti->calculateActualArea(), recti->getLegalArea());
-            std::vector<Tile*> newTiles;
-            
-            int missingArea = recti->getLegalArea() - recti->calculateActualArea();
-            int BWEdgeIndex = -1;
-            int i = 0;
-            for (DFSLEdge& edge: block.edgeList){
-                if (edge.getType() == EDGETYPE::BW){
-                    BWEdgeIndex = i;
-                    break; 
-                }
-                i++;
-            }
-            if (BWEdgeIndex == -1){
-                continue;
-            }
-
-            DFSLEdge& BWEdge = block.edgeList[BWEdgeIndex];
-            int contourLength = 0;
-            for (Segment& BWSeg: BWEdge.tangentSegments()){
-                contourLength += BWSeg.getLength();
-            }
-            int requiredHeight = missingArea % contourLength == 0 ? missingArea/contourLength : (missingArea / contourLength) + 1;
-
-            DFSLPrint(3, "%1%", block.nodeName);
-            for (Tile* tile: block.getBlockTileList()){
-                DFSLPrint(4, "\t%1%\n", *(tile));
-            }
-            DFSLPrint(3, "Edges:\n");
-            for (DFSLEdge& edge: block.edgeList){
-                DFSLPrint(3, ">(%d, %d), ", edge.getFrom(), edge.getTo());
-                if (edge.getType() == EDGETYPE::OB){
-                    DFSLPrint(3, "OB, \n");
-                }
-                else if (edge.getType() == EDGETYPE::BB){
-                    DFSLPrint(3, "BB, \n");
-                }
-                else if (edge.getType() == EDGETYPE::BW){
-                    DFSLPrint(3, "BW, \n");
-                }
-                else {
-                    DFSLPrint(3, "OTHER, \n");
-                }
-                for (Segment& seg: edge.tangentSegments()){
-                    DFSLPrint(3, ">>%1%\n", seg);
-                }
-            }
-            DFSLPrint(3, "Expanding contour outwards by %d. New tiles:\n", requiredHeight);
-
-            for (Segment& BWSeg: BWEdge.tangentSegments()){
-                int unitRectArea = BWSeg.getLength() * requiredHeight;
-                Rectangle newRect = extendSegment(BWSeg, unitRectArea, this->mFP);
-                // bandaid solution
-                // todo: debug BW edge updating, find a workaround for concave L shape contours
-                if (rec::getArea(newRect) == 0){
-                    continue;
-                }
-                Tile* newTile = mFP->addBlockTile(newRect, recti);
-                newTiles.push_back(newTile);
-            }
-
-            for (Tile* newTile: newTiles){
-                DFSLPrint(3, "\t%1%\n", *(newTile));
-            }
-        } 
+    }
+    // leave only the largest tile, remove all remaining
+    for(Tile *const &t : allTiles){
+        if(t != largestTile){
+            this->mFP->decreaseTileOverlap(t, recti);
+        }
     }
 }
 
@@ -949,22 +1241,51 @@ bool DFSLegalizer::migrateOverlap(int overlapIndex){
     return true;
 }
 
-// April 25: Bug Fix by Ryan 
+// April 27: Bug Fix by Ryan 
 void DFSLegalizer::updateGraph(){
     DFSLPrint(4, "Updating graph\n");
-    // go along mBestPath, (the path just traversed), and update 
-    // neighbors of each block along the way
+    // go along mBestPath, (the path just traversed), 
+    // update overlapNode, and
+    // find all updated neighbors of each block, push to toUpdate
+    // and update all nodes in toUpdate
+
+    // update overlapNode
+    DFSLNode& overlapNode = mAllNodes[mBestPath[0].fromIndex];
+    DFSLPrint(4, "update %s\n", overlapNode.nodeName);
+    updateOverlapNode(overlapNode);
+
+    std::set<int> toUpdate;
+    std::set<int> alreadyUpdated;
     for (int i = 0; i < mBestPath.size(); i++){
         MigrationEdge& edge = mBestPath[i];
         DFSLNode& fromNode = mAllNodes[edge.fromIndex];
         if (fromNode.nodeType == DFSLNodeType::OVERLAP){
-            updateOverlapNode(fromNode);
+            int nextIndex = edge.toIndex;
+            int otherIndex; 
+            for (int to: fromNode.overlaps){
+                if (to != nextIndex){
+                    otherIndex = to;
+                    break;
+                }
+            }
+            
+            DFSLNode& otherNode = mAllNodes[otherIndex];
+            if (otherNode.nodeType == DFSLNodeType::SOFT){
+                checkNeighborDiscrepancies(otherNode, toUpdate);
+                alreadyUpdated.insert(otherNode.index);
+            }
         }
         else if (fromNode.nodeType == DFSLNodeType::SOFT){
-            DFSLNode& ignoreNext = mAllNodes[edge.toIndex];
-            updateBlockNode(fromNode, ignoreNext);
+            checkNeighborDiscrepancies(fromNode, toUpdate);
+            alreadyUpdated.insert(fromNode.index);
         }
     }
+
+    for (int alreadyUpdatedIndex: alreadyUpdated){
+        toUpdate.erase(alreadyUpdatedIndex);
+    }
+
+    updateBlockNodes(toUpdate);
 }
 
 void DFSLegalizer::updateOverlapNode(DFSLNode& overlapNode){
@@ -980,149 +1301,18 @@ void DFSLegalizer::updateOverlapNode(DFSLNode& overlapNode){
         }
     }
 }
-/*
-void DFSLegalizer::updateBlockNode(DFSLNode& blockNode){
-    // re-find neighbors of block
-    std::vector<DFSLEdge> oldEdgeListCopy = blockNode.edgeList;
-    std::vector<bool> oldEdgeExists(oldEdgeListCopy.size(), false);
-    blockNode.edgeList.clear();
-    getSoftNeighbors(blockNode.index);
 
-    // look through oldEdgeListCopy, check for discrepencies between
-    // old copy and new blockEdgeList
-    // 3 cases of discrepancies:
-    // 1. there is an update in some BB edge (eg. A->B), then the corresponding edge
-    //       B->A must be updated as well
-    // 2. There is some edge (eg. A->C) in new blockEdgeList that did not exist before 
-    //       Manually add edge C->A to C
-    // 3. There is some edge in old blockEdgeList that no longer exists (eg. A->C)
-    //       Manually erase edge C->A from C
-    for (DFSLEdge& newEdge: blockNode.edgeList){
-        if (newEdge.getTo() == -1){
-            continue;
-        }
-        
-        bool edgeExists = false;
-        for (int i = 0; i < oldEdgeExists.size(); i++){
-            DFSLEdge& oldEdge = oldEdgeListCopy[i];
-        // for (DFSLEdge& oldEdge: oldEdgeListCopy){
-            // find same edge
-            if (oldEdge.getTo() == newEdge.getTo()){
-                oldEdgeExists[i] = true;
-                edgeExists = true;
-                bool edgeIsSame = true;
-                // if two edges are the same, then in theory the ordering of each tangent segment
-                // should be the same too
-                for (int i = 0; i < oldEdge.tangentSegments().size(); i++){
-                    Segment& oldSegment = oldEdge.tangentSegments()[i];
-                    Segment& newSegment = newEdge.tangentSegments()[i];
-                    if (oldSegment.getSegStart() != newSegment.getSegStart() || oldSegment.getSegEnd() != newSegment.getSegEnd()){
-                        edgeIsSame = false;
-                    }
-                }
-                
-                if (!edgeIsSame){
-                    // edges are not same, so we must update B->A edge as well
-                    // make a copy of newEdge.tangentSegments(), where each 
-                    // segment has its direction flipped
-                    // assign that copy to the DFSLEdge in B's edgelist
-
-                    std::vector<Segment> flippedEdgelistCopy = newEdge.tangentSegments();
-                    // flip direction of each segment along copy
-                    for (Segment& seg: flippedEdgelistCopy){
-                        switch (seg.getDirection())
-                        {
-                        case DIRECTION::TOP:
-                            seg.setDirection(DIRECTION::DOWN);
-                            break;
-                        case DIRECTION::RIGHT:
-                            seg.setDirection(DIRECTION::LEFT);
-                            break;
-                        case DIRECTION::DOWN:
-                            seg.setDirection(DIRECTION::TOP);
-                            break;
-                        case DIRECTION::LEFT:
-                            seg.setDirection(DIRECTION::RIGHT);
-                            break;
-                        default:
-                            break;
-                        }
-                    }
-
-                    // A
-                    int thisBlockIndex = newEdge.getFrom();
-                    // B
-                    int toIndex = newEdge.getTo();
-                    DFSLNode& otherNode = mAllNodes[toIndex];
-                    for (DFSLEdge& edge: otherNode.edgeList){
-                        if (edge.getTo() == thisBlockIndex){
-                            edge.tangentSegments() = flippedEdgelistCopy;
-                            break;
-                        }
-                    }
-                }
-                break;
-            }
-
-        }
-        // newEdge is a never seen before edge (eg. A->C)
-        // manually add this edge where the segments are reversed to C (C->A)
-        if (!edgeExists){
-            int thisBlockIndex = newEdge.getFrom();
-            int toIndex = newEdge.getTo();
-
-            std::vector<Segment> flippedEdgelistCopy = newEdge.tangentSegments();
-            // flip direction of each segment along copy
-            for (Segment& seg: flippedEdgelistCopy){
-                switch (seg.getDirection())
-                {
-                case DIRECTION::TOP:
-                    seg.setDirection(DIRECTION::DOWN);
-                    break;
-                case DIRECTION::RIGHT:
-                    seg.setDirection(DIRECTION::LEFT);
-                    break;
-                case DIRECTION::DOWN:
-                    seg.setDirection(DIRECTION::TOP);
-                    break;
-                case DIRECTION::LEFT:
-                    seg.setDirection(DIRECTION::RIGHT);
-                    break;
-                default:
-                    break;
-                }
-            }
-
-            // construct new edge 
-            DFSLNode& otherNode = mAllNodes[toIndex];
-            otherNode.edgeList.push_back(DFSLEdge(toIndex, thisBlockIndex, newEdge.getType(), flippedEdgelistCopy));
-        }    
-        
-    }
-    // if some edge no longer exists
-    // manually delete this edge 
-    for (int i = 0; i < oldEdgeExists.size(); i++){
-        if (!oldEdgeExists[i]){
-            DFSLEdge& oldEdge = oldEdgeListCopy[i];
-            int thisBlockIndex = oldEdge.getFrom();
-            int toIndex = oldEdge.getTo();
-
-            // find this edge
-            DFSLNode& otherNode = mAllNodes[toIndex];
-            std::vector<DFSLEdge>& otherNodeEdgeList = otherNode.edgeList;
-            for (std::vector<DFSLEdge>::iterator it = otherNodeEdgeList.begin(); it != otherNodeEdgeList.end(); ++it){
-                if (it->getTo() == thisBlockIndex){
-                    otherNodeEdgeList.erase(it);
-                    break;
-                }
-            }
-        }
+// April 27, Bug fix by Ryan Lin
+void DFSLegalizer::updateBlockNodes(std::set<int>& toUpdate){
+    for (int nodeIndex: toUpdate){
+        DFSLNode& node = mAllNodes[nodeIndex];
+        DFSLPrint(4, "update %s\n", node.nodeName);
+        getSoftNeighbors(nodeIndex);
     }
 }
-*/
 
-// April 25, Bug fix by Ryan Lin
-void DFSLegalizer::updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext){
+// April 27, Bug fix by Ryan Lin
+void DFSLegalizer::checkNeighborDiscrepancies(DFSLNode& blockNode, std::set<int>& toUpdate){
     // re-find neighbors of block
     std::vector<DFSLEdge> oldEdgeListCopy = blockNode.edgeList;
     std::vector<bool> oldEdgeExists(oldEdgeListCopy.size(), false);
@@ -1131,7 +1321,7 @@ void DFSLegalizer::updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext){
     // get all neighbors of A
     // for each edge A->B, look at the old version of A->B
     // if the edge segments of A->B and A->B are different, then there is a discrepency 
-    // B's neighbors must be updated
+    // B will be pushed to toUpdate
     for (DFSLEdge& newEdge: blockNode.edgeList){
         if (newEdge.getTo() == -1){
             continue;
@@ -1145,11 +1335,10 @@ void DFSLegalizer::updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext){
                 oldEdgeExists[i] = true;
                 discrepancy = false;
 
-                // if old edge points to the NEXT NODE in mBestPath, then
-                // don't update that node now, otherwise when updateBlockNode is called
-                // on NEXT NODE, then there will be no discrepancies (because getSoftNeighbors)
-                // was already called now 
-                if (newEdge.getTo() != ignoreNext.index){
+                if (oldEdge.tangentSegments().size() != newEdge.tangentSegments().size()){
+                    discrepancy = true;
+                }
+                else {
                     // if two edges are the same, then in theory the ordering of each tangent segment
                     // should be the same too
                     for (int i = 0; i < oldEdge.tangentSegments().size(); i++){
@@ -1159,9 +1348,8 @@ void DFSLegalizer::updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext){
                             discrepancy = true;
                             break;
                         }
-                    }
+                    } 
                 }
-
                 break;
             }
         }
@@ -1171,7 +1359,7 @@ void DFSLegalizer::updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext){
         // edge is completely new
         // edge has been removed
         if (discrepancy){
-            getSoftNeighbors(newEdge.getTo());
+            toUpdate.insert(newEdge.getTo());
         }
     }
     // edge has been removed
@@ -1182,7 +1370,7 @@ void DFSLegalizer::updateBlockNode(DFSLNode& blockNode, DFSLNode& ignoreNext){
             if (toIndex == -1){
                 continue;
             }
-            getSoftNeighbors(toIndex);
+            toUpdate.insert(toIndex);
         }
     }
 }
@@ -1431,6 +1619,7 @@ MigrationEdge DFSLegalizer::getEdgeCost(DFSLEdge& edge){
             Segment seg = tangentSegments[s];
 
             Rectangle predictNewArea = extendSegment(seg, mMigratingArea, mFP);
+            assert(rec::getArea(predictNewArea) > 0);
 
             Polygon90Set newBlock = oldBlock + predictNewArea;
             RectiInfo newBlockInfo = getPolySetInfo(newBlock);
