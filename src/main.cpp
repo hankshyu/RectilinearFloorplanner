@@ -23,7 +23,7 @@ double SPEC_ASPECT_RATIO_MAX = 2.0;
 double SPEC_UTILIZATION_MIN = 0.8;
 
 
-double HYPERPARAM_GLOBAL_PUNISHMENT = 0.0006355;
+double HYPERPARAM_GLOBAL_PUNISHMENT = 0.001764;
 double HYPERPARAM_GLOBAL_MAX_ASPECTRATIO_RATE = 0.9;
 double HYPERPARAM_GLOBAL_LEARNING_RATE = 2e-4;
 
@@ -31,22 +31,22 @@ double HYPERPARAM_POR_USAGE = 1.0; // Will downcast to boolean
 
 double HYPERPARAM_LEG_MAX_COST_CUTOFF = 5000.0;
 
-double HYPERPARAM_LEG_OB_AREA_WEIGHT = 700.0;
-double HYPERPARAM_LEG_OB_UTIL_WEIGHT = 900.0;
-double HYPERPARAM_LEG_OB_ASP_WEIGHT = 40.0;
+double HYPERPARAM_LEG_OB_AREA_WEIGHT = 30.0;
+double HYPERPARAM_LEG_OB_UTIL_WEIGHT = 100.0;
+double HYPERPARAM_LEG_OB_ASP_WEIGHT = 70.0;
 double HYPERPARAM_LEG_OB_UTIL_POS_REIN = -500.0;
 
-double HYPERPARAM_LEG_BW_UTIL_WEIGHT = 2000;
-double HYPERPARAM_LEG_BW_UTIL_POS_REIN = -1000.0;
-double HYPERPARAM_LEG_BW_ASP_WEIGHT = 700.0;
+double HYPERPARAM_LEG_BW_UTIL_WEIGHT = 300;
+double HYPERPARAM_LEG_BW_UTIL_POS_REIN = -500.0;
+double HYPERPARAM_LEG_BW_ASP_WEIGHT = 70.0;
 
-double HYPERPARAM_LEG_BB_AREA_WEIGHT = 100.0;
-double HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT = 450.0;
+double HYPERPARAM_LEG_BB_AREA_WEIGHT = 10.0;
+double HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT = 200.0;
 double HYPERPARAM_LEG_BB_FROM_UTIL_POS_REIN = -500.0;
-double HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT = 1750.0;
-double HYPERPARAM_LEG_BB_TO_UTIL_POS_REIN = -100.0;
-double HYPERPARAM_LEG_BB_ASP_WEIGHT = 10.0;
-double HYPERPARAM_LEG_BB_FLAT_COST = -30.0;
+double HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT = 200.0;
+double HYPERPARAM_LEG_BB_TO_UTIL_POS_REIN = -500.0;
+double HYPERPARAM_LEG_BB_ASP_WEIGHT = 15.0;
+double HYPERPARAM_LEG_BB_FLAT_COST = 5.0;
 
 // Legal Mode 0: resolve area big -> area small
 // Legal Mode 1: resolve area small -> area big
@@ -54,8 +54,6 @@ double HYPERPARAM_LEG_BB_FLAT_COST = -30.0;
 // Legal Mode 3: completely random
 // Legal Mode 4: resolve overlaps near center -> outer edge (manhattan distance)
 double HYPERPARAM_LEG_LEGALMODE = 2.0; // Will downcast to int
-
-
 
 
 bool DONE_GLOBAL = false;
@@ -95,56 +93,7 @@ void showChange(double before, double after, char *result);
 
 int main(int argc, char *argv[]) {
     // parsing command line arguments
-    std::string inputFileName = "./inputs/rawInputs/case10-input.txt";
-
-    // GlobalResult gr;
-    // gr.readGlobalResult("./inputs/case10.txt");
-    // Floorplan *fp = new Floorplan(gr, 0.5, 2, 0.8);
-
-    // std::cout << "Printing old tiles" << std::endl;
-
-    // std::unordered_set<Tile *>oldT;
-    // fp->cs->collectAllTiles(oldT);
-    // for(Tile *t : oldT){
-    //     std::cout << *t << std::endl;
-    // }
-    // std::cout << *(fp->allRectilinears.begin()) <<std::endl;
-    // for(Rectilinear *rt : fp->allRectilinears){
-    //     std::cout << *rt << std::endl;
-    // }
-
-    // for(Connection *conn : fp->allConnections){
-    //     std::cout << *conn << std::endl;
-    // }
-
-
-    // Floorplan *bestfp = new Floorplan(*fp);
-    
-    // delete fp;
-    // std::cout << "After copying" << std::endl;
-    // std::unordered_set<Tile *> newT;
-    // bestfp->cs->collectAllTiles(newT);
-    // for(Tile *t : newT){
-    //     std::cout << *t << std::endl;
-    //     if(t->rt != nullptr) std::cout << "rt: " << *(t->rt) << std::endl;
-    //     else std::cout << "t->rt is nullptr"<< std::endl;
-
-    //     if(t->tr != nullptr) std::cout << "tr: " << *(t->tr) << std::endl;
-    //     else std::cout << "t->tr is nullptr" << std::endl;
-    // }
-
-    // for(Rectilinear *rt : bestfp->allRectilinears){
-    //     std::cout << *rt << std::endl;
-    // }
-    // for(Connection *conn : bestfp->allConnections){
-    //     std::cout << *conn << std::endl;
-    // }
-    
-    
-
-
-
-
+    std::string inputFileName = "./inputs/rawInputs/case07-input.txt";
 
 
     /* PHASE 1: Global Floorplanning */
@@ -245,12 +194,88 @@ int main(int argc, char *argv[]) {
         //     programExitFailTask();
         // }
 
-        floorplan->visualiseFloorplan("./outputs/case05-legalised.txt");
+        floorplan->visualiseFloorplan("./outputs/case07-legalised.txt");
 
         /* PHASE 5: Refinement Engine */
+        /*
+        Floorplan *refineBestFloorplan = floorplan;
+        flen_t refineBestHPWL = FLEN_T_MAX;
+        bool refineBestUseGradientOrder;
+        flen_t refineBestMomentum;
+        flen_t refineBestMomentumGrowth;
+        bool refineBestGrowGradient;
+        bool refineBestShrinkGradient;
+
+        // Try momentum setup: (init growth) = (1, 2), (2, 1.25), (2, 1.5), (2, 1.75), (2, 2), (4, 2)
+        for(int xMomentum = 0; xMomentum < 5; ++xMomentum){
+            len_t expMomentum;
+            double expMomentumGrowth;
+            if(xMomentum == 0){
+                expMomentum = 1;
+                expMomentumGrowth = 2;
+            }else if(xMomentum == 1){
+                expMomentum = 2;
+                expMomentumGrowth = 1.25;
+            }else if(xMomentum == 2){ // xMomentum == 2
+                expMomentum = 2;
+                expMomentumGrowth = 1.5;
+            }else if(xMomentum == 3){
+                expMomentum = 2;
+                expMomentumGrowth = 1.75;
+            }else if(xMomentum == 4){
+                expMomentum = 4;
+                expMomentumGrowth = 2;
+            }
+            
+            for(int xGradient = 0; xGradient < 4; ++ xGradient){
+                bool expGrowGradient = xGradient / 2;
+                bool expShrinkGradient = xGradient % 2;
+                for(int xGradientOrder = 0; xGradientOrder < 2; ++xGradientOrder){
+                    bool expUseGradientOrder = bool(xGradientOrder);
+                    Floorplan *expFloorplan = new Floorplan(*floorplan);
+
+                    std::chrono::steady_clock::time_point expStartTime = std::chrono::steady_clock::now();
+                    RefineEngine expRF(expFloorplan, 0.3, 30,expUseGradientOrder, expMomentum, expMomentumGrowth, expGrowGradient, expShrinkGradient);
+                    expFloorplan = expRF.refine();
+                    std::chrono::steady_clock::time_point expEndTime = std::chrono::steady_clock::now();
+
+                    flen_t expResult = expFloorplan->calculateHPWL();
+                    if(expResult < refineBestHPWL){
+                        if(refineBestHPWL != FLEN_T_MAX) delete refineBestFloorplan;
+                        refineBestFloorplan = expFloorplan;
+                        refineBestHPWL = expResult;
+                        refineBestUseGradientOrder = expUseGradientOrder;
+                        refineBestMomentum = expMomentum;
+                        refineBestMomentumGrowth = expMomentumGrowth;
+                        refineBestGrowGradient = expGrowGradient;
+                        refineBestShrinkGradient = expShrinkGradient;
+
+                        TIME_POINT_START_REF = expStartTime; 
+                        TIME_POINT_END_REF = expEndTime;
+                    }else{
+                        delete expFloorplan;
+                    }
+                }
+            }
+        }
+        HPWL_DONE_REF = refineBestHPWL;
+        OVERLAP_DONE_REF = refineBestFloorplan->calculateOverlapRatio();
+        DONE_LEG = true;
+
+        refineBestFloorplan->visualiseFloorplan("./outputs/case05-refined.txt");
+        std::cout << "Little Grid search Result: " << std::endl;
+        std::cout << "Best HPWL = " << refineBestHPWL << std::endl;
+        std::cout << "Best Use Gradient Ordering? " << refineBestUseGradientOrder << std::endl;
+        std::cout << "Best Momentum = " << refineBestMomentum << std::endl;
+        std::cout << "Best Momentum Growth = " << refineBestMomentumGrowth << std::endl;
+        std::cout << "Best Grow with Gradient? " << refineBestGrowGradient << std::endl;
+        std::cout << "Best Shrink with Gradient? " << refineBestShrinkGradient << std::endl;
+        */
 
         TIME_POINT_START_REF = std::chrono::steady_clock::now();
-        RefineEngine refineEngine(floorplan);
+        // RefineEngine refineEngine(floorplan, 0.3, 30, false, 2, 1.75, true, false);
+        RefineEngine refineEngine(floorplan, 0.3, 30, false, 4, 2, true, true);
+
         floorplan = refineEngine.refine();
         TIME_POINT_END_REF = std::chrono::steady_clock::now();
 
@@ -258,8 +283,10 @@ int main(int argc, char *argv[]) {
         OVERLAP_DONE_REF = floorplan->calculateOverlapRatio();
         DONE_LEG = true;
 
+        floorplan->visualiseFloorplan("./outputs/case07-refined.txt");
 
-        floorplan->visualiseFloorplan("./outputs/case05-refined.txt");
+
+
 
         programExitSuccessTask();
 

@@ -1,0 +1,99 @@
+[GlobalSolver] Note: Punishment is set to 0.001764
+[GlobalSolver] Note: Maximum Aspect Ratio is set to 1.8
+[GlobalSolver] Note: Learning rate is not set. Use default value 2e-4
+[GlobalSolver] Phase  1 / 100[GlobalSolver] Phase  2 / 100[GlobalSolver] Phase  3 / 100[GlobalSolver] Phase  4 / 100[GlobalSolver] Phase  5 / 100[GlobalSolver] Phase  6 / 100[GlobalSolver] Phase  7 / 100[GlobalSolver] Phase  8 / 100[GlobalSolver] Phase  9 / 100[GlobalSolver] Phase 10 / 100[GlobalSolver] Phase 11 / 100[GlobalSolver] Phase 12 / 100[GlobalSolver] Phase 13 / 100[GlobalSolver] Phase 14 / 100[GlobalSolver] Phase 15 / 100[GlobalSolver] Phase 16 / 100[GlobalSolver] Phase 17 / 100[GlobalSolver] Phase 18 / 100[GlobalSolver] Phase 19 / 100[GlobalSolver] Phase 20 / 100[GlobalSolver] Phase 20 / 100[GlobalSolver] Phase 21 / 100[GlobalSolver] Phase 22 / 100[GlobalSolver] Phase 23 / 100[GlobalSolver] Phase 24 / 100[GlobalSolver] Phase 25 / 100[GlobalSolver] Phase 26 / 100[GlobalSolver] Phase 27 / 100[GlobalSolver] Phase 28 / 100[GlobalSolver] Phase 29 / 100[GlobalSolver] Phase 30 / 100[GlobalSolver] Phase 31 / 100[GlobalSolver] Phase 32 / 100[GlobalSolver] Phase 33 / 100[GlobalSolver] Phase 34 / 100[GlobalSolver] Phase 35 / 100[GlobalSolver] Phase 36 / 100[GlobalSolver] Phase 37 / 100[GlobalSolver] Phase 38 / 100[GlobalSolver] Phase 39 / 100[GlobalSolver] Phase 40 / 100[GlobalSolver] Phase 41 / 100[GlobalSolver] Phase 42 / 100[GlobalSolver] Phase 43 / 100[GlobalSolver] Phase 44 / 100[GlobalSolver] Phase 45 / 100[GlobalSolver] Phase 46 / 100[GlobalSolver] Phase 47 / 100[GlobalSolver] Phase 48 / 100[GlobalSolver] Phase 49 / 100[GlobalSolver] Phase 50 / 100[GlobalSolver] Phase 51 / 100[GlobalSolver] Phase 52 / 100[GlobalSolver] Phase 53 / 100[GlobalSolver] Phase 54 / 100[GlobalSolver] Phase 55 / 100[GlobalSolver] Phase 56 / 100[GlobalSolver] Phase 57 / 100[GlobalSolver] Phase 58 / 100[GlobalSolver] Phase 59 / 100[GlobalSolver] Phase 60 / 100[GlobalSolver] Phase 61 / 100[GlobalSolver] Phase 62 / 100[GlobalSolver] Phase 63 / 100[GlobalSolver] Phase 64 / 100[GlobalSolver] Phase 65 / 100[GlobalSolver] Phase 66 / 100[GlobalSolver] Phase 67 / 100[GlobalSolver] Phase 68 / 100[GlobalSolver] Phase 69 / 100[GlobalSolver] Phase 70 / 100[GlobalSolver] Phase 71 / 100[GlobalSolver] Phase 72 / 100[GlobalSolver] Phase 73 / 100[GlobalSolver] Phase 74 / 100[GlobalSolver] Phase 75 / 100[GlobalSolver] Phase 76 / 100[GlobalSolver] Phase 77 / 100[GlobalSolver] Phase 78 / 100[GlobalSolver] Phase 79 / 100[GlobalSolver] Phase 80 / 100[GlobalSolver] Phase 81 / 100[GlobalSolver] Phase 82 / 100[GlobalSolver] Phase 83 / 100[GlobalSolver] Phase 84 / 100[GlobalSolver] Phase 85 / 100[GlobalSolver] Phase 86 / 100[GlobalSolver] Phase 87 / 100[GlobalSolver] Phase 88 / 100[GlobalSolver] Phase 89 / 100[GlobalSolver] Phase 90 / 100[GlobalSolver] Phase 91 / 100[GlobalSolver] Phase 92 / 100[GlobalSolver] Phase 93 / 100[GlobalSolver] Phase 94 / 100[GlobalSolver] Phase 95 / 100[GlobalSolver] Phase 96 / 100[GlobalSolver] Phase 97 / 100
+[GlobalSolver] Note: Found extremely overlapping module: TS0
+[GlobalSolver] Note: Found extremely overlapping module: TS4
+[GlobalSolver] Phase 98 / 100[GlobalSolver] Phase 99 / 100[GlobalSolver] Phase 100 / 100
+
+
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(4083, 3778), 1, 199, (4084, 3977)], @0x11e006100] with CU4 (1103 -> 904)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(7202, 8217), 323, 6, (7525, 8223)], @0x11e006d90] with MOD (2818 -> 880)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(2270, 11480), 1810, 1, (4080, 11481)], @0x11e00a530] with ISP (4704 -> 2894)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(6709, 6930), 816, 1, (7525, 6931)], @0x11e007c50] with TS2 (1722 -> 906)
+
+[DFSL] INFO   : Starting Legalization
+[DFSL] INFO   : Remaining overlaps: 9
+[DFSL] INFO   : Total Overlap Area: 1279120	(o/d = 0.8455%	o/p = 1.2666%)
+[DFSL] INFO   : Remaining overlaps: 2
+[DFSL] INFO   : Total Overlap Area: 404860	(o/d = 0.2676%	o/p = 0.3941%)
+[DFSL] INFO   : Total Violations: 0
+ Grow: [32m1.76e+06[0m Fill: [31m0[0m Shrink: [32m270000[0mEnd HPWL = 4.04342e+08
+Grow: [34mx[0m Fill: [31m0[0m Shrink: [32m3000[0mEnd HPWL = 4.04339e+08
+ Grow: [32m5.8282e+06[0m Fill: [31m0[0m Shrink: [32m3400[0mEnd HPWL = 3.98508e+08
+ Grow: [32m551000[0m Fill: [31m0[0m Shrink: [32m165000[0mEnd HPWL = 3.97792e+08
+ Grow: [32m3.8066e+06[0m Fill: [31m0[0m Shrink: [32m44800[0mEnd HPWL = 3.9394e+08
+ Grow: [32m1.236e+06[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.92704e+08
+ Grow: [32m463500[0m Fill: [31m0[0m Shrink: [32m90000[0mEnd HPWL = 3.92151e+08
+ Grow: [32m821750[0m Fill: [31m0[0m Shrink: [32m323000[0mEnd HPWL = 3.91006e+08
+ Grow: [32m2.112e+06[0m Fill: [31m0[0m Shrink: [32m22000[0mEnd HPWL = 3.88872e+08
+ Grow: [32m10000[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.88862e+08
+ Grow: [32m3.08e+06[0m Fill: [31m0[0m Shrink: [32m1.562e+06[0mEnd HPWL = 3.8422e+08
+ Grow: [32m962500[0m Fill: [31m0[0m Shrink: [32m374000[0mEnd HPWL = 3.82883e+08
+ Grow: [32m3.652e+06[0m Fill: [31m0[0m Shrink: [32m22000[0mEnd HPWL = 3.79209e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.79209e+08
+ Grow: [32m2.032e+06[0m Fill: [31m0[0m Shrink: [32m16000[0mEnd HPWL = 3.77161e+08
+ Grow: [32m185000[0m Fill: [31m0[0m Shrink: [32m133200[0mEnd HPWL = 3.76843e+08
+Iteration 1 Current HPWL = 3.76843e+08[32m +-2.9529e+07[0m
+ Grow: [32m120000[0m Fill: [31m0[0m Shrink: [32m15000[0mEnd HPWL = 3.76708e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76708e+08
+ Grow: [32m10200[0m Fill: [31m0[0m Shrink: [32m77000[0mEnd HPWL = 3.76621e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76621e+08
+ Grow: [32m44800[0m Fill: [31m0[0m Shrink: [32m5600[0mEnd HPWL = 3.76571e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76571e+08
+ Grow: [32m36000[0m Fill: [31m0[0m Shrink: [32m36000[0mEnd HPWL = 3.76499e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76499e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76499e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76499e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76499e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76499e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76499e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.76499e+08
+ Grow: [32m16000[0m Fill: [31m0[0m Shrink: [32m32000[0mEnd HPWL = 3.76451e+08
+ Grow: [32m802900[0m Fill: [31m0[0m Shrink: [32m22200[0mEnd HPWL = 3.75625e+08
+Iteration 2 Current HPWL = 3.75625e+08[32m +-1.2177e+06[0m
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75625e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75625e+08
+ Grow: [32m3400[0m Fill: [31m0[0m Shrink: [32m23400[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75599e+08
+ Grow: [32m3700[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Iteration 3 Current HPWL = 3.75595e+08[32m +-30500[0m
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 3.75595e+08
+Iteration 4 Current HPWL = 3.75595e+08 [31m0[0m
+Timing Report
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ Stage                     │     Runtime (s)      |            HPWL            |       Overlap        ║
+╟───────────────────────────|──────────────────────|────────────────────────────|──────────────────────╢
+║ Global Floorplan          │       1.045 (57.54%) │   403097764.24 (    -    ) │  1.5056% (    -    ) ║
+║ Infrastructure Building   │       0.003 ( 0.17%) │   403096100.00 (- 0.0004%) │  2.4804% (+64.7451%) ║
+║ Primitive Overlap Removal │       0.005 ( 0.28%) │   403096100.00 (    -    ) │  2.4712% (- 0.3710%) ║
+║ DFSL Legaliser            │       0.025 ( 1.38%) │   406372100.00 (+ 0.8127%) │  0.0000% (-100.0000% ║
+║ Refine Engine             │       0.738 (40.64%) │   375594950.00 (- 7.5736%) │  0.0000% (    -    ) ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+[33mProgram Terminate successfully[0m

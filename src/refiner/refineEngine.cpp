@@ -3,7 +3,9 @@
 #include "cSException.h"
 #include "colours.h"
 
-RefineEngine::RefineEngine(Floorplan *floorplan){
+RefineEngine::RefineEngine(Floorplan *floorplan, double attatchedMin, int maxIter, bool useGradientOrder, len_t initMomentum, double momentumGrowth, bool growGradient, bool shrinkGradient)
+	: REFINE_ATTATCHED_MIN(attatchedMin), REFINE_MAX_ITERATION(maxIter), REFINE_USE_GRADIENT_ORDER(useGradientOrder),
+	REFINE_INITIAL_MOMENTUM(initMomentum), REFINE_MOMENTUM_GROWTH(momentumGrowth), REFINE_USE_GRADIENT_GROW(growGradient), REFINE_USE_GRADIENT_SHRINK(shrinkGradient) {
     this->fp = floorplan;
     for(Rectilinear *const &rt : fp->softRectilinears){
         rectConnOrder.push_back(rt);
@@ -35,12 +37,39 @@ Floorplan *RefineEngine::refine(){
 	double iterationHPWLRecord = initialHPWL;
     while(hasMovement){
         hasMovement = false;
+
+		// arrange the order of refining
+		std::unordered_map<Rectilinear *, double> rectilinearRating;
+		std::vector<Rectilinear *> refineCandidates;
+		for(Rectilinear * const &rect : fp->softRectilinears){
+			if(rectConnWeightSum.at(rect) == 0) continue;
+			refineCandidates.push_back(rect);
+
+			if(REFINE_USE_GRADIENT_ORDER){
+				// use gradient magnitude as ordering
+				EVector candidateGradient;
+				bool hasGradient = fp->calculateRectilinearGradient(rect, candidateGradient);
+				if(hasGradient){
+					rectilinearRating[rect] = candidateGradient.calculateL1Magnitude();
+				}else{
+					rectilinearRating[rect] = 0;
+				}
+			}else{
+				// use connection strength as ordering
+				rectilinearRating[rect] = rectConnWeightSum[rect];
+			}
+		}
+
+		std::sort(refineCandidates.begin(), refineCandidates.end(),
+			[&](Rectilinear *a, Rectilinear *b){return rectilinearRating[a] > rectilinearRating[b];});
+			
+
 		
-        for(int eCand = 0; eCand < rectConnOrder.size(); ++eCand){
-            Rectilinear *improveTarget = rectConnOrder[eCand];
+		for(int eCand = 0; eCand < refineCandidates.size(); ++eCand){
+			Rectilinear *improveTarget = refineCandidates[eCand];
 			// std::cout << "[Enhancer] Picked target: " << improveTarget->getName() << std::endl;
             // Avoid omptimizing Rectilinear with 0 connections
-			if(rectConnWeightSum.at(improveTarget) == 0) continue;		
+			// if(rectConnWeightSum.at(improveTarget) == 0) continue;		
 
             bool enhanceResult = refineRectilinear(improveTarget);
 			// std::cout << improveTarget->getName() << " Enhance Success? " << enhanceResult << std::endl;
