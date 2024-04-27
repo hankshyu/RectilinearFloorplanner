@@ -9,24 +9,24 @@
 
 class RefineEngine{
 private:
-    Floorplan *fp;
     std::unordered_map<Rectilinear *, double> rectConnWeightSum;
     // the most dense connection at [0], ... last is the most loosely connected
     std::vector<Rectilinear *> rectConnOrder;
 
-    const int REFINE_MAX_RUN = 30;
+    const int REFINE_MAX_ITERATION = 30;
     
-    const double REFINE_ATTATCHED_MIN = 0.3;
-    const len_t REFINE_INITIAL_MOMENTUM = 1;
+    const double REFINE_ATTATCHED_MIN = 0.15;
+    const len_t REFINE_INITIAL_MOMENTUM = 2;
     const double REFINE_MOMENTUM_GROWTH = 2;
+    const bool REFINE_USE_GRADIENT_GROW = true;
+    const bool REFINE_USE_GRADIENT_SHRINK = true;
 
-    
 public:
-
+    Floorplan *fp;
     RefineEngine(Floorplan *Floorplan);
 
     
-    void refine() const;
+    Floorplan *refine();
     bool refineRectilinear(Rectilinear *rect) const;
     
     bool fillBoundingBox(Rectilinear *rect) const;

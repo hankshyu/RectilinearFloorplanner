@@ -1,0 +1,893 @@
+[GlobalSolver] Note: Punishment is set to 0.0006355
+[GlobalSolver] Note: Maximum Aspect Ratio is set to 1.8
+[GlobalSolver] Note: Learning rate is not set. Use default value 2e-4
+[GlobalSolver] Phase  1 / 100[GlobalSolver] Phase  2 / 100[GlobalSolver] Phase  3 / 100[GlobalSolver] Phase  4 / 100[GlobalSolver] Phase  5 / 100[GlobalSolver] Phase  6 / 100[GlobalSolver] Phase  7 / 100[GlobalSolver] Phase  8 / 100[GlobalSolver] Phase  9 / 100[GlobalSolver] Phase 10 / 100[GlobalSolver] Phase 11 / 100[GlobalSolver] Phase 12 / 100[GlobalSolver] Phase 13 / 100[GlobalSolver] Phase 14 / 100[GlobalSolver] Phase 15 / 100[GlobalSolver] Phase 16 / 100[GlobalSolver] Phase 17 / 100[GlobalSolver] Phase 18 / 100[GlobalSolver] Phase 19 / 100[GlobalSolver] Phase 20 / 100[GlobalSolver] Phase 20 / 100[GlobalSolver] Phase 21 / 100[GlobalSolver] Phase 22 / 100[GlobalSolver] Phase 23 / 100[GlobalSolver] Phase 24 / 100[GlobalSolver] Phase 25 / 100[GlobalSolver] Phase 26 / 100[GlobalSolver] Phase 27 / 100[GlobalSolver] Phase 28 / 100[GlobalSolver] Phase 29 / 100[GlobalSolver] Phase 30 / 100[GlobalSolver] Phase 31 / 100[GlobalSolver] Phase 32 / 100[GlobalSolver] Phase 33 / 100[GlobalSolver] Phase 34 / 100[GlobalSolver] Phase 35 / 100[GlobalSolver] Phase 36 / 100[GlobalSolver] Phase 37 / 100[GlobalSolver] Phase 38 / 100[GlobalSolver] Phase 39 / 100[GlobalSolver] Phase 40 / 100[GlobalSolver] Phase 41 / 100[GlobalSolver] Phase 42 / 100[GlobalSolver] Phase 43 / 100[GlobalSolver] Phase 44 / 100[GlobalSolver] Phase 45 / 100[GlobalSolver] Phase 46 / 100[GlobalSolver] Phase 47 / 100[GlobalSolver] Phase 48 / 100[GlobalSolver] Phase 49 / 100[GlobalSolver] Phase 50 / 100[GlobalSolver] Phase 51 / 100[GlobalSolver] Phase 52 / 100[GlobalSolver] Phase 53 / 100[GlobalSolver] Phase 54 / 100[GlobalSolver] Phase 55 / 100[GlobalSolver] Phase 56 / 100[GlobalSolver] Phase 57 / 100[GlobalSolver] Phase 58 / 100[GlobalSolver] Phase 59 / 100[GlobalSolver] Phase 60 / 100[GlobalSolver] Phase 61 / 100[GlobalSolver] Phase 62 / 100[GlobalSolver] Phase 63 / 100[GlobalSolver] Phase 64 / 100[GlobalSolver] Phase 65 / 100[GlobalSolver] Phase 66 / 100[GlobalSolver] Phase 67 / 100[GlobalSolver] Phase 68 / 100[GlobalSolver] Phase 69 / 100[GlobalSolver] Phase 70 / 100[GlobalSolver] Phase 71 / 100[GlobalSolver] Phase 72 / 100[GlobalSolver] Phase 73 / 100[GlobalSolver] Phase 74 / 100[GlobalSolver] Phase 75 / 100[GlobalSolver] Phase 76 / 100[GlobalSolver] Phase 77 / 100[GlobalSolver] Phase 78 / 100[GlobalSolver] Phase 79 / 100[GlobalSolver] Phase 80 / 100[GlobalSolver] Phase 81 / 100[GlobalSolver] Phase 82 / 100[GlobalSolver] Phase 83 / 100[GlobalSolver] Phase 84 / 100[GlobalSolver] Phase 85 / 100[GlobalSolver] Phase 86 / 100[GlobalSolver] Phase 87 / 100[GlobalSolver] Phase 88 / 100[GlobalSolver] Phase 89 / 100[GlobalSolver] Phase 90 / 100[GlobalSolver] Phase 91 / 100[GlobalSolver] Phase 92 / 100[GlobalSolver] Phase 93 / 100[GlobalSolver] Phase 94 / 100[GlobalSolver] Phase 95 / 100[GlobalSolver] Phase 96 / 100[GlobalSolver] Phase 97 / 100
+[GlobalSolver] Phase 98 / 100[GlobalSolver] Phase 99 / 100[GlobalSolver] Phase 100 / 100
+
+
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(7206, 8110), 1, 2263, (7207, 10373)], @0x147e092e0] with GPU (5740 -> 3477)
+
+[DFSL] INFO   : Starting Legalization
+[DFSL] INFO   : Remaining overlaps: 2
+[DFSL] INFO   : Total Overlap Area: 1942910	(o/d = 1.0732%	o/p = 1.3950%)
+[DFSL] INFO   : Remaining overlaps: 1
+[DFSL] INFO   : Total Overlap Area: 207944	(o/d = 0.1149%	o/p = 0.1456%)
+[DFSL] INFO   : Remaining overlaps: 1
+[DFSL] INFO   : Total Overlap Area: 204204	(o/d = 0.1128%	o/p = 0.1430%)
+[DFSL] INFO   : Remaining overlaps: 1
+[DFSL] INFO   : Total Overlap Area: 200464	(o/d = 0.1107%	o/p = 0.1403%)
+[DFSL] INFO   : Remaining overlaps: 1
+[DFSL] INFO   : Total Overlap Area: 196724	(o/d = 0.1087%	o/p = 0.1376%)
+[DFSL] INFO   : Remaining overlaps: 1
+[DFSL] INFO   : Total Overlap Area: 192984	(o/d = 0.1066%	o/p = 0.1349%)
+[DFSL] WARNING: Required area for soft block BU fail (16458131 < 16460600)
+[DFSL] WARNING: Aspect ratio for BU fail (2.00 > 2.00)
+[DFSL] INFO   : Total Violations: 2
+before copy
+12
+0
+12
+ID = 0 Name = NPU Type = SOFT Global Placement = R[(9224, 7992), 4286, 2382, (13510, 10374)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (43)
+T[BLOCK, R[(9142, 7992), 82, 2382, (9224, 10374)], @0x137e08bd0]
+T[BLOCK, R[(9224, 10451), 1166, 1, (10390, 10452)], @0x137e07d10]
+T[BLOCK, R[(10390, 10450), 2260, 1, (12650, 10451)], @0x137e07720]
+T[BLOCK, R[(9224, 10450), 1166, 1, (10390, 10451)], @0x137e07800]
+T[BLOCK, R[(9224, 10449), 1166, 1, (10390, 10450)], @0x137e074b0]
+T[BLOCK, R[(10390, 10448), 2260, 1, (12650, 10449)], @0x137e067a0]
+T[BLOCK, R[(9224, 10447), 1166, 1, (10390, 10448)], @0x137e06b50]
+T[BLOCK, R[(10390, 10447), 2260, 1, (12650, 10448)], @0x137e06dd0]
+T[BLOCK, R[(10390, 10446), 2260, 1, (12650, 10447)], @0x137e06870]
+T[BLOCK, R[(9224, 10446), 1166, 1, (10390, 10447)], @0x137e063a0]
+T[BLOCK, R[(10390, 10444), 2260, 1, (12650, 10445)], @0x147e0bd70]
+T[BLOCK, R[(10390, 10443), 2260, 1, (12650, 10444)], @0x147e115e0]
+T[BLOCK, R[(9224, 10443), 1166, 1, (10390, 10444)], @0x147e0be60]
+T[BLOCK, R[(10390, 10442), 2260, 1, (12650, 10443)], @0x147e0bcd0]
+T[BLOCK, R[(10390, 10441), 2260, 1, (12650, 10442)], @0x147e09410]
+T[BLOCK, R[(10390, 10449), 2260, 1, (12650, 10450)], @0x137e07590]
+T[BLOCK, R[(10390, 10440), 2260, 1, (12650, 10441)], @0x147e115a0]
+T[BLOCK, R[(9224, 10439), 1166, 1, (10390, 10440)], @0x147e0d8d0]
+T[BLOCK, R[(10390, 10445), 2260, 1, (12650, 10446)], @0x137e064e0]
+T[BLOCK, R[(9224, 10444), 1166, 1, (10390, 10445)], @0x147e11ec0]
+T[BLOCK, R[(10390, 10438), 2260, 1, (12650, 10439)], @0x147e0bb30]
+T[BLOCK, R[(10390, 10451), 2260, 1, (12650, 10452)], @0x137e07b80]
+T[BLOCK, R[(9224, 10438), 1166, 1, (10390, 10439)], @0x147e080b0]
+T[BLOCK, R[(9224, 10437), 1166, 1, (10390, 10438)], @0x147e12fa0]
+T[BLOCK, R[(9224, 10448), 1166, 1, (10390, 10449)], @0x137e06ed0]
+T[BLOCK, R[(9224, 10441), 1166, 1, (10390, 10442)], @0x147e0bdc0]
+T[BLOCK, R[(10390, 10437), 2260, 1, (12650, 10438)], @0x147e09180]
+T[BLOCK, R[(10390, 10436), 2260, 1, (12650, 10437)], @0x147e0a520]
+T[BLOCK, R[(9224, 10435), 1166, 1, (10390, 10436)], @0x147e12010]
+T[BLOCK, R[(9224, 10442), 1166, 1, (10390, 10443)], @0x147e11a00]
+T[BLOCK, R[(10390, 10434), 2260, 1, (12650, 10435)], @0x147e0e660]
+T[BLOCK, R[(9224, 10445), 1166, 1, (10390, 10446)], @0x137e06550]
+T[BLOCK, R[(9224, 10434), 1166, 1, (10390, 10435)], @0x147e08800]
+T[BLOCK, R[(9224, 10440), 1166, 1, (10390, 10441)], @0x147e11bf0]
+T[BLOCK, R[(9224, 10433), 1166, 1, (10390, 10434)], @0x147e0a240]
+T[BLOCK, R[(10390, 10433), 2260, 1, (12650, 10434)], @0x147e0f270]
+T[BLOCK, R[(10390, 10439), 2260, 1, (12650, 10440)], @0x147e0aca0]
+T[BLOCK, R[(10390, 10435), 2260, 1, (12650, 10436)], @0x147e09680]
+T[BLOCK, R[(10390, 10432), 2260, 1, (12650, 10433)], @0x147e11790]
+T[BLOCK, R[(9224, 10432), 1166, 1, (10390, 10433)], @0x147e0f2b0]
+T[BLOCK, R[(9224, 7992), 3426, 2440, (12650, 10432)], @0x147e09210]
+T[BLOCK, R[(9224, 10436), 1166, 1, (10390, 10437)], @0x147e120a0]
+T[BLOCK, R[(12650, 7992), 860, 2008, (13510, 10000)], @0x147e090d0]
+OVERLAP Tiles (0)
+ID = 1 Name = GPU Type = SOFT Global Placement = R[(861, 8110), 6346, 5290, (7207, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (35)
+T[BLOCK, R[(820, 12630), 40, 770, (860, 13400)], @0x137e08120]
+T[BLOCK, R[(820, 8108), 40, 1892, (860, 10000)], @0x137e06260]
+T[BLOCK, R[(3920, 7952), 277, 40, (4197, 7992)], @0x137e06100]
+T[BLOCK, R[(860, 8068), 1, 40, (861, 8108)], @0x137e06180]
+T[BLOCK, R[(7207, 13399), 40, 1, (7247, 13400)], @0x137e06c90]
+T[BLOCK, R[(7206, 7992), 40, 1, (7246, 7993)], @0x137e07e00]
+T[BLOCK, R[(4198, 7540), 1, 452, (4199, 7992)], @0x137e07c50]
+T[BLOCK, R[(4218, 10374), 2368, 3025, (6586, 13399)], @0x137e08d10]
+T[BLOCK, R[(4199, 7540), 1, 452, (4200, 7992)], @0x137e07890]
+T[BLOCK, R[(4200, 7540), 1, 452, (4201, 7992)], @0x137e073b0]
+T[BLOCK, R[(4203, 7540), 1, 452, (4204, 7992)], @0x137e069b0]
+T[BLOCK, R[(7207, 10373), 40, 1, (7247, 10374)], @0x137e08f00]
+T[BLOCK, R[(4204, 7540), 1, 452, (4205, 7992)], @0x137e06670]
+T[BLOCK, R[(4205, 7540), 1, 452, (4206, 7992)], @0x147e13690]
+T[BLOCK, R[(4206, 7540), 1, 452, (4207, 7992)], @0x147e133f0]
+T[BLOCK, R[(4202, 7540), 1, 452, (4203, 7992)], @0x137e07250]
+T[BLOCK, R[(4207, 7540), 1, 452, (4208, 7992)], @0x147e13390]
+T[BLOCK, R[(4201, 7540), 1, 452, (4202, 7992)], @0x137e07410]
+T[BLOCK, R[(4208, 7540), 1, 452, (4209, 7992)], @0x147e11420]
+T[BLOCK, R[(4209, 7540), 1, 452, (4210, 7992)], @0x147e116c0]
+T[BLOCK, R[(4210, 7540), 1, 452, (4211, 7992)], @0x147e0c160]
+T[BLOCK, R[(4211, 7540), 1, 452, (4212, 7992)], @0x147e0ac00]
+T[BLOCK, R[(4213, 7540), 1, 452, (4214, 7992)], @0x147e11fb0]
+T[BLOCK, R[(4214, 7540), 1, 452, (4215, 7992)], @0x147e10c40]
+T[BLOCK, R[(4216, 7540), 1, 452, (4217, 7992)], @0x147e08750]
+T[BLOCK, R[(4217, 7540), 1, 452, (4218, 7992)], @0x147e11970]
+T[BLOCK, R[(4212, 7540), 1, 452, (4213, 7992)], @0x147e0f340]
+T[BLOCK, R[(4218, 7540), 2388, 2834, (6606, 10374)], @0x147e135a0]
+T[BLOCK, R[(4218, 13399), 2388, 1, (6606, 13400)], @0x147e086d0]
+T[BLOCK, R[(860, 8108), 3060, 5292, (3920, 13400)], @0x147e0e490]
+T[BLOCK, R[(3920, 7992), 298, 5408, (4218, 13400)], @0x147e11290]
+T[BLOCK, R[(6606, 7540), 600, 2834, (7206, 10374)], @0x147e08130]
+T[BLOCK, R[(4215, 7540), 1, 452, (4216, 7992)], @0x147e13ae0]
+T[BLOCK, R[(6606, 13399), 601, 1, (7207, 13400)], @0x147e12110]
+T[BLOCK, R[(7206, 10373), 1, 1, (7207, 10374)], @0x147e0b2f0]
+OVERLAP Tiles (0)
+ID = 2 Name = CPU Type = SOFT Global Placement = R[(4491, 2600), 4149, 5392, (8640, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(4197, 2600), 1, 5392, (4198, 7992)], @0x137e08d90]
+T[BLOCK, R[(4200, 2600), 1, 4940, (4201, 7540)], @0x137e07a10]
+T[BLOCK, R[(4201, 2600), 1, 4940, (4202, 7540)], @0x137e07310]
+T[BLOCK, R[(4202, 2600), 1, 4940, (4203, 7540)], @0x137e07120]
+T[BLOCK, R[(4207, 2600), 1, 4940, (4208, 7540)], @0x147e13470]
+T[BLOCK, R[(4208, 2600), 1, 4940, (4209, 7540)], @0x147e0be00]
+T[BLOCK, R[(4206, 2600), 1, 4940, (4207, 7540)], @0x147e0d9e0]
+T[BLOCK, R[(4211, 2600), 1, 4940, (4212, 7540)], @0x147e113e0]
+T[BLOCK, R[(4212, 2600), 1, 4940, (4213, 7540)], @0x147e0a300]
+T[BLOCK, R[(4205, 2600), 1, 4940, (4206, 7540)], @0x137e06610]
+T[BLOCK, R[(4214, 2600), 1, 4940, (4215, 7540)], @0x147e0a0a0]
+T[BLOCK, R[(4215, 2600), 1, 4940, (4216, 7540)], @0x147e10c00]
+T[BLOCK, R[(4204, 2600), 1, 4940, (4205, 7540)], @0x137e06ff0]
+T[BLOCK, R[(4209, 2600), 1, 4940, (4210, 7540)], @0x147e11e80]
+T[BLOCK, R[(4210, 2600), 1, 4940, (4211, 7540)], @0x147e11740]
+T[BLOCK, R[(4216, 2600), 1, 4940, (4217, 7540)], @0x147e139b0]
+T[BLOCK, R[(4213, 2600), 1, 4940, (4214, 7540)], @0x147e11810]
+T[BLOCK, R[(4217, 2600), 1, 4940, (4218, 7540)], @0x147e08540]
+T[BLOCK, R[(4199, 2600), 1, 4940, (4200, 7540)], @0x137e07990]
+T[BLOCK, R[(4203, 2600), 1, 4940, (4204, 7540)], @0x137e06ce0]
+T[BLOCK, R[(4218, 2600), 2988, 4940, (7206, 7540)], @0x147e08500]
+T[BLOCK, R[(4198, 2600), 1, 4940, (4199, 7540)], @0x137e08f70]
+T[BLOCK, R[(7206, 2600), 1434, 5392, (8640, 7992)], @0x147e11b90]
+OVERLAP Tiles (0)
+ID = 3 Name = MOD5 Type = SOFT Global Placement = R[(8645, 786), 4005, 7206, (12650, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(8645, 786), 4005, 7206, (12650, 7992)], @0x147e089f0]
+OVERLAP Tiles (0)
+ID = 4 Name = MOD4 Type = SOFT Global Placement = R[(861, 2604), 3059, 5504, (3920, 8108)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(861, 2604), 3059, 5504, (3920, 8108)], @0x147e08cf0]
+OVERLAP Tiles (0)
+ID = 5 Name = SC Type = SOFT Global Placement = R[(7206, 7993), 1758, 2380, (8964, 10373)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(7206, 7993), 1758, 2380, (8964, 10373)], @0x147e0dcc0]
+OVERLAP Tiles (0)
+ID = 6 Name = BU Type = SOFT Global Placement = R[(7207, 10374), 5443, 3025, (12650, 13399)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (26)
+T[BLOCK, R[(12650, 12630), 1, 769, (12651, 13399)], @0x137e082a0]
+T[BLOCK, R[(10390, 13399), 2260, 1, (12650, 13400)], @0x137e061e0]
+T[BLOCK, R[(6586, 10374), 1, 3025, (6587, 13399)], @0x137e07e60]
+T[BLOCK, R[(9224, 10452), 1166, 1728, (10390, 12180)], @0x137e07530]
+T[BLOCK, R[(6587, 10374), 1, 3025, (6588, 13399)], @0x137e07630]
+T[BLOCK, R[(6589, 10374), 1, 3025, (6590, 13399)], @0x137e06bd0]
+T[BLOCK, R[(6590, 10374), 1, 3025, (6591, 13399)], @0x137e06e50]
+T[BLOCK, R[(6591, 10374), 1, 3025, (6592, 13399)], @0x137e07070]
+T[BLOCK, R[(6592, 10374), 1, 3025, (6593, 13399)], @0x137e06460]
+T[BLOCK, R[(6593, 10374), 1, 3025, (6594, 13399)], @0x147e0da40]
+T[BLOCK, R[(6594, 10374), 1, 3025, (6595, 13399)], @0x147e13710]
+T[BLOCK, R[(6595, 10374), 1, 3025, (6596, 13399)], @0x147e13560]
+T[BLOCK, R[(6596, 10374), 1, 3025, (6597, 13399)], @0x147e11a40]
+T[BLOCK, R[(6597, 10374), 1, 3025, (6598, 13399)], @0x147e0e4f0]
+T[BLOCK, R[(6588, 10374), 1, 3025, (6589, 13399)], @0x137e07290]
+T[BLOCK, R[(6599, 10374), 1, 3025, (6600, 13399)], @0x147e081f0]
+T[BLOCK, R[(6600, 10374), 1, 3025, (6601, 13399)], @0x147e09250]
+T[BLOCK, R[(6601, 10374), 1, 3025, (6602, 13399)], @0x147e132f0]
+T[BLOCK, R[(6602, 10374), 1, 3025, (6603, 13399)], @0x147e0a460]
+T[BLOCK, R[(6603, 10374), 1, 3025, (6604, 13399)], @0x147e08fa0]
+T[BLOCK, R[(6604, 10374), 1, 3025, (6605, 13399)], @0x147e08a30]
+T[BLOCK, R[(6605, 10374), 1, 3025, (6606, 13399)], @0x147e09620]
+T[BLOCK, R[(10390, 10452), 2260, 2947, (12650, 13399)], @0x137e07cc0]
+T[BLOCK, R[(6606, 10374), 2454, 3025, (9060, 13399)], @0x147e11310]
+T[BLOCK, R[(6598, 10374), 1, 3025, (6599, 13399)], @0x147e113a0]
+T[BLOCK, R[(9060, 10374), 164, 1806, (9224, 12180)], @0x147e08cb0]
+OVERLAP Tiles (0)
+ID = 7 Name = DDR0 Type = PREPLACED Global Placement = R[(0, 4500), 860, 2630, (860, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 4500), 860, 2630, (860, 7130)], @0x147e095d0]
+OVERLAP Tiles (0)
+ID = 8 Name = DDR1 Type = PREPLACED Global Placement = R[(0, 10000), 860, 2630, (860, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 10000), 860, 2630, (860, 12630)], @0x147e09a90]
+OVERLAP Tiles (0)
+ID = 9 Name = DDR2 Type = PREPLACED Global Placement = R[(12650, 4500), 860, 2630, (13510, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(12650, 4500), 860, 2630, (13510, 7130)], @0x147e09d10]
+OVERLAP Tiles (0)
+ID = 10 Name = DDR3 Type = PREPLACED Global Placement = R[(12650, 10000), 860, 2630, (13510, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(13167, 10000), 1, 374, (13168, 10374)], @0x137e074f0]
+T[BLOCK, R[(13168, 10000), 1, 374, (13169, 10374)], @0x137e07770]
+T[BLOCK, R[(13170, 10000), 1, 374, (13171, 10374)], @0x137e06b90]
+T[BLOCK, R[(13174, 10000), 1, 374, (13175, 10374)], @0x147e11f10]
+T[BLOCK, R[(13175, 10000), 1, 374, (13176, 10374)], @0x147e11f50]
+T[BLOCK, R[(12650, 10000), 516, 374, (13166, 10374)], @0x137e08b90]
+T[BLOCK, R[(13176, 10000), 1, 374, (13177, 10374)], @0x147e11d20]
+T[BLOCK, R[(13178, 10000), 1, 374, (13179, 10374)], @0x147e11ab0]
+T[BLOCK, R[(13173, 10000), 1, 374, (13174, 10374)], @0x147e11c70]
+T[BLOCK, R[(13179, 10000), 1, 374, (13180, 10374)], @0x147e092b0]
+T[BLOCK, R[(13180, 10000), 1, 374, (13181, 10374)], @0x147e118f0]
+T[BLOCK, R[(13177, 10000), 1, 374, (13178, 10374)], @0x147e0a2c0]
+T[BLOCK, R[(13181, 10000), 1, 374, (13182, 10374)], @0x147e114f0]
+T[BLOCK, R[(13171, 10000), 1, 374, (13172, 10374)], @0x137e06760]
+T[BLOCK, R[(13183, 10000), 1, 374, (13184, 10374)], @0x147e13a30]
+T[BLOCK, R[(13184, 10000), 1, 374, (13185, 10374)], @0x147e112d0]
+T[BLOCK, R[(13169, 10000), 1, 374, (13170, 10374)], @0x137e06e10]
+T[BLOCK, R[(13185, 10000), 1, 374, (13186, 10374)], @0x147e11560]
+T[BLOCK, R[(12650, 10374), 536, 2256, (13186, 12630)], @0x147e13950]
+T[BLOCK, R[(13166, 10000), 1, 374, (13167, 10374)], @0x137e07910]
+T[BLOCK, R[(13172, 10000), 1, 374, (13173, 10374)], @0x137e06350]
+T[BLOCK, R[(13182, 10000), 1, 374, (13183, 10374)], @0x147e12060]
+T[BLOCK, R[(13186, 10000), 324, 2630, (13510, 12630)], @0x147e0a180]
+OVERLAP Tiles (0)
+ID = 11 Name = USB Type = PREPLACED Global Placement = R[(9060, 12180), 1330, 1220, (10390, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(9060, 12180), 1330, 1220, (10390, 13400)], @0x147e09ad0]
+OVERLAP Tiles (0)
+CONN[ x500, DDR0, MOD4 = 1.20975e+06]
+CONN[ x500, DDR1, GPU = 2.22425e+06]
+CONN[ x500, DDR2, MOD5 = 1.92925e+06]
+CONN[ x500, DDR3, NPU = 1.9235e+06]
+CONN[ x1000, DDR3, BU = 4.0335e+06]
+CONN[ x1000, USB, BU = 1.0095e+06]
+CONN[ x200, GPU, SC = 1.0677e+06]
+CONN[ x200, CPU, MOD4 = 817600]
+CONN[ x200, CPU, MOD5 = 1.0272e+06]
+CONN[ x200, NPU, SC = 656000]
+CONN[ x200, SC, CPU = 1.1107e+06]
+Test initail best Floorplan Copy
+12
+0
+12
+ID = 0 Name = NPU Type = SOFT Global Placement = R[(9224, 7992), 4286, 2382, (13510, 10374)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (43)
+T[BLOCK, R[(12650, 7992), 860, 2008, (13510, 10000)], @0x137e0a000]
+T[BLOCK, R[(9224, 7992), 3426, 2440, (12650, 10432)], @0x137e0d780]
+T[BLOCK, R[(9224, 10436), 1166, 1, (10390, 10437)], @0x137e0a240]
+T[BLOCK, R[(10390, 10432), 2260, 1, (12650, 10433)], @0x137e0b860]
+T[BLOCK, R[(10390, 10435), 2260, 1, (12650, 10436)], @0x137e0d360]
+T[BLOCK, R[(10390, 10439), 2260, 1, (12650, 10440)], @0x137e0b080]
+T[BLOCK, R[(9224, 10432), 1166, 1, (10390, 10433)], @0x137e0cdc0]
+T[BLOCK, R[(9224, 10433), 1166, 1, (10390, 10434)], @0x137e0a180]
+T[BLOCK, R[(9224, 10440), 1166, 1, (10390, 10441)], @0x137e0a360]
+T[BLOCK, R[(9224, 10434), 1166, 1, (10390, 10435)], @0x137e0a1e0]
+T[BLOCK, R[(10390, 10434), 2260, 1, (12650, 10435)], @0x137e0d7e0]
+T[BLOCK, R[(9224, 10442), 1166, 1, (10390, 10443)], @0x137e0a420]
+T[BLOCK, R[(9224, 10435), 1166, 1, (10390, 10436)], @0x137e0bbc0]
+T[BLOCK, R[(10390, 10436), 2260, 1, (12650, 10437)], @0x137e0d660]
+T[BLOCK, R[(10390, 10437), 2260, 1, (12650, 10438)], @0x137e0bf20]
+T[BLOCK, R[(9224, 10441), 1166, 1, (10390, 10442)], @0x137e0a3c0]
+T[BLOCK, R[(9224, 10445), 1166, 1, (10390, 10446)], @0x137e0aea0]
+T[BLOCK, R[(9224, 10448), 1166, 1, (10390, 10449)], @0x137e0dae0]
+T[BLOCK, R[(9224, 10437), 1166, 1, (10390, 10438)], @0x137e0da80]
+T[BLOCK, R[(9224, 10438), 1166, 1, (10390, 10439)], @0x137e0a2a0]
+T[BLOCK, R[(10390, 10451), 2260, 1, (12650, 10452)], @0x137e0c760]
+T[BLOCK, R[(10390, 10438), 2260, 1, (12650, 10439)], @0x137e0c640]
+T[BLOCK, R[(9224, 10439), 1166, 1, (10390, 10440)], @0x137e0a300]
+T[BLOCK, R[(10390, 10440), 2260, 1, (12650, 10441)], @0x137e0b500]
+T[BLOCK, R[(10390, 10449), 2260, 1, (12650, 10450)], @0x137e0b0e0]
+T[BLOCK, R[(10390, 10441), 2260, 1, (12650, 10442)], @0x137e0b380]
+T[BLOCK, R[(10390, 10442), 2260, 1, (12650, 10443)], @0x137e0a540]
+T[BLOCK, R[(10390, 10445), 2260, 1, (12650, 10446)], @0x137e0b5c0]
+T[BLOCK, R[(10390, 10443), 2260, 1, (12650, 10444)], @0x137e0cbe0]
+T[BLOCK, R[(9224, 10444), 1166, 1, (10390, 10445)], @0x137e09990]
+T[BLOCK, R[(10390, 10444), 2260, 1, (12650, 10445)], @0x137e0d840]
+T[BLOCK, R[(9224, 10446), 1166, 1, (10390, 10447)], @0x137e0d4e0]
+T[BLOCK, R[(10390, 10446), 2260, 1, (12650, 10447)], @0x137e0be60]
+T[BLOCK, R[(9224, 10443), 1166, 1, (10390, 10444)], @0x137e0a480]
+T[BLOCK, R[(10390, 10447), 2260, 1, (12650, 10448)], @0x137e0baa0]
+T[BLOCK, R[(10390, 10433), 2260, 1, (12650, 10434)], @0x137e0d720]
+T[BLOCK, R[(9224, 10447), 1166, 1, (10390, 10448)], @0x137e0aae0]
+T[BLOCK, R[(10390, 10448), 2260, 1, (12650, 10449)], @0x137e0d8a0]
+T[BLOCK, R[(9224, 10449), 1166, 1, (10390, 10450)], @0x137e0da20]
+T[BLOCK, R[(9224, 10450), 1166, 1, (10390, 10451)], @0x137e0d900]
+T[BLOCK, R[(10390, 10450), 2260, 1, (12650, 10451)], @0x137e0cd60]
+T[BLOCK, R[(9224, 10451), 1166, 1, (10390, 10452)], @0x137e0d960]
+T[BLOCK, R[(9142, 7992), 82, 2382, (9224, 10374)], @0x137e0ca60]
+OVERLAP Tiles (0)
+ID = 1 Name = GPU Type = SOFT Global Placement = R[(861, 8110), 6346, 5290, (7207, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (35)
+T[BLOCK, R[(7206, 10373), 1, 1, (7207, 10374)], @0x137e0c9a0]
+T[BLOCK, R[(6606, 13399), 601, 1, (7207, 13400)], @0x137e0b620]
+T[BLOCK, R[(4215, 7540), 1, 452, (4216, 7992)], @0x137e0a960]
+T[BLOCK, R[(6606, 7540), 600, 2834, (7206, 10374)], @0x137e0c940]
+T[BLOCK, R[(3920, 7992), 298, 5408, (4218, 13400)], @0x137e0d6c0]
+T[BLOCK, R[(4216, 7540), 1, 452, (4217, 7992)], @0x137e0ab40]
+T[BLOCK, R[(4214, 7540), 1, 452, (4215, 7992)], @0x137e0d3c0]
+T[BLOCK, R[(4217, 7540), 1, 452, (4218, 7992)], @0x137e0aa20]
+T[BLOCK, R[(4213, 7540), 1, 452, (4214, 7992)], @0x137e0c040]
+T[BLOCK, R[(4212, 7540), 1, 452, (4213, 7992)], @0x137e0b4a0]
+T[BLOCK, R[(4211, 7540), 1, 452, (4212, 7992)], @0x137e0cac0]
+T[BLOCK, R[(4210, 7540), 1, 452, (4211, 7992)], @0x137e0ade0]
+T[BLOCK, R[(4208, 7540), 1, 452, (4209, 7992)], @0x137e0a4e0]
+T[BLOCK, R[(4201, 7540), 1, 452, (4202, 7992)], @0x137e0ad20]
+T[BLOCK, R[(4207, 7540), 1, 452, (4208, 7992)], @0x137e0b020]
+T[BLOCK, R[(4202, 7540), 1, 452, (4203, 7992)], @0x137e0b140]
+T[BLOCK, R[(4206, 7540), 1, 452, (4207, 7992)], @0x137e0acc0]
+T[BLOCK, R[(4218, 13399), 2388, 1, (6606, 13400)], @0x137e0bc80]
+T[BLOCK, R[(4205, 7540), 1, 452, (4206, 7992)], @0x137e0a660]
+T[BLOCK, R[(4204, 7540), 1, 452, (4205, 7992)], @0x137e0ae40]
+T[BLOCK, R[(4218, 7540), 2388, 2834, (6606, 10374)], @0x137e0b3e0]
+T[BLOCK, R[(7207, 10373), 40, 1, (7247, 10374)], @0x137e0ca00]
+T[BLOCK, R[(4203, 7540), 1, 452, (4204, 7992)], @0x137e0af60]
+T[BLOCK, R[(4200, 7540), 1, 452, (4201, 7992)], @0x137e0d480]
+T[BLOCK, R[(4199, 7540), 1, 452, (4200, 7992)], @0x137e0b1a0]
+T[BLOCK, R[(4218, 10374), 2368, 3025, (6586, 13399)], @0x137e0a8a0]
+T[BLOCK, R[(860, 8108), 3060, 5292, (3920, 13400)], @0x137e0ad80]
+T[BLOCK, R[(4198, 7540), 1, 452, (4199, 7992)], @0x137e0c3a0]
+T[BLOCK, R[(7206, 7992), 40, 1, (7246, 7993)], @0x137e0a0c0]
+T[BLOCK, R[(7207, 13399), 40, 1, (7247, 13400)], @0x137e0b920]
+T[BLOCK, R[(860, 8068), 1, 40, (861, 8108)], @0x137e0b800]
+T[BLOCK, R[(3920, 7952), 277, 40, (4197, 7992)], @0x137e0c8e0]
+T[BLOCK, R[(820, 8108), 40, 1892, (860, 10000)], @0x137e0a5a0]
+T[BLOCK, R[(4209, 7540), 1, 452, (4210, 7992)], @0x137e0b260]
+T[BLOCK, R[(820, 12630), 40, 770, (860, 13400)], @0x137e0c880]
+OVERLAP Tiles (0)
+ID = 2 Name = CPU Type = SOFT Global Placement = R[(4491, 2600), 4149, 5392, (8640, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(7206, 2600), 1434, 5392, (8640, 7992)], @0x137e0c5e0]
+T[BLOCK, R[(4203, 2600), 1, 4940, (4204, 7540)], @0x137e09a60]
+T[BLOCK, R[(4217, 2600), 1, 4940, (4218, 7540)], @0x137e09ee0]
+T[BLOCK, R[(4213, 2600), 1, 4940, (4214, 7540)], @0x137e09dc0]
+T[BLOCK, R[(4216, 2600), 1, 4940, (4217, 7540)], @0x137e09e80]
+T[BLOCK, R[(4210, 2600), 1, 4940, (4211, 7540)], @0x137e09d00]
+T[BLOCK, R[(4209, 2600), 1, 4940, (4210, 7540)], @0x137e09ca0]
+T[BLOCK, R[(4198, 2600), 1, 4940, (4199, 7540)], @0x137e0bb60]
+T[BLOCK, R[(4204, 2600), 1, 4940, (4205, 7540)], @0x137e09ac0]
+T[BLOCK, R[(4205, 2600), 1, 4940, (4206, 7540)], @0x137e09b20]
+T[BLOCK, R[(4211, 2600), 1, 4940, (4212, 7540)], @0x137e09d60]
+T[BLOCK, R[(4206, 2600), 1, 4940, (4207, 7540)], @0x137e09b80]
+T[BLOCK, R[(4199, 2600), 1, 4940, (4200, 7540)], @0x137e0a720]
+T[BLOCK, R[(4208, 2600), 1, 4940, (4209, 7540)], @0x137e09c40]
+T[BLOCK, R[(4207, 2600), 1, 4940, (4208, 7540)], @0x137e09be0]
+T[BLOCK, R[(4212, 2600), 1, 4940, (4213, 7540)], @0x137e0afc0]
+T[BLOCK, R[(4202, 2600), 1, 4940, (4203, 7540)], @0x137e09a00]
+T[BLOCK, R[(4218, 2600), 2988, 4940, (7206, 7540)], @0x137e0d600]
+T[BLOCK, R[(4215, 2600), 1, 4940, (4216, 7540)], @0x137e0aa80]
+T[BLOCK, R[(4201, 2600), 1, 4940, (4202, 7540)], @0x137e089e0]
+T[BLOCK, R[(4214, 2600), 1, 4940, (4215, 7540)], @0x137e09e20]
+T[BLOCK, R[(4200, 2600), 1, 4940, (4201, 7540)], @0x137e0a900]
+T[BLOCK, R[(4197, 2600), 1, 5392, (4198, 7992)], @0x137e0ba40]
+OVERLAP Tiles (0)
+ID = 3 Name = MOD5 Type = SOFT Global Placement = R[(8645, 786), 4005, 7206, (12650, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(8645, 786), 4005, 7206, (12650, 7992)], @0x137e0c400]
+OVERLAP Tiles (0)
+ID = 4 Name = MOD4 Type = SOFT Global Placement = R[(861, 2604), 3059, 5504, (3920, 8108)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(861, 2604), 3059, 5504, (3920, 8108)], @0x137e0b200]
+OVERLAP Tiles (0)
+ID = 5 Name = SC Type = SOFT Global Placement = R[(7206, 7993), 1758, 2380, (8964, 10373)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(7206, 7993), 1758, 2380, (8964, 10373)], @0x137e0c340]
+OVERLAP Tiles (0)
+ID = 6 Name = BU Type = SOFT Global Placement = R[(7207, 10374), 5443, 3025, (12650, 13399)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (26)
+T[BLOCK, R[(9060, 10374), 164, 1806, (9224, 12180)], @0x137e0ac60]
+T[BLOCK, R[(6605, 10374), 1, 3025, (6606, 13399)], @0x137e0c280]
+T[BLOCK, R[(6604, 10374), 1, 3025, (6605, 13399)], @0x137e0a9c0]
+T[BLOCK, R[(6603, 10374), 1, 3025, (6604, 13399)], @0x137e0bb00]
+T[BLOCK, R[(10390, 10452), 2260, 2947, (12650, 13399)], @0x137e0b320]
+T[BLOCK, R[(6602, 10374), 1, 3025, (6603, 13399)], @0x137e0a840]
+T[BLOCK, R[(6601, 10374), 1, 3025, (6602, 13399)], @0x137e0ce80]
+T[BLOCK, R[(6600, 10374), 1, 3025, (6601, 13399)], @0x137e0ce20]
+T[BLOCK, R[(6599, 10374), 1, 3025, (6600, 13399)], @0x137e0c100]
+T[BLOCK, R[(6597, 10374), 1, 3025, (6598, 13399)], @0x137e0c4c0]
+T[BLOCK, R[(6606, 10374), 2454, 3025, (9060, 13399)], @0x137e0b2c0]
+T[BLOCK, R[(6596, 10374), 1, 3025, (6597, 13399)], @0x137e0a7e0]
+T[BLOCK, R[(6595, 10374), 1, 3025, (6596, 13399)], @0x137e0a6c0]
+T[BLOCK, R[(6593, 10374), 1, 3025, (6594, 13399)], @0x137e0c460]
+T[BLOCK, R[(6592, 10374), 1, 3025, (6593, 13399)], @0x137e0c520]
+T[BLOCK, R[(6590, 10374), 1, 3025, (6591, 13399)], @0x137e0d120]
+T[BLOCK, R[(6589, 10374), 1, 3025, (6590, 13399)], @0x137e0c700]
+T[BLOCK, R[(6594, 10374), 1, 3025, (6595, 13399)], @0x137e0bd40]
+T[BLOCK, R[(6587, 10374), 1, 3025, (6588, 13399)], @0x137e0c820]
+T[BLOCK, R[(6598, 10374), 1, 3025, (6599, 13399)], @0x137e0aba0]
+T[BLOCK, R[(6588, 10374), 1, 3025, (6589, 13399)], @0x137e0b680]
+T[BLOCK, R[(9224, 10452), 1166, 1728, (10390, 12180)], @0x137e0cc40]
+T[BLOCK, R[(6591, 10374), 1, 3025, (6592, 13399)], @0x137e0c6a0]
+T[BLOCK, R[(6586, 10374), 1, 3025, (6587, 13399)], @0x137e0d180]
+T[BLOCK, R[(10390, 13399), 2260, 1, (12650, 13400)], @0x137e0bce0]
+T[BLOCK, R[(12650, 12630), 1, 769, (12651, 13399)], @0x137e0b6e0]
+OVERLAP Tiles (0)
+ID = 7 Name = DDR0 Type = PREPLACED Global Placement = R[(0, 4500), 860, 2630, (860, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 4500), 860, 2630, (860, 7130)], @0x137e0c1c0]
+OVERLAP Tiles (0)
+ID = 8 Name = DDR1 Type = PREPLACED Global Placement = R[(0, 10000), 860, 2630, (860, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 10000), 860, 2630, (860, 12630)], @0x137e0be00]
+OVERLAP Tiles (0)
+ID = 9 Name = DDR2 Type = PREPLACED Global Placement = R[(12650, 4500), 860, 2630, (13510, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(12650, 4500), 860, 2630, (13510, 7130)], @0x137e09fa0]
+OVERLAP Tiles (0)
+ID = 10 Name = DDR3 Type = PREPLACED Global Placement = R[(12650, 10000), 860, 2630, (13510, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(13182, 10000), 1, 374, (13183, 10374)], @0x137e0a600]
+T[BLOCK, R[(13172, 10000), 1, 374, (13173, 10374)], @0x137e0d240]
+T[BLOCK, R[(13166, 10000), 1, 374, (13167, 10374)], @0x137e0bda0]
+T[BLOCK, R[(12650, 10374), 536, 2256, (13186, 12630)], @0x137e0bec0]
+T[BLOCK, R[(13169, 10000), 1, 374, (13170, 10374)], @0x137e0d5a0]
+T[BLOCK, R[(13185, 10000), 1, 374, (13186, 10374)], @0x137e0d9c0]
+T[BLOCK, R[(13184, 10000), 1, 374, (13185, 10374)], @0x137e0cee0]
+T[BLOCK, R[(13171, 10000), 1, 374, (13172, 10374)], @0x137e0d300]
+T[BLOCK, R[(13177, 10000), 1, 374, (13178, 10374)], @0x137e0cfa0]
+T[BLOCK, R[(13186, 10000), 324, 2630, (13510, 12630)], @0x137e0cd00]
+T[BLOCK, R[(13180, 10000), 1, 374, (13181, 10374)], @0x137e0b740]
+T[BLOCK, R[(13179, 10000), 1, 374, (13180, 10374)], @0x137e0d000]
+T[BLOCK, R[(13181, 10000), 1, 374, (13182, 10374)], @0x137e0cf40]
+T[BLOCK, R[(13178, 10000), 1, 374, (13179, 10374)], @0x137e0b980]
+T[BLOCK, R[(13183, 10000), 1, 374, (13184, 10374)], @0x137e0c580]
+T[BLOCK, R[(13176, 10000), 1, 374, (13177, 10374)], @0x137e0d060]
+T[BLOCK, R[(13175, 10000), 1, 374, (13176, 10374)], @0x137e0d0c0]
+T[BLOCK, R[(13174, 10000), 1, 374, (13175, 10374)], @0x137e0d1e0]
+T[BLOCK, R[(13170, 10000), 1, 374, (13171, 10374)], @0x137e0d420]
+T[BLOCK, R[(12650, 10000), 516, 374, (13166, 10374)], @0x137e0c7c0]
+T[BLOCK, R[(13168, 10000), 1, 374, (13169, 10374)], @0x137e0d2a0]
+T[BLOCK, R[(13173, 10000), 1, 374, (13174, 10374)], @0x137e0cb20]
+T[BLOCK, R[(13167, 10000), 1, 374, (13168, 10374)], @0x137e0b560]
+OVERLAP Tiles (0)
+ID = 11 Name = USB Type = PREPLACED Global Placement = R[(9060, 12180), 1330, 1220, (10390, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(9060, 12180), 1330, 1220, (10390, 13400)], @0x137e0b9e0]
+OVERLAP Tiles (0)
+CONN[ x500, DDR0, MOD4 = 1.20975e+06]
+CONN[ x500, DDR1, GPU = 2.22425e+06]
+CONN[ x500, DDR2, MOD5 = 1.92925e+06]
+CONN[ x500, DDR3, NPU = 1.9235e+06]
+CONN[ x1000, DDR3, BU = 4.0335e+06]
+CONN[ x1000, USB, BU = 1.0095e+06]
+CONN[ x200, GPU, SC = 1.0677e+06]
+CONN[ x200, CPU, MOD4 = 817600]
+CONN[ x200, CPU, MOD5 = 1.0272e+06]
+CONN[ x200, NPU, SC = 656000]
+CONN[ x200, SC, CPU = 1.1107e+06]
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7009e+07
+Grow: [34mx[0m Fill: [31m0[0m Shrink: [32m5100[0mEnd HPWL = 1.70038e+07
+come in only once
+12
+0
+12
+ID = 0 Name = NPU Type = SOFT Global Placement = R[(9224, 7992), 4286, 2382, (13510, 10374)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (3)
+T[BLOCK, R[(12650, 8024), 860, 1976, (13510, 10000)], @0x137e0f700]
+T[BLOCK, R[(9224, 8024), 3426, 2428, (12650, 10452)], @0x137e0d560]
+T[BLOCK, R[(9144, 8024), 80, 2350, (9224, 10374)], @0x137e0f4c0]
+OVERLAP Tiles (0)
+ID = 1 Name = GPU Type = SOFT Global Placement = R[(861, 8110), 6346, 5290, (7207, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (10)
+T[BLOCK, R[(7206, 7992), 40, 1, (7246, 7993)], @0x137e0d5c0]
+T[BLOCK, R[(820, 8108), 40, 1892, (860, 10000)], @0x137e0d920]
+T[BLOCK, R[(7206, 10373), 41, 1, (7247, 10374)], @0x137e0d500]
+T[BLOCK, R[(4198, 7540), 2388, 5860, (6586, 13400)], @0x137e0d680]
+T[BLOCK, R[(4197, 7992), 1, 5408, (4198, 13400)], @0x137e0f970]
+T[BLOCK, R[(861, 8108), 3059, 5292, (3920, 13400)], @0x137e0d800]
+T[BLOCK, R[(6586, 7540), 620, 2834, (7206, 10374)], @0x137e08ce0]
+T[BLOCK, R[(3920, 7952), 277, 5448, (4197, 13400)], @0x137e0d7a0]
+T[BLOCK, R[(820, 12630), 40, 770, (860, 13400)], @0x137e0d6e0]
+T[BLOCK, R[(860, 8068), 1, 5332, (861, 13400)], @0x137e08740]
+OVERLAP Tiles (0)
+ID = 2 Name = CPU Type = SOFT Global Placement = R[(4491, 2600), 4149, 5392, (8640, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(7206, 2600), 1434, 5392, (8640, 7992)], @0x137e086a0]
+T[BLOCK, R[(4217, 2600), 1, 4940, (4218, 7540)], @0x137e06460]
+T[BLOCK, R[(4213, 2600), 1, 4940, (4214, 7540)], @0x137e06860]
+T[BLOCK, R[(4216, 2600), 1, 4940, (4217, 7540)], @0x137e06100]
+T[BLOCK, R[(4209, 2600), 1, 4940, (4210, 7540)], @0x137e06570]
+T[BLOCK, R[(4204, 2600), 1, 4940, (4205, 7540)], @0x137e07b60]
+T[BLOCK, R[(4199, 2600), 1, 4940, (4200, 7540)], @0x137e0d740]
+T[BLOCK, R[(4215, 2600), 1, 4940, (4216, 7540)], @0x137e07390]
+T[BLOCK, R[(4198, 2600), 1, 4940, (4199, 7540)], @0x137e063b0]
+T[BLOCK, R[(4218, 2600), 2988, 4940, (7206, 7540)], @0x137e08620]
+T[BLOCK, R[(4214, 2600), 1, 4940, (4215, 7540)], @0x137e0d980]
+T[BLOCK, R[(4205, 2600), 1, 4940, (4206, 7540)], @0x137e07290]
+T[BLOCK, R[(4210, 2600), 1, 4940, (4211, 7540)], @0x137e07070]
+T[BLOCK, R[(4206, 2600), 1, 4940, (4207, 7540)], @0x137e0fa30]
+T[BLOCK, R[(4203, 2600), 1, 4940, (4204, 7540)], @0x137e0f7f0]
+T[BLOCK, R[(4211, 2600), 1, 4940, (4212, 7540)], @0x137e085c0]
+T[BLOCK, R[(4208, 2600), 1, 4940, (4209, 7540)], @0x137e08220]
+T[BLOCK, R[(4207, 2600), 1, 4940, (4208, 7540)], @0x137e081e0]
+T[BLOCK, R[(4201, 2600), 1, 4940, (4202, 7540)], @0x137e06ec0]
+T[BLOCK, R[(4212, 2600), 1, 4940, (4213, 7540)], @0x137e070d0]
+T[BLOCK, R[(4200, 2600), 1, 4940, (4201, 7540)], @0x137e067c0]
+T[BLOCK, R[(4202, 2600), 1, 4940, (4203, 7540)], @0x137e0f3a0]
+T[BLOCK, R[(4197, 2600), 1, 5392, (4198, 7992)], @0x137e0f1d0]
+OVERLAP Tiles (0)
+ID = 3 Name = MOD5 Type = SOFT Global Placement = R[(8645, 786), 4005, 7206, (12650, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(8645, 786), 4005, 7206, (12650, 7992)], @0x137e083e0]
+OVERLAP Tiles (0)
+ID = 4 Name = MOD4 Type = SOFT Global Placement = R[(861, 2604), 3059, 5504, (3920, 8108)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(861, 2604), 3059, 5504, (3920, 8108)], @0x137e0f340]
+OVERLAP Tiles (0)
+ID = 5 Name = SC Type = SOFT Global Placement = R[(7206, 7993), 1758, 2380, (8964, 10373)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(7206, 7993), 1758, 2380, (8964, 10373)], @0x137e0d620]
+OVERLAP Tiles (0)
+ID = 6 Name = BU Type = SOFT Global Placement = R[(7207, 10374), 5443, 3025, (12650, 13399)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (5)
+T[BLOCK, R[(9060, 10374), 164, 1806, (9224, 12180)], @0x137e086e0]
+T[BLOCK, R[(9224, 10452), 1166, 1728, (10390, 12180)], @0x137e06f70]
+T[BLOCK, R[(10390, 10452), 2260, 2948, (12650, 13400)], @0x137e08440]
+T[BLOCK, R[(12650, 12630), 1, 770, (12651, 13400)], @0x137e088c0]
+T[BLOCK, R[(6586, 10374), 2474, 3026, (9060, 13400)], @0x137e082c0]
+OVERLAP Tiles (0)
+ID = 7 Name = DDR0 Type = PREPLACED Global Placement = R[(0, 4500), 860, 2630, (860, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 4500), 860, 2630, (860, 7130)], @0x137e0daa0]
+OVERLAP Tiles (0)
+ID = 8 Name = DDR1 Type = PREPLACED Global Placement = R[(0, 10000), 860, 2630, (860, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 10000), 860, 2630, (860, 12630)], @0x137e0f8b0]
+OVERLAP Tiles (0)
+ID = 9 Name = DDR2 Type = PREPLACED Global Placement = R[(12650, 4500), 860, 2630, (13510, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(12650, 4500), 860, 2630, (13510, 7130)], @0x137e073d0]
+OVERLAP Tiles (0)
+ID = 10 Name = DDR3 Type = PREPLACED Global Placement = R[(12650, 10000), 860, 2630, (13510, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(13186, 10000), 324, 2630, (13510, 12630)], @0x137e07610]
+T[BLOCK, R[(13182, 10000), 1, 374, (13183, 10374)], @0x137e0d8c0]
+T[BLOCK, R[(12650, 10374), 536, 2256, (13186, 12630)], @0x137e0f910]
+T[BLOCK, R[(13184, 10000), 1, 374, (13185, 10374)], @0x137e08800]
+T[BLOCK, R[(13169, 10000), 1, 374, (13170, 10374)], @0x137e061a0]
+T[BLOCK, R[(13183, 10000), 1, 374, (13184, 10374)], @0x137e08980]
+T[BLOCK, R[(13185, 10000), 1, 374, (13186, 10374)], @0x137e08500]
+T[BLOCK, R[(13180, 10000), 1, 374, (13181, 10374)], @0x137e0f560]
+T[BLOCK, R[(13179, 10000), 1, 374, (13180, 10374)], @0x137e08380]
+T[BLOCK, R[(13173, 10000), 1, 374, (13174, 10374)], @0x137e08320]
+T[BLOCK, R[(13178, 10000), 1, 374, (13179, 10374)], @0x137e0f500]
+T[BLOCK, R[(13171, 10000), 1, 374, (13172, 10374)], @0x137e08920]
+T[BLOCK, R[(12650, 10000), 516, 374, (13166, 10374)], @0x137e06140]
+T[BLOCK, R[(13176, 10000), 1, 374, (13177, 10374)], @0x137e06200]
+T[BLOCK, R[(13175, 10000), 1, 374, (13176, 10374)], @0x137e0f6a0]
+T[BLOCK, R[(13181, 10000), 1, 374, (13182, 10374)], @0x137e0f460]
+T[BLOCK, R[(13174, 10000), 1, 374, (13175, 10374)], @0x137e0f290]
+T[BLOCK, R[(13166, 10000), 1, 374, (13167, 10374)], @0x137e0f400]
+T[BLOCK, R[(13170, 10000), 1, 374, (13171, 10374)], @0x137e0f230]
+T[BLOCK, R[(13172, 10000), 1, 374, (13173, 10374)], @0x137e0fa90]
+T[BLOCK, R[(13177, 10000), 1, 374, (13178, 10374)], @0x137e0dbc0]
+T[BLOCK, R[(13168, 10000), 1, 374, (13169, 10374)], @0x137e08860]
+T[BLOCK, R[(13167, 10000), 1, 374, (13168, 10374)], @0x137e064a0]
+OVERLAP Tiles (0)
+ID = 11 Name = USB Type = PREPLACED Global Placement = R[(9060, 12180), 1330, 1220, (10390, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(9060, 12180), 1330, 1220, (10390, 13400)], @0x137e0db60]
+OVERLAP Tiles (0)
+CONN[ x500, DDR0, MOD4 = 1.20975e+06]
+CONN[ x500, DDR1, GPU = 2.22425e+06]
+CONN[ x500, DDR2, MOD5 = 1.92925e+06]
+CONN[ x500, DDR3, NPU = 1.915e+06]
+CONN[ x1000, DDR3, BU = 4.0335e+06]
+CONN[ x1000, USB, BU = 1.0095e+06]
+CONN[ x200, GPU, SC = 1.0677e+06]
+CONN[ x200, CPU, MOD4 = 817600]
+CONN[ x200, CPU, MOD5 = 1.0272e+06]
+CONN[ x200, NPU, SC = 659400]
+CONN[ x200, SC, CPU = 1.1107e+06]
+ Grow: [32m123000[0m Fill: [31m0[0m Shrink: [32m126000[0mEnd HPWL = 1.67548e+07
+ Grow: [32m589600[0m Fill: [31m0[0m Shrink: [32m1600[0mEnd HPWL = 1.61636e+07
+ Grow: [32m129150[0m Fill: [31m0[0m Shrink: [32m57900[0mEnd HPWL = 1.59766e+07
+ Grow: [32m5000[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.59716e+07
+ Grow: [32m57500[0m Fill: [31m0[0m Shrink: [32m11200[0mEnd HPWL = 1.59029e+07
+Iteration 1 Current HPWL = 1.59029e+07[32m +-1.10605e+06[0m
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.59029e+07
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.59029e+07
+Grow: [34mx[0m Fill: [31m0[0m Shrink: [32m4500[0mEnd HPWL = 1.58984e+07
+ Grow: [32m5600[0m Fill: [31m0[0m Shrink: [32m1000[0mEnd HPWL = 1.58918e+07
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.58918e+07
+ Grow: [32m400[0m Fill: [31m0[0m Shrink: [31m-46100[0mEnd HPWL = 1.59375e+07
+ Grow: [32m25200[0m Fill: [31m0[0m Shrink: [32m56600[0mEnd HPWL = 1.58557e+07
+Iteration 2 Current HPWL = 1.58557e+07[32m +-47200[0m
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.58557e+07
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.58557e+07
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.58557e+07
+ Grow: [32m35700[0m Fill: [31m0[0m Shrink: [32m2100[0mEnd HPWL = 1.58179e+07
+Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.58179e+07
+ Grow: [31m-133700[0m Fill: [31m0[0m Shrink: [32m600[0mEnd HPWL = 1.5951e+07
+ Grow: [32m34800[0m Fill: [31m0[0m Shrink: [31m0[0mEnd HPWL = 1.59162e+07
+Last out stage
+12
+0
+12
+ID = 0 Name = NPU Type = SOFT Global Placement = R[(9224, 7992), 4286, 2382, (13510, 10374)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (3)
+T[BLOCK, R[(9144, 8024), 80, 2350, (9224, 10374)], @0x137e0f790]
+T[BLOCK, R[(9224, 8024), 3426, 2428, (12650, 10452)], @0x137e06b50]
+T[BLOCK, R[(12650, 8024), 860, 1976, (13510, 10000)], @0x137e0f190]
+OVERLAP Tiles (0)
+ID = 1 Name = GPU Type = SOFT Global Placement = R[(861, 8110), 6346, 5290, (7207, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (5)
+T[BLOCK, R[(3602, 7548), 2783, 5852, (6385, 13400)], @0x147e0a850]
+T[BLOCK, R[(860, 8108), 2742, 5292, (3602, 13400)], @0x147e13900]
+T[BLOCK, R[(0, 7548), 859, 2452, (859, 10000)], @0x137e0e6c0]
+T[BLOCK, R[(859, 8108), 1, 1892, (860, 10000)], @0x137e08ca0]
+T[BLOCK, R[(0, 12630), 860, 770, (860, 13400)], @0x137e07fa0]
+OVERLAP Tiles (0)
+ID = 2 Name = CPU Type = SOFT Global Placement = R[(4491, 2600), 4149, 5392, (8640, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (8)
+T[BLOCK, R[(6385, 156), 1525, 7470, (7910, 7626)], @0x147e0a660]
+T[BLOCK, R[(7910, 156), 743, 9456, (8653, 9612)], @0x147e139f0]
+T[BLOCK, R[(8685, 9426), 95, 186, (8780, 9612)], @0x147e08840]
+T[BLOCK, R[(8653, 9422), 32, 190, (8685, 9612)], @0x147e0a3e0]
+T[BLOCK, R[(8670, 9394), 1, 4, (8671, 9398)], @0x147e09690]
+T[BLOCK, R[(4051, 156), 2334, 7392, (6385, 7548)], @0x147e13990]
+T[BLOCK, R[(8653, 156), 127, 640, (8780, 796)], @0x147e080b0]
+T[BLOCK, R[(8653, 9392), 17, 6, (8670, 9398)], @0x147e0a4f0]
+OVERLAP Tiles (0)
+ID = 3 Name = MOD5 Type = SOFT Global Placement = R[(8645, 786), 4005, 7206, (12650, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (8)
+T[BLOCK, R[(8653, 9398), 18, 24, (8671, 9422)], @0x147e11da0]
+T[BLOCK, R[(8685, 796), 459, 8630, (9144, 9426)], @0x147e0a0c0]
+T[BLOCK, R[(8670, 796), 1, 8598, (8671, 9394)], @0x147e08fa0]
+T[BLOCK, R[(8653, 796), 17, 8596, (8670, 9392)], @0x147e09590]
+T[BLOCK, R[(9144, 796), 3506, 7228, (12650, 8024)], @0x147e09cd0]
+T[BLOCK, R[(8671, 796), 14, 8626, (8685, 9422)], @0x147e11cb0]
+T[BLOCK, R[(12650, 796), 860, 3704, (13510, 4500)], @0x147e0bcd0]
+T[BLOCK, R[(12650, 7130), 860, 894, (13510, 8024)], @0x137e062b0]
+OVERLAP Tiles (0)
+ID = 4 Name = MOD4 Type = SOFT Global Placement = R[(861, 2604), 3059, 5504, (3920, 8108)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (4)
+T[BLOCK, R[(0, 2672), 860, 1828, (860, 4500)], @0x137e07120]
+T[BLOCK, R[(0, 7130), 859, 418, (859, 7548)], @0x137e0c240]
+T[BLOCK, R[(860, 2672), 2742, 5436, (3602, 8108)], @0x137e066e0]
+T[BLOCK, R[(859, 7130), 1, 978, (860, 8108)], @0x137e07990]
+OVERLAP Tiles (0)
+ID = 5 Name = SC Type = SOFT Global Placement = R[(7206, 7993), 1758, 2380, (8964, 10373)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (3)
+T[BLOCK, R[(7910, 9612), 36, 762, (7946, 10374)], @0x147e0aca0]
+T[BLOCK, R[(6385, 7690), 201, 3000, (6586, 10690)], @0x147e0bb30]
+T[BLOCK, R[(6586, 7690), 1324, 2684, (7910, 10374)], @0x147e0a530]
+OVERLAP Tiles (0)
+ID = 6 Name = BU Type = SOFT Global Placement = R[(7207, 10374), 5443, 3025, (12650, 13399)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (5)
+T[BLOCK, R[(6586, 10374), 2474, 3026, (9060, 13400)], @0x137e06e50]
+T[BLOCK, R[(12650, 12630), 1, 770, (12651, 13400)], @0x137e07f60]
+T[BLOCK, R[(10390, 10452), 2260, 2948, (12650, 13400)], @0x137e06ab0]
+T[BLOCK, R[(9224, 10452), 1166, 1728, (10390, 12180)], @0x137e07530]
+T[BLOCK, R[(9060, 10374), 164, 1806, (9224, 12180)], @0x147e08cb0]
+OVERLAP Tiles (0)
+ID = 7 Name = DDR0 Type = PREPLACED Global Placement = R[(0, 4500), 860, 2630, (860, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 4500), 860, 2630, (860, 7130)], @0x147e095d0]
+OVERLAP Tiles (0)
+ID = 8 Name = DDR1 Type = PREPLACED Global Placement = R[(0, 10000), 860, 2630, (860, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 10000), 860, 2630, (860, 12630)], @0x147e09a90]
+OVERLAP Tiles (0)
+ID = 9 Name = DDR2 Type = PREPLACED Global Placement = R[(12650, 4500), 860, 2630, (13510, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(12650, 4500), 860, 2630, (13510, 7130)], @0x147e09d10]
+OVERLAP Tiles (0)
+ID = 10 Name = DDR3 Type = PREPLACED Global Placement = R[(12650, 10000), 860, 2630, (13510, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(13167, 10000), 1, 374, (13168, 10374)], @0x137e074f0]
+T[BLOCK, R[(13168, 10000), 1, 374, (13169, 10374)], @0x137e07770]
+T[BLOCK, R[(13170, 10000), 1, 374, (13171, 10374)], @0x137e06b90]
+T[BLOCK, R[(13174, 10000), 1, 374, (13175, 10374)], @0x147e11f10]
+T[BLOCK, R[(13175, 10000), 1, 374, (13176, 10374)], @0x147e11f50]
+T[BLOCK, R[(12650, 10000), 516, 374, (13166, 10374)], @0x137e08b90]
+T[BLOCK, R[(13176, 10000), 1, 374, (13177, 10374)], @0x147e11d20]
+T[BLOCK, R[(13178, 10000), 1, 374, (13179, 10374)], @0x147e11ab0]
+T[BLOCK, R[(13173, 10000), 1, 374, (13174, 10374)], @0x147e11c70]
+T[BLOCK, R[(13179, 10000), 1, 374, (13180, 10374)], @0x147e092b0]
+T[BLOCK, R[(13180, 10000), 1, 374, (13181, 10374)], @0x147e118f0]
+T[BLOCK, R[(13177, 10000), 1, 374, (13178, 10374)], @0x147e0a2c0]
+T[BLOCK, R[(13181, 10000), 1, 374, (13182, 10374)], @0x147e114f0]
+T[BLOCK, R[(13171, 10000), 1, 374, (13172, 10374)], @0x137e06760]
+T[BLOCK, R[(13183, 10000), 1, 374, (13184, 10374)], @0x147e13a30]
+T[BLOCK, R[(13184, 10000), 1, 374, (13185, 10374)], @0x147e112d0]
+T[BLOCK, R[(13169, 10000), 1, 374, (13170, 10374)], @0x137e06e10]
+T[BLOCK, R[(13185, 10000), 1, 374, (13186, 10374)], @0x147e11560]
+T[BLOCK, R[(12650, 10374), 536, 2256, (13186, 12630)], @0x147e13950]
+T[BLOCK, R[(13166, 10000), 1, 374, (13167, 10374)], @0x137e07910]
+T[BLOCK, R[(13172, 10000), 1, 374, (13173, 10374)], @0x137e06350]
+T[BLOCK, R[(13182, 10000), 1, 374, (13183, 10374)], @0x147e12060]
+T[BLOCK, R[(13186, 10000), 324, 2630, (13510, 12630)], @0x147e0a180]
+OVERLAP Tiles (0)
+ID = 11 Name = USB Type = PREPLACED Global Placement = R[(9060, 12180), 1330, 1220, (10390, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(9060, 12180), 1330, 1220, (10390, 13400)], @0x147e09ad0]
+OVERLAP Tiles (0)
+CONN[ x500, DDR0, MOD4 = 1.20975e+06]
+CONN[ x500, DDR1, GPU = 2.22425e+06]
+CONN[ x500, DDR2, MOD5 = 1.92925e+06]
+CONN[ x500, DDR3, NPU = 1.915e+06]
+CONN[ x1000, DDR3, BU = 4.0335e+06]
+CONN[ x1000, USB, BU = 1.0095e+06]
+CONN[ x200, GPU, SC = 1.0677e+06]
+CONN[ x200, CPU, MOD4 = 817600]
+CONN[ x200, CPU, MOD5 = 1.0272e+06]
+CONN[ x200, NPU, SC = 659400]
+CONN[ x200, SC, CPU = 1.1107e+06]
+after copy
+12
+0
+12
+ID = 0 Name = NPU Type = SOFT Global Placement = R[(9224, 7992), 4286, 2382, (13510, 10374)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (3)
+T[BLOCK, R[(12650, 8024), 860, 1976, (13510, 10000)], @0x137e0f700]
+T[BLOCK, R[(9224, 8024), 3426, 2428, (12650, 10452)], @0x137e0d560]
+T[BLOCK, R[(9144, 8024), 80, 2350, (9224, 10374)], @0x137e0f4c0]
+OVERLAP Tiles (0)
+ID = 1 Name = GPU Type = SOFT Global Placement = R[(861, 8110), 6346, 5290, (7207, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (10)
+T[BLOCK, R[(7206, 7992), 40, 1, (7246, 7993)], @0x137e0d5c0]
+T[BLOCK, R[(820, 8108), 40, 1892, (860, 10000)], @0x137e0d920]
+T[BLOCK, R[(7206, 10373), 41, 1, (7247, 10374)], @0x137e0d500]
+T[BLOCK, R[(4198, 7540), 2388, 5860, (6586, 13400)], @0x137e0d680]
+T[BLOCK, R[(4197, 7992), 1, 5408, (4198, 13400)], @0x137e0f970]
+T[BLOCK, R[(861, 8108), 3059, 5292, (3920, 13400)], @0x137e0d800]
+T[BLOCK, R[(6586, 7540), 620, 2834, (7206, 10374)], @0x137e08ce0]
+T[BLOCK, R[(3920, 7952), 277, 5448, (4197, 13400)], @0x137e0d7a0]
+T[BLOCK, R[(820, 12630), 40, 770, (860, 13400)], @0x137e0d6e0]
+T[BLOCK, R[(860, 8068), 1, 5332, (861, 13400)], @0x137e08740]
+OVERLAP Tiles (0)
+ID = 2 Name = CPU Type = SOFT Global Placement = R[(4491, 2600), 4149, 5392, (8640, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(7206, 2600), 1434, 5392, (8640, 7992)], @0x137e086a0]
+T[BLOCK, R[(4217, 2600), 1, 4940, (4218, 7540)], @0x137e06460]
+T[BLOCK, R[(4213, 2600), 1, 4940, (4214, 7540)], @0x137e06860]
+T[BLOCK, R[(4216, 2600), 1, 4940, (4217, 7540)], @0x137e06100]
+T[BLOCK, R[(4209, 2600), 1, 4940, (4210, 7540)], @0x137e06570]
+T[BLOCK, R[(4204, 2600), 1, 4940, (4205, 7540)], @0x137e07b60]
+T[BLOCK, R[(4199, 2600), 1, 4940, (4200, 7540)], @0x137e0d740]
+T[BLOCK, R[(4215, 2600), 1, 4940, (4216, 7540)], @0x137e07390]
+T[BLOCK, R[(4198, 2600), 1, 4940, (4199, 7540)], @0x137e063b0]
+T[BLOCK, R[(4218, 2600), 2988, 4940, (7206, 7540)], @0x137e08620]
+T[BLOCK, R[(4214, 2600), 1, 4940, (4215, 7540)], @0x137e0d980]
+T[BLOCK, R[(4205, 2600), 1, 4940, (4206, 7540)], @0x137e07290]
+T[BLOCK, R[(4210, 2600), 1, 4940, (4211, 7540)], @0x137e07070]
+T[BLOCK, R[(4206, 2600), 1, 4940, (4207, 7540)], @0x137e0fa30]
+T[BLOCK, R[(4203, 2600), 1, 4940, (4204, 7540)], @0x137e0f7f0]
+T[BLOCK, R[(4211, 2600), 1, 4940, (4212, 7540)], @0x137e085c0]
+T[BLOCK, R[(4208, 2600), 1, 4940, (4209, 7540)], @0x137e08220]
+T[BLOCK, R[(4207, 2600), 1, 4940, (4208, 7540)], @0x137e081e0]
+T[BLOCK, R[(4201, 2600), 1, 4940, (4202, 7540)], @0x137e06ec0]
+T[BLOCK, R[(4212, 2600), 1, 4940, (4213, 7540)], @0x137e070d0]
+T[BLOCK, R[(4200, 2600), 1, 4940, (4201, 7540)], @0x137e067c0]
+T[BLOCK, R[(4202, 2600), 1, 4940, (4203, 7540)], @0x137e0f3a0]
+T[BLOCK, R[(4197, 2600), 1, 5392, (4198, 7992)], @0x137e0f1d0]
+OVERLAP Tiles (0)
+ID = 3 Name = MOD5 Type = SOFT Global Placement = R[(8645, 786), 4005, 7206, (12650, 7992)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(8645, 786), 4005, 7206, (12650, 7992)], @0x137e083e0]
+OVERLAP Tiles (0)
+ID = 4 Name = MOD4 Type = SOFT Global Placement = R[(861, 2604), 3059, 5504, (3920, 8108)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(861, 2604), 3059, 5504, (3920, 8108)], @0x137e0f340]
+OVERLAP Tiles (0)
+ID = 5 Name = SC Type = SOFT Global Placement = R[(7206, 7993), 1758, 2380, (8964, 10373)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(7206, 7993), 1758, 2380, (8964, 10373)], @0x137e0d620]
+OVERLAP Tiles (0)
+ID = 6 Name = BU Type = SOFT Global Placement = R[(7207, 10374), 5443, 3025, (12650, 13399)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (5)
+T[BLOCK, R[(9060, 10374), 164, 1806, (9224, 12180)], @0x137e086e0]
+T[BLOCK, R[(9224, 10452), 1166, 1728, (10390, 12180)], @0x137e06f70]
+T[BLOCK, R[(10390, 10452), 2260, 2948, (12650, 13400)], @0x137e08440]
+T[BLOCK, R[(12650, 12630), 1, 770, (12651, 13400)], @0x137e088c0]
+T[BLOCK, R[(6586, 10374), 2474, 3026, (9060, 13400)], @0x137e082c0]
+OVERLAP Tiles (0)
+ID = 7 Name = DDR0 Type = PREPLACED Global Placement = R[(0, 4500), 860, 2630, (860, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 4500), 860, 2630, (860, 7130)], @0x137e0daa0]
+OVERLAP Tiles (0)
+ID = 8 Name = DDR1 Type = PREPLACED Global Placement = R[(0, 10000), 860, 2630, (860, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(0, 10000), 860, 2630, (860, 12630)], @0x137e0f8b0]
+OVERLAP Tiles (0)
+ID = 9 Name = DDR2 Type = PREPLACED Global Placement = R[(12650, 4500), 860, 2630, (13510, 7130)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(12650, 4500), 860, 2630, (13510, 7130)], @0x137e073d0]
+OVERLAP Tiles (0)
+ID = 10 Name = DDR3 Type = PREPLACED Global Placement = R[(12650, 10000), 860, 2630, (13510, 12630)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (23)
+T[BLOCK, R[(13186, 10000), 324, 2630, (13510, 12630)], @0x137e07610]
+T[BLOCK, R[(13182, 10000), 1, 374, (13183, 10374)], @0x137e0d8c0]
+T[BLOCK, R[(12650, 10374), 536, 2256, (13186, 12630)], @0x137e0f910]
+T[BLOCK, R[(13184, 10000), 1, 374, (13185, 10374)], @0x137e08800]
+T[BLOCK, R[(13169, 10000), 1, 374, (13170, 10374)], @0x137e061a0]
+T[BLOCK, R[(13183, 10000), 1, 374, (13184, 10374)], @0x137e08980]
+T[BLOCK, R[(13185, 10000), 1, 374, (13186, 10374)], @0x137e08500]
+T[BLOCK, R[(13180, 10000), 1, 374, (13181, 10374)], @0x137e0f560]
+T[BLOCK, R[(13179, 10000), 1, 374, (13180, 10374)], @0x137e08380]
+T[BLOCK, R[(13173, 10000), 1, 374, (13174, 10374)], @0x137e08320]
+T[BLOCK, R[(13178, 10000), 1, 374, (13179, 10374)], @0x137e0f500]
+T[BLOCK, R[(13171, 10000), 1, 374, (13172, 10374)], @0x137e08920]
+T[BLOCK, R[(12650, 10000), 516, 374, (13166, 10374)], @0x137e06140]
+T[BLOCK, R[(13176, 10000), 1, 374, (13177, 10374)], @0x137e06200]
+T[BLOCK, R[(13175, 10000), 1, 374, (13176, 10374)], @0x137e0f6a0]
+T[BLOCK, R[(13181, 10000), 1, 374, (13182, 10374)], @0x137e0f460]
+T[BLOCK, R[(13174, 10000), 1, 374, (13175, 10374)], @0x137e0f290]
+T[BLOCK, R[(13166, 10000), 1, 374, (13167, 10374)], @0x137e0f400]
+T[BLOCK, R[(13170, 10000), 1, 374, (13171, 10374)], @0x137e0f230]
+T[BLOCK, R[(13172, 10000), 1, 374, (13173, 10374)], @0x137e0fa90]
+T[BLOCK, R[(13177, 10000), 1, 374, (13178, 10374)], @0x137e0dbc0]
+T[BLOCK, R[(13168, 10000), 1, 374, (13169, 10374)], @0x137e08860]
+T[BLOCK, R[(13167, 10000), 1, 374, (13168, 10374)], @0x137e064a0]
+OVERLAP Tiles (0)
+ID = 11 Name = USB Type = PREPLACED Global Placement = R[(9060, 12180), 1330, 1220, (10390, 13400)]
+Aspect Ratio: 0.5 ~ 2, Utilization Min = 0.8
+BLOCK Tiles (1)
+T[BLOCK, R[(9060, 12180), 1330, 1220, (10390, 13400)], @0x137e0db60]
+OVERLAP Tiles (0)
+CONN[ x500, DDR0, MOD4 = 1.20975e+06]
+CONN[ x500, DDR1, GPU = 2.22425e+06]
+CONN[ x500, DDR2, MOD5 = 1.92925e+06]
+CONN[ x500, DDR3, NPU = 1.915e+06]
+CONN[ x1000, DDR3, BU = 4.0335e+06]
+CONN[ x1000, USB, BU = 1.0095e+06]
+CONN[ x200, GPU, SC = 1.0677e+06]
+CONN[ x200, CPU, MOD4 = 817600]
+CONN[ x200, CPU, MOD5 = 1.0272e+06]
+CONN[ x200, NPU, SC = 659400]
+CONN[ x200, SC, CPU = 1.1107e+06]
+Timing Report
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ Stage                     │     Runtime (s)      |            HPWL            |       Overlap        ║
+╟───────────────────────────|──────────────────────|────────────────────────────|──────────────────────╢
+║ Global Floorplan          │       0.218 (11.93%) │    16680040.83 (    -    ) │  1.4701% (    -    ) ║
+║ Infrastructure Building   │       0.001 ( 0.05%) │    16680600.00 (+ 0.0034%) │  2.7178% (+84.8703%) ║
+║ Primitive Overlap Removal │       0.000 ( 0.00%) │    16680600.00 (    -    ) │  2.7146% (- 0.1163%) ║
+║ DFSL Legaliser            │       0.192 (10.50%) │    17008950.00 (+ 1.9685%) │  0.0000% (-100.0000% ║
+║ Refine Engine             │       1.417 (77.52%) │    17003850.00 (- 0.0300%) │  0.0000% (    -    ) ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+[33mProgram Terminate successfully[0m

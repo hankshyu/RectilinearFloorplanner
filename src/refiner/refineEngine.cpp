@@ -22,14 +22,20 @@ RefineEngine::RefineEngine(Floorplan *floorplan){
     std::sort(rectConnOrder.begin(), rectConnOrder.end(), [&](Rectilinear *a, Rectilinear *b){return rectConnWeightSum[a] > rectConnWeightSum[b];});
 }
 
-void RefineEngine::refine() const {
+Floorplan *RefineEngine::refine(){
     bool hasMovement = true;
-	int movementMOst = 25;
-	double hpwl = fp->calculateHPWL();
-	int iteration = 0;
+	int iterationCounter = 0;
+	double initialHPWL = fp->calculateHPWL();
+
+	double hpwlDeltaRecord[3] = {-1, -2, -3};
+
+	double bestHPWL = initialHPWL;
+	Floorplan *bestFloorplan = new Floorplan(*fp);
+
+	double iterationHPWLRecord = initialHPWL;
     while(hasMovement){
         hasMovement = false;
-
+		
         for(int eCand = 0; eCand < rectConnOrder.size(); ++eCand){
             Rectilinear *improveTarget = rectConnOrder[eCand];
 			// std::cout << "[Enhancer] Picked target: " << improveTarget->getName() << std::endl;
@@ -40,18 +46,43 @@ void RefineEngine::refine() const {
 			// std::cout << improveTarget->getName() << " Enhance Success? " << enhanceResult << std::endl;
 
             if(enhanceResult){
-                hasMovement = true;
-            }
-        }
-		double currenthpwl = fp->calculateHPWL();
-		std::cout << "Iteration " << ++iteration << " Current HPwL = " << currenthpwl;
-		if((hpwl - currenthpwl) > 0) std::cout << GREEN << " +" << (hpwl - currenthpwl)<< COLORRST << std::endl;
-		else std::cout << " " << RED  << (hpwl - currenthpwl) << COLORRST << std::endl;
+				hasMovement = true;
+				double currenthpwl = fp->calculateHPWL();
+				if(currenthpwl < bestHPWL){
+					bestHPWL = currenthpwl;
+					delete bestFloorplan;
+					bestFloorplan = new Floorplan(*fp);
 
-		hpwl = currenthpwl;
-		// break;
-		if(movementMOst -- < 0) break;
+				}
+			}
+        }
+
+		double doneIterationHPWL = fp->calculateHPWL();
+		double iterationDelta = doneIterationHPWL - iterationHPWLRecord;
+		iterationHPWLRecord = doneIterationHPWL;
+
+		// terminate if continuouse 0 improvement for 3 cycles;
+		bool badGrow = (iterationDelta > 0);
+		bool continuousNoGrow = (iterationDelta == 0) && (hpwlDeltaRecord[0] == 0) && (hpwlDeltaRecord[1] == 0);
+		bool oscillationDetected = (iterationDelta == hpwlDeltaRecord[1]) && (hpwlDeltaRecord[0] == hpwlDeltaRecord[2]);
+		if(badGrow || continuousNoGrow || oscillationDetected) break;
+		
+
+		// terminate if oscilation detected
+
+		hpwlDeltaRecord[2] = hpwlDeltaRecord[1];
+		hpwlDeltaRecord[1] = hpwlDeltaRecord[0];
+		hpwlDeltaRecord[0] = iterationDelta;
+
+		std::cout << "Iteration " << iterationCounter + 1 << " Current HPWL = " << doneIterationHPWL;
+		if(hpwlDeltaRecord[0] < 0) std::cout << GREEN << " +" << (hpwlDeltaRecord[0])<< COLORRST << std::endl;
+		else std::cout << " " << RED  << (hpwlDeltaRecord[0]) << COLORRST << std::endl;
+
+
+		if((++iterationCounter) == REFINE_MAX_ITERATION) break;
     }
+	return bestFloorplan;
+
 }
 
 bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
@@ -77,8 +108,6 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 		}
 	}
 	
-	
-
 	fillBoundingBox(rect);
 	double hpwl2 = fp->calculateHPWL();
 	double imp2 = hpwl1 - hpwl2;
@@ -272,17 +301,26 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 		// std::cout<< "Refine by growing " << rect->getName() << " mometum" << momentum << std::endl;
 		keepMoving = false;
 
-		Cord rectOptimalCentre = fp->calculateOptimalCentre(rect);
-		double rectBBCentreX, rectBBCentreY;
-		Rectangle rectBB = rect->calculateBoundingBox();
-		
-		rec::calculateCentre(rectBB, rectBBCentreX, rectBBCentreY);
-		Cord BBCentre = Cord(len_t(rectBBCentreX), len_t(rectBBCentreY));
+		sector rectTowardSector;
+		if(!REFINE_USE_GRADIENT_GROW){
+			Cord rectOptimalCentre = fp->calculateOptimalCentre(rect);
+			double rectBBCentreX, rectBBCentreY;
+			Rectangle rectBB = rect->calculateBoundingBox();
+			
+			rec::calculateCentre(rectBB, rectBBCentreX, rectBBCentreY);
+			Cord BBCentre = Cord(len_t(rectBBCentreX), len_t(rectBBCentreY));
 
-		EVector rectToward(BBCentre, rectOptimalCentre);
-		angle_t rectTowardAngle = rectToward.calculateDirection();
-		
-		sector rectTowardSector = translateAngleToSector(rectTowardAngle);
+			EVector rectToward(BBCentre, rectOptimalCentre);
+			angle_t rectTowardAngle = rectToward.calculateDirection();
+			rectTowardSector = translateAngleToSector(rectTowardAngle);
+
+		}else{
+			EVector gradient;
+			if(!fp->calculateRectilinearGradient(rect, gradient)) return false;
+			rectTowardSector = translateAngleToSector(gradient.calculateDirection());
+
+		}
+
 
 		double beforehpwl = fp->calculateHPWL();	
 		// std::cout << std::endl;
@@ -1834,6 +1872,9 @@ std::unordered_map<Rectilinear *, DoughnutPolygonSet> &affectedNeighbors) const{
 
 bool RefineEngine::forecastGrowthBenefits(Rectilinear *rect, DoughnutPolygonSet &currentRectDPS,
 std::unordered_map<Rectilinear *, DoughnutPolygonSet> &affectedNeighbors) const {
+
+	// for testing 
+	// return true;
 	double originalHPWL = fp->calculateHPWL();	
 	double afterHPWL = 0;
 
@@ -1922,23 +1963,35 @@ bool RefineEngine::refineByTrimming(Rectilinear *rect) const {
 		
 		keepMoving = false;
 
-		Cord rectOptimalCentre = fp->calculateOptimalCentre(rect);
-		// std::cout << "optimal centre at: " << rectOptimalCentre;
-		double rectBBCentreX, rectBBCentreY;
-		Rectangle rectBB = rect->calculateBoundingBox();
-		
-		rec::calculateCentre(rectBB, rectBBCentreX, rectBBCentreY);
-		FCord rectBBCentre (rectBBCentreX, rectBBCentreY);
-		// std::cout << ", now bb centre = "<< rectBBCentre << std::endl;
+		sector rectTowardSector;
 
-		EVector rectToward(rectBBCentre, rectOptimalCentre);
-		// std::cout << rectToward << std::endl;
-		angle_t rectTowardAngle = rectToward.calculateDirection();
-		// change the angle from toward to behind, for trimming
-		rectTowardAngle = flipAngle(rectTowardAngle);
-		// std::cout << ", Trimming Vector = " << rectTowardAngle;
+		if(!REFINE_USE_GRADIENT_SHRINK){
+			Cord rectOptimalCentre = fp->calculateOptimalCentre(rect);
+			// std::cout << "optimal centre at: " << rectOptimalCentre;
+			double rectBBCentreX, rectBBCentreY;
+			Rectangle rectBB = rect->calculateBoundingBox();
+			
+			rec::calculateCentre(rectBB, rectBBCentreX, rectBBCentreY);
+			FCord rectBBCentre (rectBBCentreX, rectBBCentreY);
+			// std::cout << ", now bb centre = "<< rectBBCentre << std::endl;
+
+			EVector rectToward(rectBBCentre, rectOptimalCentre);
+			// std::cout << rectToward << std::endl;
+			angle_t rectTowardAngle = rectToward.calculateDirection();
+			// change the angle from toward to behind, for trimming
+			rectTowardAngle = flipAngle(rectTowardAngle);
+			std::cout << ", Trimming Vector = " << rectTowardAngle;
+			rectTowardSector = translateAngleToSector(rectTowardAngle);
+
+		}else{
+			EVector gradient;
+			if(!fp->calculateRectilinearGradient(rect, gradient)) return false;
+			rectTowardSector = translateAngleToSector(flipAngle(gradient.calculateDirection()));
+
+		}
+
+
 		
-		sector rectTowardSector = translateAngleToSector(rectTowardAngle);
 		// std::cout << "Selected Sector = " << rectTowardSector << std::endl;
 		// std::cout << "before trim print:, show all connections: " << std::endl;
 		// for(Connection * const &cn : fp->connectionMap[rect]){
@@ -2355,24 +2408,3 @@ angle_t RefineEngine::calculateBestAngle(Rectilinear *rect) const {
     return directionVector.calculateDirection();
 
 }
-
-// direction2D RefineEngine::calculateCorrespondDirection(angle_t angle) const {
-
-//     angle_t halfDueAngle = DUE_ANGLE / 2.0;
-    
-//     if(angle >= 0){ // Quadrant I / II
-//         if(angle < halfDueAngle) return direction2D::EAST;
-//         else if(angle < ((M_PI / 2.0) - halfDueAngle)) return direction2D::NORTHEAST;
-//         else if(angle < ((M_PI/ 2.0) + halfDueAngle)) return direction2D::NORTH;
-//         else if(angle < (M_PI - halfDueAngle)) return direction2D::NORTHWEST;
-//         else return direction2D::WEST;
-
-//     }else{ // Quadrant III / IV
-// 		if(angle > (-halfDueAngle)) return direction2D::EAST;
-// 		else if(angle > ((- M_PI / 2.0) + halfDueAngle)) return direction2D::SOUTHEAST;
-// 		else if(angle > ((- M_PI / 2.0) - halfDueAngle)) return direction2D::SOUTH;
-// 		else if(angle > (-M_PI +halfDueAngle)) return direction2D::SOUTHWEST;
-// 		else return direction2D::WEST;
-//     }
-
-// }

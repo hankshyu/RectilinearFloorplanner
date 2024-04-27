@@ -365,6 +365,16 @@ Floorplan::Floorplan(const Floorplan &other){
         this->pinRectilinears.push_back(newR);
         rectMap[oldR] = newR;
     }
+    // std::cout << "Check Rect map is healty " << std::endl;
+    // for(std::unordered_map<Rectilinear *, Rectilinear*>::iterator it = rectMap.begin(); it != rectMap.end(); ++it){
+    //     Rectilinear *old = it->first;
+    //     Rectilinear *newr = it->second;
+    //     printf("Old %p", old);
+    //     std::cout << *old << std::endl;
+
+    //     printf("New %p", newr);
+    //     std::cout<< *newr << std::endl;
+    // }
 
     // rebuild connections
     this->allConnections.clear();
@@ -374,6 +384,7 @@ Floorplan::Floorplan(const Floorplan &other){
         for(Rectilinear *const &oldRT : cn->vertices){
             newCN->vertices.push_back(rectMap[oldRT]);
         }
+        
         this->allConnections.push_back(newCN);
     }
     //rebuild connectionMap (added at 2024/04/10)
@@ -1085,6 +1096,76 @@ void Floorplan::calculateAllOptimalCentre(std::unordered_map<Rectilinear *, Cord
 			optCentre[rt] = Cord(int(trueX + 0.5), int(trueY + 0.5));
 		}
 	}
+}
+
+bool Floorplan::calculateRectilinearGradient(Rectilinear *rect, EVector &gradient) const {
+
+
+    if(this->connectionMap.find(rect) == this->connectionMap.end()) return false;
+    if(this->connectionMap.at(rect).empty()) return false;
+
+    double xGradient = 0, yGradient = 0;
+
+    Rectangle rectBB = rect->calculateBoundingBox();
+    flen_t rectBBX, rectBBY;
+    rec::calculateCentre(rectBB, rectBBX, rectBBY);
+
+    for(Connection * const &conn : this->connectionMap.at(rect)){
+        double pullValue = conn->weight;
+        if(conn->vertices.size() > 2){ // hyperNet
+            int xSign = 0, ySign = 0;
+            bool xIsMax = true;
+            bool xIsMin = true;
+            bool yIsMax = true; 
+            bool yIsMin = true;
+
+            for(Rectilinear *neighbors : conn->vertices){
+                if(neighbors != rect){
+                    Rectangle pullModuleBB = neighbors->calculateBoundingBox();
+                    flen_t pullModuleBBX, pullModuleBBY;
+                    rec::calculateCentre(pullModuleBB, pullModuleBBX, pullModuleBBY);
+
+                    if(pullModuleBBX > rectBBX) xIsMax = false;
+                    if(pullModuleBBX < rectBBX) xIsMin = false;
+                    if(pullModuleBBY > rectBBY) yIsMax = false;
+                    if(pullModuleBBY < rectBBY) yIsMin = false;
+
+                    if(xIsMax) ++xSign;
+                    if(xIsMin) --xSign;
+                    if(yIsMax) ++ySign;
+                    if(yIsMin) --ySign;
+
+                }
+            }
+            xGradient += (pullValue * xSign);
+            yGradient += (pullValue * ySign);
+
+        }else{
+            Rectilinear *pullModule = conn->vertices[0];
+            if(pullModule == rect) pullModule = conn->vertices[1];
+
+            Rectangle pullModuleBB = pullModule->calculateBoundingBox();
+            flen_t pullModuleBBX, pullModuleBBY;
+            rec::calculateCentre(pullModuleBB, pullModuleBBX, pullModuleBBY);
+
+            flen_t xDiff = rectBBX - pullModuleBBX;
+            flen_t yDiff = rectBBY - pullModuleBBY;
+
+
+            if(xDiff != 0){
+                if(xDiff < 0) xGradient += pullValue;
+                else xGradient -= pullValue;
+            }
+
+            if(yDiff != 0){
+                if(yDiff < 0) yGradient += pullValue;
+                else yGradient -= pullValue;
+            }
+        }
+    }
+    gradient = EVector(Cord(0, 0), FCord(xGradient, yGradient));
+    return ((xGradient != 0) || (yGradient != 0));
+
 }
 
 double Floorplan::calculateOverlapRatio() const {

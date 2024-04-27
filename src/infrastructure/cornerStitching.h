@@ -10,7 +10,8 @@
 #include "lineTile.h"
 
 class CornerStitching {
-private:
+// private:
+public:
     
     len_t mCanvasWidth, mCanvasHeight;
     Tile *mCanvasSizeBlankTile;
@@ -34,7 +35,7 @@ private:
     void findLineTileVerticalNegative(Tile *initTile, Line line, std::vector<LineTile> &negativeSide);
 
 
-public:
+// public:
     CornerStitching();
     CornerStitching(len_t chipWidth, len_t chipHeight);
     CornerStitching(const CornerStitching &other);

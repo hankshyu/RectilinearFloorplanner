@@ -93,10 +93,58 @@ void programExitFailTask();
 void printTimingHPWLReport();
 void showChange(double before, double after, char *result);
 
-
 int main(int argc, char *argv[]) {
     // parsing command line arguments
     std::string inputFileName = "./inputs/rawInputs/case10-input.txt";
+
+    // GlobalResult gr;
+    // gr.readGlobalResult("./inputs/case10.txt");
+    // Floorplan *fp = new Floorplan(gr, 0.5, 2, 0.8);
+
+    // std::cout << "Printing old tiles" << std::endl;
+
+    // std::unordered_set<Tile *>oldT;
+    // fp->cs->collectAllTiles(oldT);
+    // for(Tile *t : oldT){
+    //     std::cout << *t << std::endl;
+    // }
+    // std::cout << *(fp->allRectilinears.begin()) <<std::endl;
+    // for(Rectilinear *rt : fp->allRectilinears){
+    //     std::cout << *rt << std::endl;
+    // }
+
+    // for(Connection *conn : fp->allConnections){
+    //     std::cout << *conn << std::endl;
+    // }
+
+
+    // Floorplan *bestfp = new Floorplan(*fp);
+    
+    // delete fp;
+    // std::cout << "After copying" << std::endl;
+    // std::unordered_set<Tile *> newT;
+    // bestfp->cs->collectAllTiles(newT);
+    // for(Tile *t : newT){
+    //     std::cout << *t << std::endl;
+    //     if(t->rt != nullptr) std::cout << "rt: " << *(t->rt) << std::endl;
+    //     else std::cout << "t->rt is nullptr"<< std::endl;
+
+    //     if(t->tr != nullptr) std::cout << "tr: " << *(t->tr) << std::endl;
+    //     else std::cout << "t->tr is nullptr" << std::endl;
+    // }
+
+    // for(Rectilinear *rt : bestfp->allRectilinears){
+    //     std::cout << *rt << std::endl;
+    // }
+    // for(Connection *conn : bestfp->allConnections){
+    //     std::cout << *conn << std::endl;
+    // }
+    
+    
+
+
+
+
 
 
     /* PHASE 1: Global Floorplanning */
@@ -130,10 +178,10 @@ int main(int argc, char *argv[]) {
 
         /* PHASE 2: Port Global Result to infrastructure */
         TIME_POINT_START_CS = std::chrono::steady_clock::now();
-        Floorplan floorplan(globalResult, SPEC_ASPECT_RATIO_MIN, SPEC_ASPECT_RATIO_MAX, SPEC_UTILIZATION_MIN);
+        Floorplan *floorplan = new Floorplan(globalResult, SPEC_ASPECT_RATIO_MIN, SPEC_ASPECT_RATIO_MAX, SPEC_UTILIZATION_MIN);
         TIME_POINT_END_CS = std::chrono::steady_clock::now();
-        HPWL_DONE_CS = floorplan.calculateHPWL();
-        OVERLAP_DONE_CS = floorplan.calculateOverlapRatio();
+        HPWL_DONE_CS = floorplan->calculateHPWL();
+        OVERLAP_DONE_CS = floorplan->calculateOverlapRatio();
         DONE_CS = true;
 
 
@@ -141,16 +189,16 @@ int main(int argc, char *argv[]) {
         if(bool(HYPERPARAM_POR_USAGE)){
             std::cout << std::endl;
             TIME_POINT_START_POR = std::chrono::steady_clock::now();
-            floorplan.removePrimitiveOvelaps(true);
+            floorplan->removePrimitiveOvelaps(true);
             TIME_POINT_END_POR = std::chrono::steady_clock::now();
-            HPWL_DONE_POR = floorplan.calculateHPWL();
-            OVERLAP_DONE_POR = floorplan.calculateOverlapRatio();
+            HPWL_DONE_POR = floorplan->calculateHPWL();
+            OVERLAP_DONE_POR = floorplan->calculateOverlapRatio();
             DONE_POR = true;
             std::cout << std::endl;
         }else{
             HPWL_DONE_POR = HPWL_DONE_CS;
         }
-        floorplan.visualiseFloorplan("./outputs/case10-por.txt");
+        floorplan->visualiseFloorplan("./outputs/case10-por.txt");
 
 
         /* PHASE 4: DFSL Legaliser: Overlap Migration via Graph Traversal */
@@ -181,7 +229,7 @@ int main(int argc, char *argv[]) {
         
         // Create Legalise Object
         DFSL::DFSLegalizer dfsl;
-        dfsl.initDFSLegalizer(&floorplan, &configs);
+        dfsl.initDFSLegalizer(floorplan, &configs);
         // dfsl.printTiledFloorplan(initFloorplanPath, (const std::string)casename);
         DFSL::RESULT legalResult = DFSL::RESULT::OVERLAP_NOT_RESOLVED;
 
@@ -190,27 +238,28 @@ int main(int argc, char *argv[]) {
         legalResult = dfsl.legalize(int(HYPERPARAM_LEG_LEGALMODE));
         TIME_POINT_END_LEG = std::chrono::steady_clock::now();
         // if(legalResult == DFSL::RESULT::SUCCESS){
-            HPWL_DONE_LEG = floorplan.calculateHPWL(); 
-            OVERLAP_DONE_LEG = floorplan.calculateOverlapRatio();
+            HPWL_DONE_LEG = floorplan->calculateHPWL(); 
+            OVERLAP_DONE_LEG = floorplan->calculateOverlapRatio();
             DONE_LEG = true;
         // }else{
         //     programExitFailTask();
         // }
 
-        floorplan.visualiseFloorplan("./outputs/case05-legalised.txt");
+        floorplan->visualiseFloorplan("./outputs/case05-legalised.txt");
 
         /* PHASE 5: Refinement Engine */
+
         TIME_POINT_START_REF = std::chrono::steady_clock::now();
-        RefineEngine refineEngine(&floorplan);
-        refineEngine.refine();
+        RefineEngine refineEngine(floorplan);
+        floorplan = refineEngine.refine();
         TIME_POINT_END_REF = std::chrono::steady_clock::now();
-        HPWL_DONE_REF = floorplan.calculateHPWL();
-        OVERLAP_DONE_REF = floorplan.calculateOverlapRatio();
+
+        HPWL_DONE_REF = floorplan->calculateHPWL();
+        OVERLAP_DONE_REF = floorplan->calculateOverlapRatio();
         DONE_LEG = true;
 
 
-        floorplan.visualiseFloorplan("./outputs/case05-refined.txt");
-
+        floorplan->visualiseFloorplan("./outputs/case05-refined.txt");
 
         programExitSuccessTask();
 
@@ -292,7 +341,7 @@ void printTimingHPWLReport(){
     printf("╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝\n");
 }
 
- void showChange(double before, double after, char *result){
+void showChange(double before, double after, char *result){
     
     double delta = after - before;
     if(delta == 0){
@@ -305,3 +354,4 @@ void printTimingHPWLReport(){
         snprintf(result, 12, "(-%7.4f%%)", 100 * delta/before);
     }
 }
+

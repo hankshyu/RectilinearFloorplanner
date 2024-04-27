@@ -10,7 +10,7 @@ Connection::Connection(const std::vector<Rectilinear *> &vertices, double weight
 }
 
 Connection::Connection(const Connection &other)
-    : vertices(other.vertices), weight(other.weight) {
+    : weight(other.weight) {
 }
 
 Connection &Connection::operator = (const Connection &other){

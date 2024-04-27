@@ -13,6 +13,7 @@
 #include "globalResult.h"
 #include "legalResult.h"
 #include "doughnutPolygonSet.h"
+#include "eVector.h"
 
 class Floorplan{
 private:
@@ -118,6 +119,8 @@ public:
     // calculate the optimal centre of a soft rectilnear, return Cord(-1, -1) if no connection is present
     Cord calculateOptimalCentre(Rectilinear *rect) const;
     void calculateAllOptimalCentre(std::unordered_map<Rectilinear *, Cord> &optCentre) const;
+
+    bool calculateRectilinearGradient(Rectilinear *rect, EVector &gradient) const;
     
     double calculateOverlapRatio() const;
 
