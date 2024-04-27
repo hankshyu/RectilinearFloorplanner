@@ -116,7 +116,6 @@ Floorplan *RefineEngine::refine(){
 
 bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 	
-	// std::cout << MAGENTA << "Refining " << rect->getName() << COLORRST << std::endl;
 	double hpwl0 = fp->calculateHPWL();
 	
 	bool hasImprovements = false;
