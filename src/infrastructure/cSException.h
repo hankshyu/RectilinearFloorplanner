@@ -113,6 +113,7 @@ inline std::unordered_map<std::string, const char*> CSEXCEPTION_LUT = {
     {"REFINEENGINE_01", "refineBytrimming(...): input direction should be either NORTH, SOUTH, EAST, WEST, others are porhibited"},
     {"REFINEENGINE_02", "refineByTrimming(...): rectTowardSector sould be within sector::ONE ~ sector::EIGHT"},
     {"REFINEENGINE_03", "refineByGrowing(...): rectTowardSector sould be within sector::ONE ~ sector::EIGHT"},
+    {"REFINEENGINE_04", "trialGrow(...): input growDirection should be either NORTH, SOUTH, EAST, WEST, others are prohibited"},
 
 };
 

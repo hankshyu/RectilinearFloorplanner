@@ -9,13 +9,19 @@
 
 [GlobalSolver] Note: Found extremely overlapping module: M2
 
-[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(887, 1385), 2, 2, (889, 1387)], @0x147e0f3a0] with M7 (126 -> 122)
-[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(2061, 1099), 22, 3, (2083, 1102)], @0x147e11be0] with M15 (100 -> 34)
-[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(2100, 1099), 88, 1, (2188, 1100)], @0x147e139e0] with M0 (131 -> 43)
-[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(1720, 1676), 44, 1, (1764, 1677)], @0x147e0ef30] with M2 (110 -> 66)
-[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(1425, 1676), 10, 1, (1435, 1677)], @0x147e0d670] with M2 (66 -> 56)
-[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(887, 1387), 2, 14, (889, 1401)], @0x147e0f7c0] with M3 (298 -> 270)
-[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(884, 1385), 3, 16, (887, 1401)], @0x147e0f6a0] with M3 (270 -> 222)
+[CSInsertion] Complete, floorplan NOT Legal
+
+
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(887, 1385), 2, 2, (889, 1387)]] with M7 (126 -> 122)
+[PrimitiveOverlapRemoval(1/2)] Remove T[OVERLAP, R[(2061, 1099), 22, 3, (2083, 1102)]] with M15 (100 -> 34)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(2100, 1099), 88, 1, (2188, 1100)]] with M0 (131 -> 43)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(1720, 1676), 44, 1, (1764, 1677)]] with M2 (110 -> 66)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(1425, 1676), 10, 1, (1435, 1677)]] with M2 (66 -> 56)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(887, 1387), 2, 14, (889, 1401)]] with M3 (298 -> 270)
+[PrimitiveOverlapRemoval(2/2)] Remove T[OVERLAP, R[(884, 1385), 3, 16, (887, 1401)]] with M3 (270 -> 222)
+
+
+[PrimitiveOverlapRemoval] Complete, floorplan NOT Legal
 
 [DFSL] INFO   : Starting Legalization
 [DFSL] INFO   : Remaining overlaps: 18
@@ -29,149 +35,39 @@
 [DFSL] INFO   : Remaining overlaps: 2
 [DFSL] INFO   : Total Overlap Area:  11034	(o/d = 0.2086%	o/p = 0.2247%)
 [DFSL] INFO   : Total Violations: 0
- Grow: [32m39844[0m Fill: [31m0[0m Shrink: [32m56018[0mEnd HPWL = 1.838e+07
- Grow: [32m48635.5[0m Fill: [31m0[0m Shrink: [32m5606[0mEnd HPWL = 1.83258e+07
- Grow: [32m72765[0m Fill: [31m0[0m Shrink: [32m4262[0mEnd HPWL = 1.82487e+07
-Grow: [34mx[0m Fill: [31m0[0m Shrink: [32m15[0mEnd HPWL = 1.82487e+07
- Grow: [32m30450[0m Fill: [31m0[0m Shrink: [32m1344[0mEnd HPWL = 1.82169e+07
- Grow: [32m69813.5[0m Fill: [31m0[0m Shrink: [32m20505[0mEnd HPWL = 1.81266e+07
- Grow: [32m15157.5[0m Fill: [31m0[0m Shrink: [32m20191.5[0mEnd HPWL = 1.80912e+07
- Grow: [32m1627.5[0m Fill: [31m0[0m Shrink: [32m26921.5[0mEnd HPWL = 1.80627e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.80627e+07
- Grow: [32m19529[0m Fill: [31m0[0m Shrink: [32m9896[0mEnd HPWL = 1.80333e+07
- Grow: [32m33013.5[0m Fill: [31m0[0m Shrink: [32m8884.5[0mEnd HPWL = 1.79914e+07
- Grow: [32m67496.5[0m Fill: [31m0[0m Shrink: [32m2365[0mEnd HPWL = 1.79215e+07
- Grow: [32m1416[0m Fill: [31m0[0m Shrink: [32m4512[0mEnd HPWL = 1.79156e+07
- Grow: [32m24627[0m Fill: [31m0[0m Shrink: [32m5535[0mEnd HPWL = 1.78854e+07
- Grow: [32m387[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7885e+07
- Grow: [32m19346[0m Fill: [31m0[0m Shrink: [32m20202[0mEnd HPWL = 1.78455e+07
-Iteration 1 Current HPWL = 1.78455e+07[32m +-630366[0m
- Grow: [32m14611[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.78309e+07
-Grow: [34mx[0m Fill: [31m0[0m Shrink: [32m7698[0mEnd HPWL = 1.78232e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.78232e+07
- Grow: [32m941[0m Fill: [31m0[0m Shrink: [32m30[0mEnd HPWL = 1.78222e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.78222e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.78222e+07
- Grow: [32m24037.5[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.77982e+07
- Grow: [32m930[0m Fill: [31m0[0m Shrink: [32m8426[0mEnd HPWL = 1.77888e+07
- Grow: [32m14796[0m Fill: [31m0[0m Shrink: [32m2808[0mEnd HPWL = 1.77712e+07
- Grow: [32m97723[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.76735e+07
- Grow: [32m12250.5[0m Fill: [31m0[0m Shrink: [32m6352.5[0mEnd HPWL = 1.76549e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.76549e+07
-Grow: [34mx[0m Fill: [31m0[0m Shrink: [32m1128[0mEnd HPWL = 1.76538e+07
- Grow: [32m9808[0m Fill: [31m0[0m Shrink: [32m738[0mEnd HPWL = 1.76432e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.76432e+07
- Grow: [32m2248[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7641e+07
-Iteration 2 Current HPWL = 1.7641e+07[32m +-204526[0m
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7641e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7641e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7641e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7641e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7641e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7641e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7641e+07
- Grow: [32m976.5[0m Fill: [31m0[0m Shrink: [32m1403[0mEnd HPWL = 1.76386e+07
- Grow: [32m296[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.76383e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.76383e+07
- Grow: [32m2547[0m Fill: [31m0[0m Shrink: [32m3381[0mEnd HPWL = 1.76324e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.76324e+07
- Grow: [32m16356[0m Fill: [31m0[0m Shrink: [32m18612[0mEnd HPWL = 1.75974e+07
- Grow: [32m738[0m Fill: [31m0[0m Shrink: [32m538[0mEnd HPWL = 1.75961e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75961e+07
-Grow: [34mx[0m Fill: [31m0[0m Shrink: [32m5772[0mEnd HPWL = 1.75903e+07
-Iteration 3 Current HPWL = 1.75903e+07[32m +-50619.5[0m
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75903e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75903e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75903e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75903e+07
- Grow: [32m13299[0m Fill: [31m0[0m Shrink: [32m448[0mEnd HPWL = 1.75766e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75766e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75766e+07
- Grow: [32m1162.5[0m Fill: [31m0[0m Shrink: [32m604.5[0mEnd HPWL = 1.75748e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75748e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.75748e+07
- Grow: [32m4230[0m Fill: [31m0[0m Shrink: [32m3381[0mEnd HPWL = 1.75672e+07
- Grow: [32m83805.5[0m Fill: [31m0[0m Shrink: [32m2365[0mEnd HPWL = 1.7481e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7481e+07
- Grow: [32m538[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74805e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74805e+07
- Grow: [32m38480[0m Fill: [31m0[0m Shrink: [32m3848[0mEnd HPWL = 1.74382e+07
-Iteration 4 Current HPWL = 1.74382e+07[32m +-152162[0m
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74382e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74382e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74382e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74382e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74382e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74382e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74382e+07
- Grow: [32m93[0m Fill: [31m0[0m Shrink: [32m93[0mEnd HPWL = 1.7438e+07
-Grow: [34mx[0m Fill: [31m0[0m Shrink: [32m1404[0mEnd HPWL = 1.74366e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74366e+07
- Grow: [32m2532[0m Fill: [31m0[0m Shrink: [32m3366[0mEnd HPWL = 1.74307e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74307e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74307e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74307e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74307e+07
- Grow: [32m1924[0m Fill: [31m0[0m Shrink: [32m1924[0mEnd HPWL = 1.74268e+07
-Iteration 5 Current HPWL = 1.74268e+07[32m +-11336[0m
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74268e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74268e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74268e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74268e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74268e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74268e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74268e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74268e+07
- Grow: [32m592[0m Fill: [31m0[0m Shrink: [32m296[0mEnd HPWL = 1.7426e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.7426e+07
- Grow: [32m1683[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74243e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74243e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74243e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74243e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74243e+07
- Grow: [32m1124[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74232e+07
-Iteration 6 Current HPWL = 1.74232e+07[32m +-3695[0m
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74232e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74232e+07
- Grow: [32m2131[0m Fill: [31m0[0m Shrink: [32m2131[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Iteration 7 Current HPWL = 1.74189e+07[32m +-4262[0m
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Grow: [34mx[0m Fill: [31m0[0mShrink: [34mx[0mEnd HPWL = 1.74189e+07
-Iteration 8 Current HPWL = 1.74189e+07 [31m0[0m
-╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗
-║ Stage                     │     Runtime (s)      |            HPWL            |       Overlap        ║
-╟───────────────────────────|──────────────────────|────────────────────────────|──────────────────────╢
-║ Global Floorplan          │       1.332 (21.28%) │    18235159.82 (    -    ) │  3.7888% (    -    ) ║
-║ Infrastructure Building   │       0.009 ( 0.14%) │    18228388.00 (- 0.0371%) │  3.1431% (-17.0408%) ║
-║ Primitive Overlap Removal │       0.022 ( 0.35%) │    18228388.00 (    -    ) │  3.1315% (- 0.3693%) ║
-║ DFSL Legaliser            │       0.376 ( 6.01%) │    18475853.50 (+ 1.3576%) │  0.0000% (-100.0000% ║
-║ Refine Engine             │       4.519 (72.21%) │    17418888.50 (- 5.7208%) │  0.0000% (    -    ) ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+[LegaliseEngine] Legal floorplan Found Using (1, 2, 2.00, 1, 1), HPWL = 17750787.50   
+
+Report Used Hyperparameters: 
+-> Aspect Raio: 0.5 ~ 2, Utilization Min = 0.8
+
+-> Global Floorplan Used Hyperparameters
+Punisment = 0.005473, Learning Rate = 0.0046, Max AspectRatio Rate = 0.9
+
+-> Primitive Overlap Removal applied = 1
+
+-> DFSL Legaliser Hyperparameters
+Max Cost Cutoff = 5000
+OB Area Weight = 30, OB Util Weight = 100, OB ASP Weight = 70, OB Util Pos Rein = -500
+BW Util Weight = 1000, BW Util Pos Rein = -500, BW ASP Weight = 70
+BB Area Weight = 10, BB From Util Weight = 500, BB From Util Pos Rein = -500
+BB To Util Weight = 500, BB To Util Pos Rein = -500
+BB ASP Weight = 30, BB Flat Cost = 5
+Legal Mode = 2
+-> RefineEngine Hyperparameters
+Max Iteration = 30
+Use Gradient Order = 1
+Momentum init = 2, growth = 2x
+Use Gradient Grow = 1, Use Gradient Shrink = 1
+╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║ Stage                     │     Runtime (s)      |            HPWL            |       Overlap        |       Legality        ║
+╟───────────────────────────|──────────────────────|────────────────────────────|──────────────────────|───────────────────────╢
+║ Global Floorplan          │       1.322 (36.26%) │    18235159.82 (    -    ) │  3.7888% (    -    ) |                       ║
+║ Infrastructure Building   │       0.011 ( 0.30%) │    18228388.00 (- 0.0371%) │  3.1431% (-17.0408%) |      ILLEGAL          ║
+║ Primitive Overlap Removal │       0.022 ( 0.60%) │    18228388.00 (    -    ) │  3.1315% (- 0.3693%) |      ILLEGAL          ║
+║ DFSL Legaliser            │       0.384 (10.53%) │    18475853.50 (+ 1.3576%) │  0.0000% (-100.0000% |       LEGAL           ║
+║ Refine Engine             │       1.907 (52.30%) │    17750787.50 (- 3.9244%) │  0.0000% (    -    ) |       LEGAL           ║
+╟───────────────────────────|──────────────────────|────────────────────────────|──────────────────────|───────────────────────╢
+║ Summary                   │       3.646          │    17750787.50             │  0.0000% (    -    ) |       LEGAL           ║
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 [33mProgram Terminate successfully[0m

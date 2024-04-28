@@ -13,8 +13,6 @@ private:
     // the most dense connection at [0], ... last is the most loosely connected
     std::vector<Rectilinear *> rectConnOrder;
 
-    double REFINE_ATTATCHED_MIN = 0.15;
-
     int REFINE_MAX_ITERATION = 30;
     bool REFINE_USE_GRADIENT_ORDER = true;
     len_t REFINE_INITIAL_MOMENTUM = 2;
@@ -24,7 +22,7 @@ private:
 
 public:
     Floorplan *fp;
-    RefineEngine(Floorplan *floorplan, double attatchedMin, int maxIter, bool useGradientOrder, len_t initMomentum, double momentumGrowth, bool growGradient, bool shrinkGradient);
+    RefineEngine(Floorplan *floorplan, int maxIter, bool useGradientOrder, len_t initMomentum, double momentumGrowth, bool growGradient, bool shrinkGradient);
 
     Floorplan *refine();
     bool refineRectilinear(Rectilinear *rect) const;

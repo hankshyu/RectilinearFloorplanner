@@ -122,7 +122,6 @@ size_t std::hash<Tile>::operator()(const Tile &key) const {
 std::ostream &operator<<(std::ostream &os, const Tile &tile) {
     os << "T[";
     os << tile.mType << ", " << tile.mRectangle;
-    os << ", @" << &tile;
     os << "]";
     return os;
 }

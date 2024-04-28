@@ -3,8 +3,8 @@
 #include "cSException.h"
 #include "colours.h"
 
-RefineEngine::RefineEngine(Floorplan *floorplan, double attatchedMin, int maxIter, bool useGradientOrder, len_t initMomentum, double momentumGrowth, bool growGradient, bool shrinkGradient)
-	: REFINE_ATTATCHED_MIN(attatchedMin), REFINE_MAX_ITERATION(maxIter), REFINE_USE_GRADIENT_ORDER(useGradientOrder),
+RefineEngine::RefineEngine(Floorplan *floorplan, int maxIter, bool useGradientOrder, len_t initMomentum, double momentumGrowth, bool growGradient, bool shrinkGradient)
+	: REFINE_MAX_ITERATION(maxIter), REFINE_USE_GRADIENT_ORDER(useGradientOrder),
 	REFINE_INITIAL_MOMENTUM(initMomentum), REFINE_MOMENTUM_GROWTH(momentumGrowth), REFINE_USE_GRADIENT_GROW(growGradient), REFINE_USE_GRADIENT_SHRINK(shrinkGradient) {
     this->fp = floorplan;
     for(Rectilinear *const &rt : fp->softRectilinears){
@@ -67,12 +67,7 @@ Floorplan *RefineEngine::refine(){
 		
 		for(int eCand = 0; eCand < refineCandidates.size(); ++eCand){
 			Rectilinear *improveTarget = refineCandidates[eCand];
-			// std::cout << "[Enhancer] Picked target: " << improveTarget->getName() << std::endl;
-            // Avoid omptimizing Rectilinear with 0 connections
-			// if(rectConnWeightSum.at(improveTarget) == 0) continue;		
-
             bool enhanceResult = refineRectilinear(improveTarget);
-			// std::cout << improveTarget->getName() << " Enhance Success? " << enhanceResult << std::endl;
 
             if(enhanceResult){
 				hasMovement = true;
@@ -103,9 +98,9 @@ Floorplan *RefineEngine::refine(){
 		hpwlDeltaRecord[1] = hpwlDeltaRecord[0];
 		hpwlDeltaRecord[0] = iterationDelta;
 
-		std::cout << "Iteration " << iterationCounter + 1 << " Current HPWL = " << doneIterationHPWL;
-		if(hpwlDeltaRecord[0] < 0) std::cout << GREEN << " +" << (hpwlDeltaRecord[0])<< COLORRST << std::endl;
-		else std::cout << " " << RED  << (hpwlDeltaRecord[0]) << COLORRST << std::endl;
+		// std::cout << "Iteration " << iterationCounter + 1 << " Current HPWL = " << doneIterationHPWL;
+		// if(hpwlDeltaRecord[0] < 0) std::cout << GREEN << " +" << (hpwlDeltaRecord[0])<< COLORRST << std::endl;
+		// else std::cout << " " << RED  << (hpwlDeltaRecord[0]) << COLORRST << std::endl;
 
 
 		if((++iterationCounter) == REFINE_MAX_ITERATION) break;
@@ -116,7 +111,7 @@ Floorplan *RefineEngine::refine(){
 
 bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 	
-	double hpwl0 = fp->calculateHPWL();
+	// double hpwl0 = fp->calculateHPWL();
 	
 	bool hasImprovements = false;
 	fillBoundingBox(rect);
@@ -124,44 +119,44 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 	bool growRefineImproves = refineByGrowing(rect);
 	hasImprovements |= growRefineImproves;
 	
-	double hpwl1 = fp->calculateHPWL();	
-	if(!growRefineImproves){
-		std::cout << "Grow: " << BLUE << "x" << COLORRST;
-	}else{
-		double netimprove = hpwl0 - hpwl1;
-		if(netimprove > 0){
-			std::cout << " Grow: " << GREEN << netimprove << COLORRST;
-		}else{
-			std::cout << " Grow: " << RED << netimprove << COLORRST;
-		}
-	}
+	// double hpwl1 = fp->calculateHPWL();	
+	// if(!growRefineImproves){
+	// 	std::cout << "Grow: " << BLUE << "x" << COLORRST;
+	// }else{
+	// 	double netimprove = hpwl0 - hpwl1;
+	// 	if(netimprove > 0){
+	// 		std::cout << " Grow: " << GREEN << netimprove << COLORRST;
+	// 	}else{
+	// 		std::cout << " Grow: " << RED << netimprove << COLORRST;
+	// 	}
+	// }
 	
 	fillBoundingBox(rect);
-	double hpwl2 = fp->calculateHPWL();
-	double imp2 = hpwl1 - hpwl2;
+	// double hpwl2 = fp->calculateHPWL();
+	// double imp2 = hpwl1 - hpwl2;
 
-	if(imp2 > 0){
-		std::cout << " Fill: " << GREEN << imp2 << COLORRST;
-	}else{
-		std::cout << " Fill: " << RED << imp2 << COLORRST;
-	}
+	// if(imp2 > 0){
+	// 	std::cout << " Fill: " << GREEN << imp2 << COLORRST;
+	// }else{
+	// 	std::cout << " Fill: " << RED << imp2 << COLORRST;
+	// }
 
 	bool trimRefineImproves = refineByTrimming(rect);
 	hasImprovements |= trimRefineImproves;
 
-	double hpwl3 = fp->calculateHPWL();
+	// double hpwl3 = fp->calculateHPWL();
 
-	if(!trimRefineImproves){
-		std::cout << "Shrink: " << BLUE << "x" << COLORRST;
-	}else{
-		double netimprove = hpwl2 - hpwl3;
-		if(netimprove > 0){
-			std::cout << " Shrink: " << GREEN << netimprove << COLORRST;
-		}else{
-			std::cout << " Shrink: " << RED << netimprove << COLORRST;
-		}
-	}
-	std::cout << "End HPWL = " << fp->calculateHPWL() << std::endl;
+	// if(!trimRefineImproves){
+	// 	std::cout << "Shrink: " << BLUE << "x" << COLORRST;
+	// }else{
+	// 	double netimprove = hpwl2 - hpwl3;
+	// 	if(netimprove > 0){
+	// 		std::cout << " Shrink: " << GREEN << netimprove << COLORRST;
+	// 	}else{
+	// 		std::cout << " Shrink: " << RED << netimprove << COLORRST;
+	// 	}
+	// }
+	// std::cout << "End HPWL = " << fp->calculateHPWL() << std::endl;
 
 	return hasImprovements;
 }
@@ -277,24 +272,7 @@ bool RefineEngine::fillBoundingBox(Rectilinear *rect) const {
 				fp->getGlobalAspectRatioMax(), fp->getGlobalUtilizationMin())){
 					continue;
 				}
-				// If removing the piece acutally harms the HPWL (the other piece increases HPWL by moving)
-				// if(rectConnWeightSum.at(victimRect) > rectConnWeightSum.at(rect)){
-				// 	Cord optimalCentre = fp->calculateOptimalCentre(victimRect);
 
-				// 	Rectangle beforeBB = dps::calculateBoundingBox(rectCurrentShapeDPS[victimRect]);
-				// 	double beforeBBX, beforeBBY;
-				// 	rec::calculateCentre(beforeBB, beforeBBX, beforeBBY);
-				// 	double beforeScore = std::abs(beforeBBX - optimalCentre.x()) + std::abs(beforeBBY - optimalCentre.y());
-
-				// 	Rectangle afterBB = dps::calculateBoundingBox(xVictimDPS);
-				// 	double afterBBX, afterBBY;
-				// 	rec::calculateCentre(afterBB, afterBBX, afterBBY);
-				// 	double afterScore = std::abs(afterBBX - optimalCentre.x()) + std::abs(afterBBY - optimalCentre.y());
-
-				// 	if(beforeScore < afterScore) continue;
-				// }
-
-				// GREEDY
 				bool actuarization = forecastGrowthBenefits(rect, currentRectDPS, rectCurrentShapeDPS);
 				if(!actuarization) continue;
 			}
@@ -326,7 +304,7 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 
 	while(keepMoving || (momentum != REFINE_INITIAL_MOMENTUM)){
 		if(!keepMoving) momentum = REFINE_INITIAL_MOMENTUM;
-		// std::cout<< "Refine by growing " << rect->getName() << " mometum" << momentum << std::endl;
+
 		keepMoving = false;
 
 		sector rectTowardSector;
@@ -351,12 +329,7 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 
 
 		double beforehpwl = fp->calculateHPWL();	
-		// std::cout << std::endl;
-		// std::cout << "Before round display, chosen sector = " << rectTowardSector << ", HPWL = " << fp->calculateHPWL() << std::endl;
-		// fp->displayHPWL();
 
-
-		// std::cout << "Chosen Sector: " << rectTowardSector << std::endl;
 		
 		switch (rectTowardSector)
 		{
@@ -367,13 +340,6 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display:, HPWL = " << fp->calculateHPWL() << std::endl;
-					// fp->displayHPWL();
-		
 					continue;
 				}
 
@@ -382,16 +348,9 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
-				// std::cout << "Fail to grow" << std::endl;
+
 				break;
 			}	
 			case sector::TWO: {
@@ -401,13 +360,6 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
@@ -416,18 +368,9 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
-				// std::cout << "Fail to grow" << std::endl;
 				break;
 			}
 			case sector::THREE: {
@@ -437,13 +380,6 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
@@ -452,18 +388,9 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
-
 					continue;
 				}
 
-				// std::cout << "Fail to grow" << std::endl;
 				break;
 			}
 			case sector::FOUR: {
@@ -473,13 +400,6 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
@@ -488,17 +408,8 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
-
-				// std::cout << "Fail to grow" << std::endl;
 				break;
 			}
 			case sector::FIVE: {
@@ -508,13 +419,6 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
@@ -523,17 +427,9 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
-				// std::cout << "Fail to grow" << std::endl;
 				break;
 			}
 			case sector::SIX: {
@@ -546,13 +442,6 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
@@ -561,17 +450,8 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
-
 					continue;
 				}
-				// std::cout << "Fail to grow" << std::endl;
 
 				break;
 			}
@@ -582,13 +462,6 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
@@ -597,17 +470,9 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
-				// std::cout << "Fail to grow" << std::endl;
 				break;
 			}
 			case sector::EIGHT: {
@@ -617,13 +482,6 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();	
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
@@ -632,22 +490,15 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 					keepMoving = true;
 					hasMove = true;
 					momentum = len_t(momentum * REFINE_MOMENTUM_GROWTH + 0.5);
-
-					// double netimprove = beforehpwl - fp->calculateHPWL();
-					// if(netimprove > 0) std::cout << GREEN << "Last Round Improvement " << netimprove << COLORRST;
-					// else std::cout << RED << "Last Round Lost " << netimprove << COLORRST;
-					// std::cout << "After Round Display: " << std::endl;
-					// fp->displayHPWL();
-
 					continue;
 				}
 
-				// std::cout << "Fail to grow" << std::endl;
 				break;
 			}
-			default:
+			default:{
 				throw CSException("REFINEENGINE_03");
 				break;
+			}
 		}
 	}
 
@@ -815,44 +666,6 @@ bool RefineEngine::growingTowardNorth(Rectilinear *rect, len_t depth) const {
 	if(!dps::checkIsLegal(currentRectDPS, rect->getLegalArea(), globalAspectRatioMin, globalAspectRatioMax, globalUtilizationMin)) return false;
 
 	/* STEP 4: make sure all changes acutally improves HPWL and reflect the changes */
-	// double netChanges = 0;
-	// Cord optimalCentre = fp->calculateOptimalCentre(rect);
-
-	// Rectangle finalBoundingBox = dps::calculateBoundingBox(currentRectDPS);
-	// double finalBoundingBoxCentreX, finalBoundingBoxCentreY;
-	// rec::calculateCentre(finalBoundingBox, finalBoundingBoxCentreX, finalBoundingBoxCentreY);
-
-	// Rectangle originalBoundingBox = rect->calculateBoundingBox();
-	// double originalBoundingBoxCentreX, originalBoundingBoxCentreY;
-	// rec::calculateCentre(originalBoundingBox, originalBoundingBoxCentreX, originalBoundingBoxCentreY);
-
-	// double originalHPWL = EVector(FCord(originalBoundingBoxCentreX, originalBoundingBoxCentreY), optimalCentre).calculateL1Magnitude();
-	// double finalHPWL = EVector(FCord(finalBoundingBoxCentreX, finalBoundingBoxCentreY), optimalCentre).calculateL1Magnitude();
-	// // changing does not improve the HPWL, quit
-	// if(finalHPWL > originalHPWL) return false;
-	// netChanges = (originalHPWL - finalHPWL) * this->rectConnWeightSum.at(rect);
-
-	// for(std::unordered_map<Rectilinear *, DoughnutPolygonSet>::const_iterator it = affectedNeighbors.begin(); it != affectedNeighbors.end(); ++it){
-	// 	Rectilinear *neighbor = it->first;
-	// 	optimalCentre = fp->calculateOptimalCentre(neighbor);
-
-	// 	Rectangle neighborOrigBB = neighbor->calculateBoundingBox();
-	// 	double neighborOrigBBCentreX, neighborOrigBBCentreY;
-	// 	rec::calculateCentre(neighborOrigBB, neighborOrigBBCentreX, neighborOrigBBCentreY);
-
-	// 	Rectangle neighborFinalBB = dps::calculateBoundingBox(it->second);
-	// 	double neighborFinalBBCentreX, neighborFinalBBCentreY;
-	// 	rec::calculateCentre(neighborFinalBB, neighborFinalBBCentreX, neighborFinalBBCentreY);
-
-
-	// 	double neighborOriginalHPWL = EVector(FCord(neighborOrigBBCentreX, neighborOrigBBCentreY), optimalCentre).calculateL1Magnitude();
-	// 	double neighborFinalHPWL = EVector(FCord(neighborFinalBBCentreX, neighborFinalBBCentreY), optimalCentre).calculateL1Magnitude();
-	// 	// changing does not improve the HPWL, quit
-	// 	netChanges += (neighborOriginalHPWL - neighborFinalHPWL) * this->rectConnWeightSum.at(neighbor);
-	// }	
-	// if(netChanges < 0) return false;
-
-	// GREEDY
 	bool actuarization = forecastGrowthBenefits(rect, currentRectDPS, affectedNeighbors);
 	if(!actuarization) return false;
 
@@ -1053,44 +866,6 @@ bool RefineEngine::growingTowardSouth(Rectilinear *rect, len_t depth) const {
 
 
 	/* STEP 4: make sure all changes acutally improves HPWL and reflect the changes */
-	// double netChanges = 0;
-	// Cord optimalCentre = fp->calculateOptimalCentre(rect);
-
-	// Rectangle finalBoundingBox = dps::calculateBoundingBox(currentRectDPS);
-	// double finalBoundingBoxCentreX, finalBoundingBoxCentreY;
-	// rec::calculateCentre(finalBoundingBox, finalBoundingBoxCentreX, finalBoundingBoxCentreY);
-
-	// Rectangle originalBoundingBox = rect->calculateBoundingBox();
-	// double originalBoundingBoxCentreX, originalBoundingBoxCentreY;
-	// rec::calculateCentre(originalBoundingBox, originalBoundingBoxCentreX, originalBoundingBoxCentreY);
-
-	// double originalHPWL = EVector(FCord(originalBoundingBoxCentreX, originalBoundingBoxCentreY), optimalCentre).calculateL1Magnitude();
-	// double finalHPWL = EVector(FCord(finalBoundingBoxCentreX, finalBoundingBoxCentreY), optimalCentre).calculateL1Magnitude();
-	// // changing does not improve the HPWL, quit
-	// if(finalHPWL > originalHPWL) return false;
-	// netChanges = (originalHPWL - finalHPWL) * this->rectConnWeightSum.at(rect);
-
-	// for(std::unordered_map<Rectilinear *, DoughnutPolygonSet>::const_iterator it = affectedNeighbors.begin(); it != affectedNeighbors.end(); ++it){
-	// 	Rectilinear *neighbor = it->first;
-	// 	optimalCentre = fp->calculateOptimalCentre(neighbor);
-
-	// 	Rectangle neighborOrigBB = neighbor->calculateBoundingBox();
-	// 	double neighborOrigBBCentreX, neighborOrigBBCentreY;
-	// 	rec::calculateCentre(neighborOrigBB, neighborOrigBBCentreX, neighborOrigBBCentreY);
-
-	// 	Rectangle neighborFinalBB = dps::calculateBoundingBox(it->second);
-	// 	double neighborFinalBBCentreX, neighborFinalBBCentreY;
-	// 	rec::calculateCentre(neighborFinalBB, neighborFinalBBCentreX, neighborFinalBBCentreY);
-
-
-	// 	double neighborOriginalHPWL = EVector(FCord(neighborOrigBBCentreX, neighborOrigBBCentreY), optimalCentre).calculateL1Magnitude();
-	// 	double neighborFinalHPWL = EVector(FCord(neighborFinalBBCentreX, neighborFinalBBCentreY), optimalCentre).calculateL1Magnitude();
-	// 	// changing does not improve the HPWL, quit
-	// 	netChanges += (neighborOriginalHPWL - neighborFinalHPWL) * this->rectConnWeightSum.at(neighbor);
-	// }	
-	// if(netChanges < 0) return false;
-
-	// GREEDY
 	bool actuarization = forecastGrowthBenefits(rect, currentRectDPS, affectedNeighbors);
 	if(!actuarization) return false;
 
@@ -1290,44 +1065,6 @@ bool RefineEngine::growingTowardEast(Rectilinear *rect, len_t depth) const {
 
 
 	/* STEP 4: make sure all changes acutally improves HPWL and reflect the changes */
-	// double netChanges = 0;
-	// Cord optimalCentre = fp->calculateOptimalCentre(rect);
-
-	// Rectangle finalBoundingBox = dps::calculateBoundingBox(currentRectDPS);
-	// double finalBoundingBoxCentreX, finalBoundingBoxCentreY;
-	// rec::calculateCentre(finalBoundingBox, finalBoundingBoxCentreX, finalBoundingBoxCentreY);
-
-	// Rectangle originalBoundingBox = rect->calculateBoundingBox();
-	// double originalBoundingBoxCentreX, originalBoundingBoxCentreY;
-	// rec::calculateCentre(originalBoundingBox, originalBoundingBoxCentreX, originalBoundingBoxCentreY);
-
-	// double originalHPWL = EVector(FCord(originalBoundingBoxCentreX, originalBoundingBoxCentreY), optimalCentre).calculateL1Magnitude();
-	// double finalHPWL = EVector(FCord(finalBoundingBoxCentreX, finalBoundingBoxCentreY), optimalCentre).calculateL1Magnitude();
-	// // changing does not improve the HPWL, quit
-	// if(finalHPWL > originalHPWL) return false;
-	// netChanges = (originalHPWL - finalHPWL) * this->rectConnWeightSum.at(rect);
-
-	// for(std::unordered_map<Rectilinear *, DoughnutPolygonSet>::const_iterator it = affectedNeighbors.begin(); it != affectedNeighbors.end(); ++it){
-	// 	Rectilinear *neighbor = it->first;
-	// 	optimalCentre = fp->calculateOptimalCentre(neighbor);
-
-	// 	Rectangle neighborOrigBB = neighbor->calculateBoundingBox();
-	// 	double neighborOrigBBCentreX, neighborOrigBBCentreY;
-	// 	rec::calculateCentre(neighborOrigBB, neighborOrigBBCentreX, neighborOrigBBCentreY);
-
-	// 	Rectangle neighborFinalBB = dps::calculateBoundingBox(it->second);
-	// 	double neighborFinalBBCentreX, neighborFinalBBCentreY;
-	// 	rec::calculateCentre(neighborFinalBB, neighborFinalBBCentreX, neighborFinalBBCentreY);
-
-
-	// 	double neighborOriginalHPWL = EVector(FCord(neighborOrigBBCentreX, neighborOrigBBCentreY), optimalCentre).calculateL1Magnitude();
-	// 	double neighborFinalHPWL = EVector(FCord(neighborFinalBBCentreX, neighborFinalBBCentreY), optimalCentre).calculateL1Magnitude();
-	// 	// changing does not improve the HPWL, quit
-	// 	netChanges += (neighborOriginalHPWL - neighborFinalHPWL) * this->rectConnWeightSum.at(neighbor);
-	// }	
-	// if(netChanges < 0) return false;
-
-	// GREEDY
 	bool actuarization = forecastGrowthBenefits(rect, currentRectDPS, affectedNeighbors);
 	if(!actuarization) return false;
 
@@ -1390,7 +1127,6 @@ bool RefineEngine::growingTowardWest(Rectilinear *rect, len_t depth) const {
 	len_t tryGrowXL = BBXL - depth;
 	if(tryGrowXL < 0) tryGrowXL = 0;
 	if(tryGrowXL >= BBXL){
-		// std::cout << "Exit 1" << std::endl;
 		return false;
 	}
 
@@ -1408,10 +1144,7 @@ bool RefineEngine::growingTowardWest(Rectilinear *rect, len_t depth) const {
 
 	// The process of growing up
 	bool growWest = trialGrow(currentRectDPS, rect, posGrowArea, affectedNeighbors);
-	if(!growWest){
-		// std::cout << "Exit 2" << std::endl;
-		return false;
-	}
+	if(!growWest) return false;
 
 	/* STEP 2: Attempt fix the aspect ratio flaw caused by introducing the growth toward specified direction */
 	if(!dps::checkIsLegalAspectRatio(currentRectDPS, globalAspectRatioMin, globalAspectRatioMax)){
@@ -1521,10 +1254,7 @@ bool RefineEngine::growingTowardWest(Rectilinear *rect, len_t depth) const {
 	}
 
 	// if STEP 2 cannot fix aspect ratio issues, the growing cannot be executed
-	if(!dps::checkIsLegalAspectRatio(currentRectDPS, globalAspectRatioMin, globalAspectRatioMax)){
-		// std::cout << "Exit 3" << std::endl;
-		return false;
-	}
+	if(!dps::checkIsLegalAspectRatio(currentRectDPS, globalAspectRatioMin, globalAspectRatioMax)) return false;
 
 	/* STEP3 : Attempt to fix the utilization flaws caused by introducing the growth toward specified direction */
 	if(!dps::checkIsLegalUtilization(currentRectDPS, globalUtilizationMin)){
@@ -1536,56 +1266,6 @@ bool RefineEngine::growingTowardWest(Rectilinear *rect, len_t depth) const {
 	if(!dps::checkIsLegal(currentRectDPS, rect->getLegalArea(), globalAspectRatioMin, globalAspectRatioMax, globalUtilizationMin)) return false;
 
 	/* STEP 4: make sure all changes acutally improves HPWL and reflect the changes */
-	// double netChanges = 0;
-	// Cord optimalCentre = fp->calculateOptimalCentre(rect);
-
-	// Rectangle finalBoundingBox = dps::calculateBoundingBox(currentRectDPS);
-	// double finalBoundingBoxCentreX, finalBoundingBoxCentreY;
-	// rec::calculateCentre(finalBoundingBox, finalBoundingBoxCentreX, finalBoundingBoxCentreY);
-
-	// Rectangle originalBoundingBox = rect->calculateBoundingBox();
-	// double originalBoundingBoxCentreX, originalBoundingBoxCentreY;
-	// rec::calculateCentre(originalBoundingBox, originalBoundingBoxCentreX, originalBoundingBoxCentreY);
-
-	// double originalHPWL = EVector(FCord(originalBoundingBoxCentreX, originalBoundingBoxCentreY), optimalCentre).calculateL1Magnitude();
-	// double finalHPWL = EVector(FCord(finalBoundingBoxCentreX, finalBoundingBoxCentreY), optimalCentre).calculateL1Magnitude();
-	// // changing does not improve the HPWL, quit
-	// if(finalHPWL > originalHPWL){
-	// 	// std::cout << "Original BB: " << originalBoundingBox<< std::endl;
-	// 	// std::cout<< "original HPWL = " << originalHPWL << std::endl;
-	// 	// std::cout << "After BB: " << finalBoundingBox << std::endl;
-	// 	// std::cout << "After HPwL = " << finalHPWL << std::endl;
-	// 	// std::cout << "optimal Point" << optimalCentre << std::endl;
-	// 	// std::cout << "Exit 4" << std::endl;
-	// 	return false;
-	// }
-	// netChanges = (originalHPWL - finalHPWL) * this->rectConnWeightSum.at(rect);
-
-	// for(std::unordered_map<Rectilinear *, DoughnutPolygonSet>::const_iterator it = affectedNeighbors.begin(); it != affectedNeighbors.end(); ++it){
-	// 	Rectilinear *neighbor = it->first;
-	// 	optimalCentre = fp->calculateOptimalCentre(neighbor);
-
-	// 	Rectangle neighborOrigBB = neighbor->calculateBoundingBox();
-	// 	double neighborOrigBBCentreX, neighborOrigBBCentreY;
-	// 	rec::calculateCentre(neighborOrigBB, neighborOrigBBCentreX, neighborOrigBBCentreY);
-
-	// 	Rectangle neighborFinalBB = dps::calculateBoundingBox(it->second);
-	// 	double neighborFinalBBCentreX, neighborFinalBBCentreY;
-	// 	rec::calculateCentre(neighborFinalBB, neighborFinalBBCentreX, neighborFinalBBCentreY);
-
-
-	// 	double neighborOriginalHPWL = EVector(FCord(neighborOrigBBCentreX, neighborOrigBBCentreY), optimalCentre).calculateL1Magnitude();
-	// 	double neighborFinalHPWL = EVector(FCord(neighborFinalBBCentreX, neighborFinalBBCentreY), optimalCentre).calculateL1Magnitude();
-	// 	// changing does not improve the HPWL, quit
-	// 	netChanges += (neighborOriginalHPWL - neighborFinalHPWL) * this->rectConnWeightSum.at(neighbor);
-	// }	
-	// // std::cout << "Final Net Changes = " << netChanges << std::endl;
-	// if(netChanges < 0){
-	// 	// std::cout << "Exit 5" << std::endl;
-	// 	return false;
-	// }
-
-	// GREEDY
 	bool actuarization = forecastGrowthBenefits(rect, currentRectDPS, affectedNeighbors);
 	if(!actuarization) return false;
 
@@ -1963,23 +1643,11 @@ std::unordered_map<Rectilinear *, DoughnutPolygonSet> &affectedNeighbors) const 
 		afterHPWL += (c->weight * ((maxX - minX)+(maxY - minY)));
 	}
 
-	// std::cout << "ForeCasting:" << originalHPWL << " -> " << afterHPWL << std::endl;
-	// int count = 0;
-	// for(auto mi : rectCentreCache){
-
-	// 	std::cout << mi.first->getName() << ": " << mi.second <<", ";
-	// 	if((count ++) > 5){
-	// 		std::cout << std::endl;
-	// 		count = 0;
-	// 	}
-	// }
-	// std::cout << std::endl;
 	return (originalHPWL > afterHPWL);
 }
 
 bool RefineEngine::refineByTrimming(Rectilinear *rect) const {
 
-	// std::cout << "Trimming by " << rect->getName() << std::endl;
 	area_t residualArea = rect->calculateResidualArea();
 	if(residualArea <= 0) return false;
 
@@ -1995,20 +1663,16 @@ bool RefineEngine::refineByTrimming(Rectilinear *rect) const {
 
 		if(!REFINE_USE_GRADIENT_SHRINK){
 			Cord rectOptimalCentre = fp->calculateOptimalCentre(rect);
-			// std::cout << "optimal centre at: " << rectOptimalCentre;
 			double rectBBCentreX, rectBBCentreY;
 			Rectangle rectBB = rect->calculateBoundingBox();
 			
 			rec::calculateCentre(rectBB, rectBBCentreX, rectBBCentreY);
 			FCord rectBBCentre (rectBBCentreX, rectBBCentreY);
-			// std::cout << ", now bb centre = "<< rectBBCentre << std::endl;
 
 			EVector rectToward(rectBBCentre, rectOptimalCentre);
-			// std::cout << rectToward << std::endl;
 			angle_t rectTowardAngle = rectToward.calculateDirection();
 			// change the angle from toward to behind, for trimming
 			rectTowardAngle = flipAngle(rectTowardAngle);
-			std::cout << ", Trimming Vector = " << rectTowardAngle;
 			rectTowardSector = translateAngleToSector(rectTowardAngle);
 
 		}else{
@@ -2018,16 +1682,7 @@ bool RefineEngine::refineByTrimming(Rectilinear *rect) const {
 
 		}
 
-
-		
-		// std::cout << "Selected Sector = " << rectTowardSector << std::endl;
-		// std::cout << "before trim print:, show all connections: " << std::endl;
-		// for(Connection * const &cn : fp->connectionMap[rect]){
-		// 	std::cout << *cn << std::endl;
-		// }
-		// fp->displayHPWL();
-		switch (rectTowardSector)
-		{
+		switch (rectTowardSector){
 			case sector::ONE: {
 				// Try East, then North
 				bool trimEast = executeRefineTrimming(rect, direction2D::EAST, momentum);
@@ -2212,10 +1867,6 @@ bool RefineEngine::executeRefineTrimming(Rectilinear *rect, direction2D directio
 	len_t currentBBWidth = rec::getWidth(currentBB);
 	len_t currentbBHeight = rec::getHeight(currentBB);
 
-	// std::cout << "Trim direction = " << direction << " ";
-	// std::cout << "Before Trim: Centre = (" << (currentBBXL + currentBBXH)/2.0 << ", ";
-	// std::cout << (currentBBYL + currentBBYH)/2.0 << "), HPWL = " << fp->calculateHPWL() << std::endl;
-
 	// determine the rectangle to trim off
 	Rectangle trimRectangle;
 	switch (direction)
@@ -2271,12 +1922,9 @@ bool RefineEngine::executeRefineTrimming(Rectilinear *rect, direction2D directio
 		Rectangle newBB = rect->calculateBoundingBox();
 		double bbx, bby;
 		rec::calculateCentre(newBB, bbx, bby);
-		// std::cout << "Trim success, New centre = " << FCord(bbx, bby) << ", HPWL = " << fp->calculateHPWL() << std::endl;
-		// std::cout << "Success after trim print: " << std::endl;
-		// fp->displayHPWL();
+
 		return true;
 	}else{
-		// std::cout << "Trim FAIL" << std::endl;
 		return false;
 	}
 }

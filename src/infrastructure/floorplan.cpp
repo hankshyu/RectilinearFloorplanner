@@ -967,23 +967,6 @@ double Floorplan::calculateHPWL(){
     return floorplanHPWL;
 }
 
-void Floorplan::displayHPWL(){
-    for(std::unordered_map<Rectilinear *, std::vector<Connection *>>::iterator it = connectionMap.begin(); it != connectionMap.end(); ++it){
-        Rectilinear *rt = it->first;
-        if(rt->getType() == rectilinearType::PREPLACED) continue;
-        Rectangle rtBB = rt->calculateBoundingBox();
-        double rtbbx, rtbby;
-        rec::calculateCentre(rtBB, rtbbx, rtbby);
-        std::cout << it->first->getName() <<", Centre = (" << rtbbx << ", " << rtbby << "), optimal centre = " << calculateOptimalCentre(rt) << " ";
-        double totalCost = 0;
-        for(Connection * const &c : it->second){
-            totalCost += c->calculateCost();
-        }
-        std::cout << "Link cost = " << totalCost << std::endl;
-
-    }
-}
-
 Cord Floorplan::calculateOptimalCentre(Rectilinear *rect) const {
     if(rect->getType() != rectilinearType::SOFT){
         throw CSException("FLOORPLAN_27");
@@ -1445,23 +1428,6 @@ void Floorplan::removePrimitiveOvelaps(bool verbose){
 
     // clean_up
     glp_delete_prob(lp);
-    
-}
-
-void Floorplan::debugPrint(){
-    std::cout << "OverlapTilePayload = " << overlapTilePayload.size() << std::endl;
-    for(std::unordered_map<Tile *, std::vector<Rectilinear *>>::iterator it = overlapTilePayload.begin(); it != overlapTilePayload.end(); ++it){
-        std::cout << *(it->first) << " (" << it->second.size() << ")";
-        for(Rectilinear *rt : it->second){
-            std::cout << rt->getName() << ", ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << "TilePayload = " << blockTilePayload.size() << std::endl;
-    for(std::unordered_map<Tile *, Rectilinear *>::iterator it = blockTilePayload.begin(); it != blockTilePayload.end(); ++it){
-        std::cout << *(it->first) << " -> " << it->second->getName();
-        std::cout << std::endl;
-    }
     
 }
 

@@ -114,7 +114,6 @@ public:
 
     // calculate the HPWL (cost) of the floorplan system, using the connections information stored inside "allConnections"
     double calculateHPWL();
-    void displayHPWL();
 
     // calculate the optimal centre of a soft rectilnear, return Cord(-1, -1) if no connection is present
     Cord calculateOptimalCentre(Rectilinear *rect) const;
@@ -126,8 +125,6 @@ public:
 
     // use area rounding residuals to remove certain easy to remove overlaps
     void removePrimitiveOvelaps(bool verbose);
-
-    void debugPrint();
 
     // check if the floorplan is legal, return nullptr if floorplan legal, otherwise return first met faulty Rectilinear
     Rectilinear *checkFloorplanLegal(rectilinearIllegalType &illegalType) const;
