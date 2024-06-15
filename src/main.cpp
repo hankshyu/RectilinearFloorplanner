@@ -22,8 +22,7 @@
 std::string INPUT_FILE_NAME = "";
 std::string CONFIG_FILE_NAME = "";
 std::string OUTPUT_FILE_NAME = "";
-std::string VISUALISE_FILE_NAME = "";
-
+std::string DRAW_FILE_NAME = "";
 
 std::ifstream cifs;
 std::ofstream ofs;
@@ -37,7 +36,7 @@ double HYPERPARAM_GLOBAL_PUNISHMENT = 0.005668000000000089;
 double HYPERPARAM_GLOBAL_MAX_ASPECTRATIO_RATE = 0.9;
 double HYPERPARAM_GLOBAL_LEARNING_RATE = 46e-4;
 
-double HYPERPARAM_POR_USAGE = 0.0; // Will downcast to boolean
+double HYPERPARAM_POR_USAGE = 1.0; // Will downcast to boolean
 
 double HYPERPARAM_LEG_MAX_COST_CUTOFF = 6000.0;
 
@@ -144,7 +143,7 @@ int main(int argc, char *argv[]) {
 				CONFIG_FILE_NAME = optarg;
                 break;
             case 'd':
-				VISUALISE_FILE_NAME = optarg;
+                DRAW_FILE_NAME = optarg;
                 break;
             case '?':
                 std::cout << "Unknown option or missing argument" << std::endl;
@@ -159,15 +158,15 @@ int main(int argc, char *argv[]) {
 		exit(4);
 	}else std::cout << "Input File: " << INPUT_FILE_NAME << std::endl;
 
-	if(!CONFIG_FILE_NAME.empty()){
-        std::cout << "Input File: " << CONFIG_FILE_NAME << std::endl;
-    	cifs.open(CONFIG_FILE_NAME);
-	    if(!cifs.is_open()){
-            std::cout << "Configuraton Stream Cannot Open" << std::endl;
-            exit(4);
-	    }
-    }
-
+	if(CONFIG_FILE_NAME.empty()){
+		std::cout << "[Missing Arguments] Missing Configuration File " << std::endl;
+		exit(4);
+	}else std::cout << "Input File: " << CONFIG_FILE_NAME << std::endl;
+	cifs.open(CONFIG_FILE_NAME);
+	if(!cifs.is_open()){
+		std::cout << "Configuraton Stream Cannot Open" << std::endl;
+		exit(4);
+	}
 
 	if(OUTPUT_FILE_NAME.empty()){
 		std::cout << "[Missing Arguments] Missing Output File " << std::endl;
@@ -180,9 +179,8 @@ int main(int argc, char *argv[]) {
 	}
     
 	// parse input configs
-    if(!CONFIG_FILE_NAME.empty()){
-        parseConfigurations();
-    }
+	parseConfigurations();
+
     rectilinearIllegalType rit;
     /* PHASE 1: Global Floorplanning */
     GlobalResult globalResult;
@@ -228,12 +226,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	/* PHASE 4: DFSL Legaliser: Overlap Migration via Graph Traversal */
-    try{
-        runLegalization(floorplan);
-
-    }catch(CSException c){
-        std::cout << c.what()  << std::endl;
-    }
+	runLegalization(floorplan);
     // floorplan->visualiseFloorplan("./outputs/case02-legalized.txt");
 
 PHASE_REFINE_ENGINE:{
@@ -251,36 +244,24 @@ PHASE_REFINE_ENGINE:{
         bool refineBestShrinkGradient;
         
         // Try momentum setup: (init growth) = (1, 2), (2, 1.5), (2, 1.75), (2, 2), (4, 2) 
-        // For Academic benchmark: (1, 1.75), (2, 1.75) (2, 2)
-        for(int xMomentum = 0; xMomentum < 3; ++xMomentum){
+        for(int xMomentum = 0; xMomentum < 5; ++xMomentum){
             len_t expMomentum;
             double expMomentumGrowth;
-            // if(xMomentum == 0){
-            //     expMomentum = 1;
-            //     expMomentumGrowth = 2;
-            // }else if(xMomentum == 1){
-            //     expMomentum = 2;
-            //     expMomentumGrowth = 1.5;
-            // }else if(xMomentum == 2){ 
-            //     expMomentum = 2;
-            //     expMomentumGrowth = 1.75;
-            // }else if(xMomentum == 3){
-            //     expMomentum = 2;
-            //     expMomentumGrowth = 2;
-            // }else if(xMomentum == 4){
-            //     expMomentum = 4;
-            //     expMomentumGrowth = 2;
-            // }
-
             if(xMomentum == 0){
                 expMomentum = 1;
-                expMomentumGrowth = 1.75;
+                expMomentumGrowth = 2;
             }else if(xMomentum == 1){
                 expMomentum = 2;
+                expMomentumGrowth = 1.5;
+            }else if(xMomentum == 2){ 
+                expMomentum = 2;
                 expMomentumGrowth = 1.75;
-            }else{
+            }else if(xMomentum == 3){
                 expMomentum = 2;
                 expMomentumGrowth = 2;
+            }else if(xMomentum == 4){
+                expMomentum = 3;
+                expMomentumGrowth = 1.75;
             }
             
             for(int xGradient = 0; xGradient < 4; ++ xGradient){
@@ -369,11 +350,12 @@ PHASE_REFINE_ENGINE:{
 	}
 
 
-        // floorplan->visualiseFloorplan("./outputs/case01R-refined.txt");
+        // floorplan->visualiseFloorplan("./outputs/case02-refined.txt");
         // floorplan->visualiseICCADFormat("./outputs/case02-refined.txt");
 
 		if(!LEGAL_REF) programExitFailTask(5);
-        if(VISUALISE_FILE_NAME != "") floorplan->visualiseFloorplan(VISUALISE_FILE_NAME);
+        // if(DRAW_FILE_NAME != "") floorplan->visualiseFloorplan(DRAW_FILE_NAME);
+        if(DRAW_FILE_NAME != "") floorplan->visualiseICCADFormat(DRAW_FILE_NAME);
 
         programExitSuccessTask(floorplan);
 
@@ -473,7 +455,7 @@ void runPrimitiveOverlapRemoval(Floorplan *&floorplan){
 	if(bool(HYPERPARAM_POR_USAGE)){
 		std::cout << std::endl;
 		TIME_POINT_START_POR = std::chrono::steady_clock::now();
-		floorplan->removePrimitiveOvelaps(true);
+		// floorplan->removePrimitiveOvelaps(true);
 		TIME_POINT_END_POR = std::chrono::steady_clock::now();
 		HPWL_DONE_POR = floorplan->calculateHPWL();
 		OVERLAP_DONE_POR = floorplan->calculateOverlapRatio();
@@ -507,7 +489,7 @@ void runLegalization(Floorplan *&floorplan){
 	configs.setConfigValue<double>("BBAspWeight"        ,HYPERPARAM_LEG_BB_ASP_WEIGHT);
 	configs.setConfigValue<double>("BBFlatCost"         ,HYPERPARAM_LEG_BB_FLAT_COST);
 
-	configs.setConfigValue<int>("OutputLevel", DFSL::DFSL_PRINTLEVEL::DFSL_STANDARD);
+	// configs.setConfigValue<int>("OutputLevel", DFSL::DFSL_PRINTLEVEL::DFSL_VERBOSE);
 	
 	// Create Legalise Object
 	DFSL::DFSLegalizer dfsl;

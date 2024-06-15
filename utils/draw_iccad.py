@@ -121,9 +121,9 @@ for block in range(fixed_block_number):
 
 # draw soft blocks
 highlight_soft_block_name = fin_floorplan[1]
-soft_block_number = int(fin_floorplan[2].split(" ")[1])
-i = 3
-
+soft_block_number = int(fin_floorplan[1].split(" ")[1])
+i = 2
+print(soft_block_number)
 for block in range(soft_block_number):
     ss = fin_floorplan[i].split(" ")
 

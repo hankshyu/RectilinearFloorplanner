@@ -124,7 +124,7 @@ public:
     double calculateOverlapRatio() const;
 
     // use area rounding residuals to remove certain easy to remove overlaps
-    void removePrimitiveOvelaps(bool verbose);
+    // void removePrimitiveOvelaps(bool verbose);
 
     // check if the floorplan is legal, return nullptr if floorplan legal, otherwise return first met faulty Rectilinear
     Rectilinear *checkFloorplanLegal(rectilinearIllegalType &illegalType) const;
@@ -145,7 +145,6 @@ public:
     void visualiseFloorplan(const std::string &outputFileName) const;
 
     void visualiseICCADFormat(const std::string &outputFileName) const;
-    void visualiseICCADFormat(const std::string &outputFileName, const std::string highlightModuleName) const;
 
     // added by ryan
     // given a tile that belongs in fromRect, remove that tile from fromRect, and place it in toRect

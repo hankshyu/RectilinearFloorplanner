@@ -5,6 +5,7 @@ bool dps::innerWidthLegal(const DoughnutPolygonSet &dpSet){
     
     if (dpSet.empty()) return true;
     const len_t minInnerWidth = 30;
+    // const len_t minInnerWidth = 5;
     using namespace boost::polygon::operators;
     
     // dice the rectangle vertically and measure the height

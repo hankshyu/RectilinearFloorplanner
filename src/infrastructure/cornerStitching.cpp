@@ -219,9 +219,9 @@ void CornerStitching::findLineTileHorizontalNegative(Tile *initTile, Line line, 
 
 void CornerStitching::findLineTileVerticalPositive(Tile *initTile, Line line, std::vector<LineTile> &positiveSide){
 
-	if(initTile == nullptr){
-		throw CSException("CORNERSTITCHING_22");
-	}
+	// if(initTile == nullptr){
+	// 	throw CSException("CORNERSTITCHING_22");
+	// }
 	
 	Tile *index = initTile;
 	len_t lineX = line.getLow().x();
@@ -284,9 +284,9 @@ void CornerStitching::findLineTileVerticalPositive(Tile *initTile, Line line, st
 
 void CornerStitching::findLineTileVerticalNegative(Tile *initTile, Line line, std::vector<LineTile> &negativeSide){
 
-	if(initTile == nullptr){
-		throw CSException("CORNERSTITCHING_23");
-	}
+	// if(initTile == nullptr){
+	// 	throw CSException("CORNERSTITCHING_23");
+	// }
 
 	Tile *index = initTile;
 	len_t lineX = line.getLow().x();
@@ -355,9 +355,9 @@ CornerStitching::CornerStitching()
 
 CornerStitching::CornerStitching(len_t chipWidth, len_t chipHeight)
 	: mCanvasWidth(chipWidth), mCanvasHeight(chipHeight) {
-		if((chipWidth <= 0) || (chipHeight <= 0)){
-			throw CSException("CORNERSTITCHING_04");
-		}
+		// if((chipWidth <= 0) || (chipHeight <= 0)){
+		// 	throw CSException("CORNERSTITCHING_04");
+		// }
 		mCanvasSizeBlankTile = new Tile(tileType::BLANK, Cord(0, 0), chipWidth, chipHeight);
 }
 
@@ -559,9 +559,9 @@ len_t CornerStitching::getCanvasHeight() const{
 Tile *CornerStitching::findPoint(const Cord &key) const{
 
 	// throw exception if point finding (key) out of canvas range
-	if(!checkPointInCanvas(key)){
-		throw CSException("CORNERSTITCHING_01");
-	}
+	// if(!checkPointInCanvas(key)){
+	// 	throw CSException("CORNERSTITCHING_01");
+	// }
 
 	// Find a seed to start, if empty just return the blank tile.
 	Tile *index;
@@ -616,9 +616,9 @@ void CornerStitching::findLineTile(Line &line, std::vector<LineTile> &positiveSi
 	len_t lineHighY = lineHigh.y();
 	bool lineLowLegal = (lineLowX >= 0) && (lineLowX <= mCanvasWidth) && (lineLowY >= 0) && (lineLowY <= mCanvasHeight);
 	bool lineHighLegal = (lineHighX >= 0) && (lineHighX <= mCanvasWidth) && (lineHighY >= 0) && (lineHighY <= mCanvasHeight);
-	if(!(lineLowLegal && lineHighLegal)){
-		throw CSException("CORNERSTITCHING_19");
-	}
+	// if(!(lineLowLegal && lineHighLegal)){
+	// 	throw CSException("CORNERSTITCHING_19");
+	// }
 
 	// Find a seed to start, if empty just return the blank tile.
 	Tile *index;
@@ -877,9 +877,9 @@ void CornerStitching::findAllNeighbors(Tile *centre, std::vector<Tile *> &neighb
 
 bool CornerStitching::searchArea(Rectangle box) const{
 
-	if(!checkRectangleInCanvas(box)){
-		throw CSException("CORNERSTITCHING_02");
-	}
+	// if(!checkRectangleInCanvas(box)){
+	// 	throw CSException("CORNERSTITCHING_02");
+	// }
 
 	// Use point-finding algo to locate the tile containin the upperleft corner of AOI
 	Tile *currentFind = findPoint(Cord(rec::getXL(box), rec::getYH(box) - 1));
@@ -905,9 +905,9 @@ bool CornerStitching::searchArea(Rectangle box) const{
 
 bool CornerStitching::searchArea(Rectangle box, Tile *someTile) const{
 
-	if(!checkRectangleInCanvas(box)){
-		throw CSException("CORNERSTITCHING_02");
-	}
+	// if(!checkRectangleInCanvas(box)){
+	// 	throw CSException("CORNERSTITCHING_02");
+	// }
 
 	// Use point-finding algo to locate the tile containin the upperleft corner of AOI
 	Tile *currentFind = findPoint(Cord(rec::getXL(box), rec::getYH(box) - 1));
@@ -949,9 +949,9 @@ void CornerStitching::enumerateDirectedArea(Rectangle box, std::vector <Tile *> 
 
 	// modified by Hank, sorry pal, safeties first
 
-	if(!checkRectangleInCanvas(box)){
-		throw CSException("CORNERSTITCHING_03");
-	}
+	// if(!checkRectangleInCanvas(box)){
+	// 	throw CSException("CORNERSTITCHING_03");
+	// }
 
 	// Use point-finding algo to locate the tile containin the upperleft corner of AOI
 	Tile *leftTouchTile = findPoint(Cord(rec::getXL(box), rec::getYH(box) - 1));
@@ -966,18 +966,18 @@ void CornerStitching::enumerateDirectedArea(Rectangle box, std::vector <Tile *> 
 
 Tile *CornerStitching::insertTile(const Tile &tile){
 	// check if the input prototype is within the canvas
-	if(!checkRectangleInCanvas(tile.getRectangle())){
-		throw CSException("CORNERSTITCHING_06");
-	}
+	// if(!checkRectangleInCanvas(tile.getRectangle())){
+	// 	throw CSException("CORNERSTITCHING_06");
+	// }
 
-	// check if the tile inserting position already exist anotehr tile
-	if(searchArea(tile.getRectangle())){
-		throw CSException("CORNERSTITCHING_07");
-	}
-	// insert tile type shall not be BLANK
-	if(tile.getType() == tileType::BLANK){
-		throw CSException("CORNERSTITCHING_12");
-	}
+	// // check if the tile inserting position already exist anotehr tile
+	// if(searchArea(tile.getRectangle())){
+	// 	throw CSException("CORNERSTITCHING_07");
+	// }
+	// // insert tile type shall not be BLANK
+	// if(tile.getType() == tileType::BLANK){
+	// 	throw CSException("CORNERSTITCHING_12");
+	// }
 
 	// Special case when inserting the first tile in the system
 	if(mAllNonBlankTilesMap.empty()){
@@ -1394,13 +1394,13 @@ void CornerStitching::removeTile(Tile *tile){
 	Cord tileLL = tile->getLowerLeft();
 	std::unordered_map<Cord, Tile*>::iterator deadTileIt = mAllNonBlankTilesMap.find(tileLL);
 	// there is no such index
-	if(deadTileIt == mAllNonBlankTilesMap.end()){
-		throw (CSException("CORNERSTITCHING_17"));
-	}
-	// the index does not point to the tile to delete
-	if(mAllNonBlankTilesMap[tileLL] != tile){
-		throw (CSException("CORNERSTITCHING_18"));
-	}	
+	// if(deadTileIt == mAllNonBlankTilesMap.end()){
+	// 	throw (CSException("CORNERSTITCHING_17"));
+	// }
+	// // the index does not point to the tile to delete
+	// if(mAllNonBlankTilesMap[tileLL] != tile){
+	// 	throw (CSException("CORNERSTITCHING_18"));
+	// }	
 
 	// special case when there is only one noeBlank tile left in the cornerStitching system
 	if(mAllNonBlankTilesMap.size() == 1){
@@ -1618,9 +1618,9 @@ void CornerStitching::removeTile(Tile *tile){
 Tile *CornerStitching::cutTileHorizontally(Tile *origTop, len_t newDownHeight){
 
 	// check if the cut is valid on the Y axis
-	if(origTop->getHeight() <= newDownHeight){
-		throw CSException("CORNERSTITCHING_08");
-	}
+	// if(origTop->getHeight() <= newDownHeight){
+	// 	throw CSException("CORNERSTITCHING_08");
+	// }
 
 	Tile *newDown = new Tile(origTop->getType(), origTop->getLowerLeft(),origTop->getWidth(), newDownHeight);
 
@@ -1686,9 +1686,9 @@ Tile *CornerStitching::cutTileHorizontally(Tile *origTop, len_t newDownHeight){
 Tile *CornerStitching::cutTileVertically(Tile *origRight, len_t newLeftWidth){
 
 	// check if the cut is valid on the X axis
-	if(origRight->getWidth() <= newLeftWidth){
-		throw CSException("CORNERSTITCHING_09");
-	}
+	// if(origRight->getWidth() <= newLeftWidth){
+	// 	throw CSException("CORNERSTITCHING_09");
+	// }
 
 	Tile *newLeft = new Tile(origRight->getType(), origRight->getLowerLeft(), newLeftWidth, origRight->getHeight());
 
@@ -1753,17 +1753,17 @@ Tile *CornerStitching::cutTileVertically(Tile *origRight, len_t newLeftWidth){
 Tile *CornerStitching::mergeTilesVertically(Tile *mergeUp, Tile *mergeDown){
 
 	// test if merge up is actually above mergeDown
-	if(mergeUp->getYLow() <= mergeDown->getYLow()){
-		throw CSException("CORNERSTITCHING_10");
-	}
+	// if(mergeUp->getYLow() <= mergeDown->getYLow()){
+	// 	throw CSException("CORNERSTITCHING_10");
+	// }
 
 	// check if two input tiles (mergeUp and mergeDown) are actually mergable
 	bool sameWidth = (mergeUp->getWidth() == mergeDown->getWidth());
 	bool xAligned = (mergeUp->getXLow() == mergeDown->getXLow());
 	bool tilesAttatched = (mergeDown->getYHigh() == mergeUp->getYLow());
-	if(!(sameWidth && xAligned && tilesAttatched)){
-		throw CSException("CORNERSTITCHING_11");
-	}
+	// if(!(sameWidth && xAligned && tilesAttatched)){
+	// 	throw CSException("CORNERSTITCHING_11");
+	// }
 
 	std::vector<Tile *> mergedownLeftNeighbors;
 	findLeftNeighbors(mergeDown, mergedownLeftNeighbors);
@@ -1801,17 +1801,17 @@ Tile *CornerStitching::mergeTilesVertically(Tile *mergeUp, Tile *mergeDown){
 Tile *CornerStitching::mergeTilesHorizontally(Tile *mergeLeft, Tile *mergeRight){
 	
 	// Test if merge left is actually on the left on mergeRight
-	if(mergeLeft->getXLow() >= mergeRight->getXLow()){
-		throw CSException("CORNERSTITCHING_13");
-	}
+	// if(mergeLeft->getXLow() >= mergeRight->getXLow()){
+	// 	throw CSException("CORNERSTITCHING_13");
+	// }
 
 	// check if two input tiles (mergeLeft and mergeRight) are actually mergable
 	bool sameHeight = (mergeLeft->getHeight() == mergeRight->getHeight());
 	bool yAligned = (mergeLeft->getYLow() == mergeRight->getYLow());
 	bool tilesAttatched = (mergeLeft->getXHigh() == mergeRight->getXLow());
-	if(!(sameHeight && yAligned && tilesAttatched)){
-		throw CSException("CORNERSTITCHING_14");
-	}
+	// if(!(sameHeight && yAligned && tilesAttatched)){
+	// 	throw CSException("CORNERSTITCHING_14");
+	// }
 
 	std::vector<Tile *> mergeRightTopNeighbors;
 	findTopNeighbors(mergeRight, mergeRightTopNeighbors);
@@ -1850,7 +1850,7 @@ Tile *CornerStitching::mergeTilesHorizontally(Tile *mergeLeft, Tile *mergeRight)
 void CornerStitching::visualiseCornerStitching(const std::string &outputFileName) const{
 	std::ofstream ofs;
 	ofs.open(outputFileName, std::fstream::out);
-	if(!ofs.is_open()) throw(CSException("CORNERSTITCHING_05"));
+	// if(!ofs.is_open()) throw(CSException("CORNERSTITCHING_05"));
 
 	std::unordered_set<Tile *> allTiles;
 	collectAllTiles(allTiles);

@@ -6,8 +6,7 @@
 RefineEngine::RefineEngine(Floorplan *floorplan, int maxIter, bool useGradientOrder, len_t initMomentum, double momentumGrowth, bool growGradient, bool shrinkGradient)
 	: REFINE_MAX_ITERATION(maxIter), REFINE_USE_GRADIENT_ORDER(useGradientOrder),
 	REFINE_INITIAL_MOMENTUM(initMomentum), REFINE_MOMENTUM_GROWTH(momentumGrowth), REFINE_USE_GRADIENT_GROW(growGradient), REFINE_USE_GRADIENT_SHRINK(shrinkGradient) {
-    
-	this->fp = floorplan;
+    this->fp = floorplan;
     for(Rectilinear *const &rt : fp->softRectilinears){
         rectConnOrder.push_back(rt);
         std::unordered_map<Rectilinear *, std::vector<Connection *>>::iterator it = fp->connectionMap.find(rt);
@@ -37,7 +36,6 @@ Floorplan *RefineEngine::refine(){
 
 	double iterationHPWLRecord = initialHPWL;
     while(hasMovement){
-
         hasMovement = false;
 
 		// arrange the order of refining
@@ -112,7 +110,7 @@ Floorplan *RefineEngine::refine(){
 
 }
 
-bool RefineEngine::refineRectilinear(Rectilinear *rect) {
+bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 	// rectilinearIllegalType rit;
 	// bool legcheck0 = (this->fp->checkFloorplanLegal(rit) == nullptr);
 	// if(!legcheck0) std::cout << "Legalizing " << rect->getName() << " is illegal in station 0" << std::endl;
@@ -122,18 +120,12 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) {
 	bool hasImprovements = false;
 	fillBoundingBox(rect);
 
-	std::string videoFrame = "./videoFrames/" + std::to_string(++dbgrfCounter) + ".txt";
-	this->fp->visualiseICCADFormat(videoFrame, rect->getName());
-
 	// bool legcheck1 = (this->fp->checkFloorplanLegal(rit) == nullptr);
 	// if((!legcheck1) && legcheck0) std::cout << "Legalizing " << rect->getName() << " is illegal in station 1" << std::endl;
 
 	bool growRefineImproves = refineByGrowing(rect);
 	hasImprovements |= growRefineImproves;
 
-	videoFrame = "./videoFrames/" + std::to_string(++dbgrfCounter) + ".txt";
-	this->fp->visualiseICCADFormat(videoFrame, rect->getName());
-	
 	// bool legcheck2 = (this->fp->checkFloorplanLegal(rit) == nullptr);
 	// if((!legcheck2) && legcheck1) std::cout << "Legalizing " << rect->getName() << " is illegal in station 2" << std::endl;
 	
@@ -150,8 +142,6 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) {
 	// }
 	
 	fillBoundingBox(rect);
-	videoFrame = "./videoFrames/" + std::to_string(++dbgrfCounter) + ".txt";
-	this->fp->visualiseICCADFormat(videoFrame, rect->getName());
 		// std::cout << "Floorplan Legality4 = " << (this->fp->checkFloorplanLegal(rit) == nullptr) << std::endl;
 	// double hpwl2 = fp->calculateHPWL();
 	// double imp2 = hpwl1 - hpwl2;
@@ -164,9 +154,6 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) {
 
 	bool trimRefineImproves = refineByTrimming(rect);
 	hasImprovements |= trimRefineImproves;
-
-	videoFrame = "./videoFrames/" + std::to_string(++dbgrfCounter) + ".txt";
-	this->fp->visualiseICCADFormat(videoFrame, rect->getName());
 		// std::cout << "Floorplan Legality5 = " << (this->fp->checkFloorplanLegal(rit) == nullptr) << std::endl;
 
 	// double hpwl3 = fp->calculateHPWL();
@@ -188,7 +175,6 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) {
 	// 	Rectilinear *illegalRect = fp->checkFloorplanLegal(rit);
 	// 	std::cout << "Refining " << rect->getName() << "Makes illegal! illegal guy = " << illegalRect->getName() << " " << rit << std::endl;
 	// }
-
 	
 	return hasImprovements;
 }

@@ -12,12 +12,12 @@
 #include "doughnutPolygon.h"
 #include "doughnutPolygonSet.h"
 
-#include "glpk.h"
+// #include "glpk.h"
 
 Rectilinear *Floorplan::placeRectilinear(std::string name, rectilinearType type, Rectangle placement, area_t legalArea, double aspectRatioMin, double aspectRatioMax, double mUtilizationMin){
-    if(!rec::isContained(mChipContour,placement)){
-        throw CSException("FLOORPLAN_16");
-    }
+    // if(!rec::isContained(mChipContour,placement)){
+    //     throw CSException("FLOORPLAN_16");
+    // }
 
     // register the Rectilinear container into the floorplan data structure
     Rectilinear *newRect = new Rectilinear(mIDCounter++, name, type, placement, legalArea, aspectRatioMin, aspectRatioMax, mUtilizationMin); 
@@ -606,17 +606,17 @@ void Floorplan::setGlobalUtilizationMin(double globalUtilizationMin){
 }
 
 Tile *Floorplan::addBlockTile(const Rectangle &tilePosition, Rectilinear *rt){
-    if(rt->getType() == rectilinearType::PIN){
-        throw CSException("FLOORPLAN_24");
-    }
+    // if(rt->getType() == rectilinearType::PIN){
+    //     throw CSException("FLOORPLAN_24");
+    // }
     
-    if(!rec::isContained(this->mChipContour, tilePosition)){
-        throw CSException("FLOORPLAN_02");
-    }
+    // if(!rec::isContained(this->mChipContour, tilePosition)){
+    //     throw CSException("FLOORPLAN_02");
+    // }
 
-    if(std::find(allRectilinears.begin(), allRectilinears.end(), rt) == allRectilinears.end()){
-        throw CSException("FLOORPLAN_03");
-    }
+    // if(std::find(allRectilinears.begin(), allRectilinears.end(), rt) == allRectilinears.end()){
+    //     throw CSException("FLOORPLAN_03");
+    // }
 
     // use the prototype to insert the tile onto the cornerstitching system, receive the actual pointer as return
     Tile tilePrototype(tileType::BLOCK, tilePosition);
@@ -630,18 +630,18 @@ Tile *Floorplan::addBlockTile(const Rectangle &tilePosition, Rectilinear *rt){
 }
 
 Tile *Floorplan::addOverlapTile(const Rectangle &tilePosition, const std::vector<Rectilinear*> &payload){
-    if(!rec::isContained(this->mChipContour, tilePosition)){
-        throw CSException("FLOORPLAN_04");
-    }
+    // if(!rec::isContained(this->mChipContour, tilePosition)){
+    //     throw CSException("FLOORPLAN_04");
+    // }
 
-    for(Rectilinear *const &rt : payload){
-        if(rt->getType() == rectilinearType::PIN){
-            throw CSException("FLOORPLAN_25");
-        }
-        if(std::find(allRectilinears.begin(), allRectilinears.end(), rt) == allRectilinears.end()){
-            throw CSException("FLOORPLAN_05");
-        }
-    }
+    // for(Rectilinear *const &rt : payload){
+    //     if(rt->getType() == rectilinearType::PIN){
+    //         throw CSException("FLOORPLAN_25");
+    //     }
+    //     if(std::find(allRectilinears.begin(), allRectilinears.end(), rt) == allRectilinears.end()){
+    //         throw CSException("FLOORPLAN_05");
+    //     }
+    // }
 
     // use the prototype to insert the tile onto the cornerstitching system, receive the actual pointer as return
     Tile tilePrototype(tileType::OVERLAP, tilePosition);
@@ -659,15 +659,15 @@ Tile *Floorplan::addOverlapTile(const Rectangle &tilePosition, const std::vector
 
 void Floorplan::deleteTile(Tile *tile){
     tileType toDeleteType = tile->getType();
-    if(!((toDeleteType == tileType::BLOCK) || (toDeleteType == tileType::OVERLAP))){
-        throw CSException("FLOORPLAN_06");
-    }
+    // if(!((toDeleteType == tileType::BLOCK) || (toDeleteType == tileType::OVERLAP))){
+    //     throw CSException("FLOORPLAN_06");
+    // }
     // clean-up the payload information stored inside the floorplan system
     if(toDeleteType == tileType::BLOCK){
         std::unordered_map<Tile *, Rectilinear *>::iterator blockIt= this->blockTilePayload.find(tile);
-        if(blockIt == this->blockTilePayload.end()){
-            throw CSException("FLOORPLAN_07");
-        }
+        // if(blockIt == this->blockTilePayload.end()){
+        //     throw CSException("FLOORPLAN_07");
+        // }
         // erase the tile from the rectilinear structure
         Rectilinear *rt = blockIt->second;
         rt->blockTiles.erase(tile);
@@ -675,9 +675,9 @@ void Floorplan::deleteTile(Tile *tile){
         this->blockTilePayload.erase(tile);
     }else{
         std::unordered_map<Tile *, std::vector<Rectilinear *>>::iterator overlapIt = this->overlapTilePayload.find(tile);
-        if(overlapIt == this->overlapTilePayload.end()){
-            throw CSException("FLOORPLAN_08");
-        }
+        // if(overlapIt == this->overlapTilePayload.end()){
+        //     throw CSException("FLOORPLAN_08");
+        // }
 
         // erase the tiles from the rectiliear structures
         for(Rectilinear *const rt : overlapIt->second){
@@ -693,21 +693,21 @@ void Floorplan::deleteTile(Tile *tile){
 }
 
 void Floorplan::increaseTileOverlap(Tile *tile, Rectilinear *newRect){
-    if(newRect->getType() == rectilinearType::PIN){
-        throw CSException("FLOORPLAN_26");
-    }  
+    // if(newRect->getType() == rectilinearType::PIN){
+    //     throw CSException("FLOORPLAN_26");
+    // }  
     tileType increaseTileType = tile->getType();
 
     if(increaseTileType == tileType::BLOCK){
         // check if the tile is present in the floorplan structure
         std::unordered_map<Tile *, Rectilinear *>::iterator blockIt = this->blockTilePayload.find(tile);
-        if(blockIt == this->blockTilePayload.end()){
-            throw CSException("FLOORPLAN_09");
-        }
+        // if(blockIt == this->blockTilePayload.end()){
+        //     throw CSException("FLOORPLAN_09");
+        // }
 
-        if(blockIt->second == newRect){
-            throw CSException("FLOORPLAN_20");
-        }
+        // if(blockIt->second == newRect){
+        //     throw CSException("FLOORPLAN_20");
+        // }
 
         Rectilinear *oldRect = blockIt->second;
         // erase record at floorplan system and rectilinear system
@@ -724,13 +724,13 @@ void Floorplan::increaseTileOverlap(Tile *tile, Rectilinear *newRect){
 
     }else if(increaseTileType == tileType::OVERLAP){
         std::unordered_map<Tile *, std::vector<Rectilinear *>>::iterator overlapIt = this->overlapTilePayload.find(tile);
-        if(overlapIt == this->overlapTilePayload.end()){
-            throw CSException("FLOORPLAN_10");
-        }
+        // if(overlapIt == this->overlapTilePayload.end()){
+        //     throw CSException("FLOORPLAN_10");
+        // }
 
-        if(std::find(overlapIt->second.begin(), overlapIt->second.end(), newRect) != overlapIt->second.end()){
-            throw CSException("FLOORPLAN_20");
-        }
+        // if(std::find(overlapIt->second.begin(), overlapIt->second.end(), newRect) != overlapIt->second.end()){
+        //     throw CSException("FLOORPLAN_20");
+        // }
         
         // update newRect's rectilienar structure and register newRect as tile's payload at floorplan system
         newRect->overlapTiles.insert(tile);
@@ -742,18 +742,18 @@ void Floorplan::increaseTileOverlap(Tile *tile, Rectilinear *newRect){
 }
 
 void Floorplan::decreaseTileOverlap(Tile *tile, Rectilinear *removeRect){
-    if(tile->getType() != tileType::OVERLAP){
-        throw CSException("FLOORPLAN_12");
-    }
+    // if(tile->getType() != tileType::OVERLAP){
+    //     throw CSException("FLOORPLAN_12");
+    // }
 
-    if(this->overlapTilePayload.find(tile) == this->overlapTilePayload.end()){
-        throw CSException("FLOORPLAN_13");
-    }
+    // if(this->overlapTilePayload.find(tile) == this->overlapTilePayload.end()){
+    //     throw CSException("FLOORPLAN_13");
+    // }
 
     std::vector<Rectilinear *> *oldPayload = &(this->overlapTilePayload[tile]);
-    if(std::find(oldPayload->begin(), oldPayload->end(), removeRect) == oldPayload->end()){
-        throw CSException("FLOORPLAN_14");
-    }
+    // if(std::find(oldPayload->begin(), oldPayload->end(), removeRect) == oldPayload->end()){
+    //     throw CSException("FLOORPLAN_14");
+    // }
     int oldPayloadSize = oldPayload->size();
     if(oldPayloadSize == 2){
         // ready to change tile's type to tileType::BLOCK
@@ -968,9 +968,9 @@ double Floorplan::calculateHPWL() const{
 }
 
 Cord Floorplan::calculateOptimalCentre(Rectilinear *rect) const {
-    if(rect->getType() != rectilinearType::SOFT){
-        throw CSException("FLOORPLAN_27");
-    }
+    // if(rect->getType() != rectilinearType::SOFT){
+    //     throw CSException("FLOORPLAN_27");
+    // }
     std::unordered_map<Rectilinear *, std::vector<Connection *>>::const_iterator it = connectionMap.find(rect);
     if(it == connectionMap.end()){
         return Cord(-1, -1);
@@ -1166,271 +1166,271 @@ double Floorplan::calculateOverlapRatio() const {
     return double(sumOverlapArea) / double(sumLegalArea);
 }
 
-void Floorplan::removePrimitiveOvelaps(bool verbose){
+// void Floorplan::removePrimitiveOvelaps(bool verbose){
 
-    /* 
-        Primitive Overlap Removal STEP 0: 
-        cherry pick those overlap with removal potentials, rectilinear that has residual area >= overlap area
-    */
-    std::map<Tile *, std::set<Rectilinear *>> tiletoRect;
-    std::map<Rectilinear *, std::vector<Tile *>> recttoTile;
-    for(std::unordered_map<Tile*, std::vector<Rectilinear*>>::const_iterator it = overlapTilePayload.begin(); it != overlapTilePayload.end(); ++it){
-        bool tileQualify = false;
-        Tile *overlapTile = it->first;
-        area_t overlapArea = overlapTile->getArea();
+//     /* 
+//         Primitive Overlap Removal STEP 0: 
+//         cherry pick those overlap with removal potentials, rectilinear that has residual area >= overlap area
+//     */
+//     std::map<Tile *, std::set<Rectilinear *>> tiletoRect;
+//     std::map<Rectilinear *, std::vector<Tile *>> recttoTile;
+//     for(std::unordered_map<Tile*, std::vector<Rectilinear*>>::const_iterator it = overlapTilePayload.begin(); it != overlapTilePayload.end(); ++it){
+//         bool tileQualify = false;
+//         Tile *overlapTile = it->first;
+//         area_t overlapArea = overlapTile->getArea();
 
-        for(Rectilinear* const &rect : overlapTilePayload[overlapTile]){
-            area_t residualArea = (rect->calculateActualArea() - rect->getLegalArea());
-            Rectilinear testRect = Rectilinear(*rect);
-            testRect.overlapTiles.erase(overlapTile);
-            rectilinearIllegalType rectIllegalCode;
-            bool legalAfterRemoval = testRect.isLegal(rectIllegalCode);
-            if((residualArea >= overlapArea) && legalAfterRemoval){
-                if(!tileQualify){
-                    tiletoRect[overlapTile] = {rect};
-                    tileQualify = true;
-                }else{
-                    tiletoRect[overlapTile].insert(rect);
-                }
-                std::map<Rectilinear *, std::vector<Tile *>>::iterator rttIt = recttoTile.find(rect);
-                if(rttIt == recttoTile.end()){
-                    recttoTile[rect] = {overlapTile};
-                }else{
-                    recttoTile[rect].push_back(overlapTile);
-                }
-            } 
-        }
-    }
+//         for(Rectilinear* const &rect : overlapTilePayload[overlapTile]){
+//             area_t residualArea = (rect->calculateActualArea() - rect->getLegalArea());
+//             Rectilinear testRect = Rectilinear(*rect);
+//             testRect.overlapTiles.erase(overlapTile);
+//             rectilinearIllegalType rectIllegalCode;
+//             bool legalAfterRemoval = testRect.isLegal(rectIllegalCode);
+//             if((residualArea >= overlapArea) && legalAfterRemoval){
+//                 if(!tileQualify){
+//                     tiletoRect[overlapTile] = {rect};
+//                     tileQualify = true;
+//                 }else{
+//                     tiletoRect[overlapTile].insert(rect);
+//                 }
+//                 std::map<Rectilinear *, std::vector<Tile *>>::iterator rttIt = recttoTile.find(rect);
+//                 if(rttIt == recttoTile.end()){
+//                     recttoTile[rect] = {overlapTile};
+//                 }else{
+//                     recttoTile[rect].push_back(overlapTile);
+//                 }
+//             } 
+//         }
+//     }
 
-    /* 
-        Primitive Overlap Removal STEP 1: 
-        For every Rectilinear, if there's only one available overlap to remove, do so. Iterate until no overlap solved
-    */
-    std::vector<Rectilinear *> allRectCandidates;
-    for(std::map<Rectilinear *, std::vector<Tile *>>::const_iterator it = recttoTile.begin(); it != recttoTile.end(); it++){
-        allRectCandidates.push_back(it->first);
-    }
+//     /* 
+//         Primitive Overlap Removal STEP 1: 
+//         For every Rectilinear, if there's only one available overlap to remove, do so. Iterate until no overlap solved
+//     */
+//     std::vector<Rectilinear *> allRectCandidates;
+//     for(std::map<Rectilinear *, std::vector<Tile *>>::const_iterator it = recttoTile.begin(); it != recttoTile.end(); it++){
+//         allRectCandidates.push_back(it->first);
+//     }
 
-    bool newOverlapRemoved;
-    do{
-        newOverlapRemoved = false;
-		for(int i = 0; i < allRectCandidates.size(); ++i){
-			Rectilinear *checkRt = allRectCandidates[i];
-			if(recttoTile[checkRt].size() == 1){
-				Tile *overlapTile = recttoTile[checkRt][0];
+//     bool newOverlapRemoved;
+//     do{
+//         newOverlapRemoved = false;
+// 		for(int i = 0; i < allRectCandidates.size(); ++i){
+// 			Rectilinear *checkRt = allRectCandidates[i];
+// 			if(recttoTile[checkRt].size() == 1){
+// 				Tile *overlapTile = recttoTile[checkRt][0];
 
-                area_t residualArea = checkRt->calculateActualArea() - checkRt->getLegalArea();
-                if(verbose) std::cout << "[PrimitiveOverlapRemoval(1/2)] " << "Remove " << *overlapTile << " with " << checkRt->getName();
-                if(verbose) std::cout << " (" << residualArea << " -> " << residualArea - overlapTile->getArea() << ")" << std::endl;
+//                 area_t residualArea = checkRt->calculateActualArea() - checkRt->getLegalArea();
+//                 if(verbose) std::cout << "[PrimitiveOverlapRemoval(1/2)] " << "Remove " << *overlapTile << " with " << checkRt->getName();
+//                 if(verbose) std::cout << " (" << residualArea << " -> " << residualArea - overlapTile->getArea() << ")" << std::endl;
 
-                decreaseTileOverlap(overlapTile, checkRt);
+//                 decreaseTileOverlap(overlapTile, checkRt);
 
-                for(Rectilinear *const &rt : tiletoRect[overlapTile]){
-                    if(recttoTile[rt].size() == 1){
-                        // the rectilinear would have empty overlap afterwards, remove entry
-                        recttoTile.erase(rt);
-                        allRectCandidates.erase(std::find(allRectCandidates.begin(), allRectCandidates.end(), checkRt));
-                    }else{
-                        recttoTile[rt].erase(std::find(recttoTile[rt].begin(), recttoTile[rt].end(), overlapTile));
-                    }
-                }
-                tiletoRect.erase(overlapTile);
-                newOverlapRemoved = true;
-                break;
+//                 for(Rectilinear *const &rt : tiletoRect[overlapTile]){
+//                     if(recttoTile[rt].size() == 1){
+//                         // the rectilinear would have empty overlap afterwards, remove entry
+//                         recttoTile.erase(rt);
+//                         allRectCandidates.erase(std::find(allRectCandidates.begin(), allRectCandidates.end(), checkRt));
+//                     }else{
+//                         recttoTile[rt].erase(std::find(recttoTile[rt].begin(), recttoTile[rt].end(), overlapTile));
+//                     }
+//                 }
+//                 tiletoRect.erase(overlapTile);
+//                 newOverlapRemoved = true;
+//                 break;
 
-			}
-		}
+// 			}
+// 		}
     
-    }while(newOverlapRemoved);
+//     }while(newOverlapRemoved);
 
-// debugging info
-    // std::cout << "Tile to Rect debug print: " << tiletoRect.size() << std::endl;
-    // for(auto it = tiletoRect.begin(); it != tiletoRect.end(); ++it){
-    //     std::cout << *(it->first) << " - > ";
-    //     for(Rectilinear * rt : it->second){
-    //         std::cout << rt->getName() << " [" << rt->calculateActualArea() - rt->getLegalArea() << "], ";
-    //     }
-    //     std::cout << std::endl;
-    // }
+// // debugging info
+//     // std::cout << "Tile to Rect debug print: " << tiletoRect.size() << std::endl;
+//     // for(auto it = tiletoRect.begin(); it != tiletoRect.end(); ++it){
+//     //     std::cout << *(it->first) << " - > ";
+//     //     for(Rectilinear * rt : it->second){
+//     //         std::cout << rt->getName() << " [" << rt->calculateActualArea() - rt->getLegalArea() << "], ";
+//     //     }
+//     //     std::cout << std::endl;
+//     // }
 
-    // std::cout << "Rect to Tile debug pirnt" << recttoTile.size() << std::endl;
-    // for(auto it = recttoTile.begin(); it != recttoTile.end(); ++it){
-    //     std::cout << it->first->getName() << " - > ";
-    //     for(Tile *tt : it->second){
-    //         std::cout << *tt << "(" << tt->getArea() << "), ";
-    //     }
-    //     std::cout << std::endl;
-    // }
+//     // std::cout << "Rect to Tile debug pirnt" << recttoTile.size() << std::endl;
+//     // for(auto it = recttoTile.begin(); it != recttoTile.end(); ++it){
+//     //     std::cout << it->first->getName() << " - > ";
+//     //     for(Tile *tt : it->second){
+//     //         std::cout << *tt << "(" << tt->getArea() << "), ";
+//     //     }
+//     //     std::cout << std::endl;
+//     // }
 
-    // std::cout << "Print all rect candidate: ";
-    // for(Rectilinear *it : allRectCandidates){
-    //     std::cout << it->getName() << ", ";
-    // }
-    // std::cout << std::endl;
+//     // std::cout << "Print all rect candidate: ";
+//     // for(Rectilinear *it : allRectCandidates){
+//     //     std::cout << it->getName() << ", ";
+//     // }
+//     // std::cout << std::endl;
 
 
 
-    // If there's no candidates to remove, terminate function
-    if(allRectCandidates.empty()) return;
+//     // If there's no candidates to remove, terminate function
+//     if(allRectCandidates.empty()) return;
 
-    /* 
-        Primitive Overlap Removal STEP 2: 
-        use binary ILP (BILP) to solve the problem
-    */   
+//     /* 
+//         Primitive Overlap Removal STEP 2: 
+//         use binary ILP (BILP) to solve the problem
+//     */   
 
-    // Prepare BILP parameters
-    int totalVarCount = 0;
-    std::vector<std::pair<Rectilinear *, Tile *>> ilpVarVec;
-    std::vector<double>ilpVarWeight;
-    std::unordered_map<Tile *, double> tileWeightStore;
-    std::vector<Rectilinear *> involvedRect;
-    std::vector<std::vector<int>> sameRectVar;
-    std::unordered_map<Tile *, std::vector<int>> sameTileVar;
+//     // Prepare BILP parameters
+//     int totalVarCount = 0;
+//     std::vector<std::pair<Rectilinear *, Tile *>> ilpVarVec;
+//     std::vector<double>ilpVarWeight;
+//     std::unordered_map<Tile *, double> tileWeightStore;
+//     std::vector<Rectilinear *> involvedRect;
+//     std::vector<std::vector<int>> sameRectVar;
+//     std::unordered_map<Tile *, std::vector<int>> sameTileVar;
 
-    for(std::map<Rectilinear *, std::vector<Tile *>>::const_iterator it = recttoTile.begin(); it != recttoTile.end(); it++){
-        Rectilinear *rect = it->first;
-        involvedRect.push_back(rect);
-        sameRectVar.push_back(std::vector<int>());
+//     for(std::map<Rectilinear *, std::vector<Tile *>>::const_iterator it = recttoTile.begin(); it != recttoTile.end(); it++){
+//         Rectilinear *rect = it->first;
+//         involvedRect.push_back(rect);
+//         sameRectVar.push_back(std::vector<int>());
 
-        for(Tile *const &tt : it->second){
-            if(tileWeightStore.find(tt) == tileWeightStore.end()){
-                // the tile wieght is never calculated;
-                double tileWeight = 0;
-                for(Rectilinear *const &motherRT : overlapTilePayload[tt]){
-                    area_t overlapArea = 0;
-                    area_t blockArea = 0;
-                    for(Tile * const &t : motherRT->blockTiles){
-                        blockArea += t->getArea();
-                    }
-                    for(Tile * const &t : motherRT->overlapTiles){
-                        overlapArea += t->getArea();
-                    }
-                    double overlapPercentage = double(overlapArea) / double(blockArea + overlapArea);
-                    tileWeight += std::pow(2, overlapPercentage);
-                }
-                tileWeight *= overlapTilePayload[tt].size();
+//         for(Tile *const &tt : it->second){
+//             if(tileWeightStore.find(tt) == tileWeightStore.end()){
+//                 // the tile wieght is never calculated;
+//                 double tileWeight = 0;
+//                 for(Rectilinear *const &motherRT : overlapTilePayload[tt]){
+//                     area_t overlapArea = 0;
+//                     area_t blockArea = 0;
+//                     for(Tile * const &t : motherRT->blockTiles){
+//                         blockArea += t->getArea();
+//                     }
+//                     for(Tile * const &t : motherRT->overlapTiles){
+//                         overlapArea += t->getArea();
+//                     }
+//                     double overlapPercentage = double(overlapArea) / double(blockArea + overlapArea);
+//                     tileWeight += std::pow(2, overlapPercentage);
+//                 }
+//                 tileWeight *= overlapTilePayload[tt].size();
 
-                tileWeightStore[tt] = tileWeight;
-                ilpVarWeight.push_back(tileWeight);
+//                 tileWeightStore[tt] = tileWeight;
+//                 ilpVarWeight.push_back(tileWeight);
 
-                sameTileVar[tt] = {totalVarCount};
-            }else{
-                ilpVarWeight.push_back(tileWeightStore[tt]);
-                sameTileVar[tt].push_back(totalVarCount);
-            }
+//                 sameTileVar[tt] = {totalVarCount};
+//             }else{
+//                 ilpVarWeight.push_back(tileWeightStore[tt]);
+//                 sameTileVar[tt].push_back(totalVarCount);
+//             }
             
-            ilpVarVec.push_back(std::pair<Rectilinear *, Tile*>(rect, tt));
-            sameRectVar.back().push_back(totalVarCount);
-            totalVarCount++;
-        }
-    }
+//             ilpVarVec.push_back(std::pair<Rectilinear *, Tile*>(rect, tt));
+//             sameRectVar.back().push_back(totalVarCount);
+//             totalVarCount++;
+//         }
+//     }
 
-    int sameRectVarSize = sameRectVar.size();
-    int sameTileVarSize = sameTileVar.size();
+//     int sameRectVarSize = sameRectVar.size();
+//     int sameTileVarSize = sameTileVar.size();
 
-    // Initialize ILP slover:
-    glp_prob *lp;
-    lp = glp_create_prob();
-    glp_term_out(GLP_OFF);
+//     // Initialize ILP slover:
+//     glp_prob *lp;
+//     lp = glp_create_prob();
+//     glp_term_out(GLP_OFF);
 
-    // auxiliary_variables_rows: 
-    // 1. Sum of overlaps solved in a Rectilinear <= Rectilinear resudiual area
+//     // auxiliary_variables_rows: 
+//     // 1. Sum of overlaps solved in a Rectilinear <= Rectilinear resudiual area
 
-    glp_add_rows(lp, sameRectVarSize + sameTileVarSize);
-    for(int i = 0; i < sameRectVarSize; ++i){
-        Rectilinear *rect = involvedRect[i];
-        area_t upperBound = rect->calculateActualArea() - rect->getLegalArea();
-        glp_set_row_bnds(lp, i+1, GLP_DB, 0.0, double(upperBound));
-    }
-    // 2. Same overlap should be removed (overlap Rectilinear count - 1) times
-    for(int i = sameRectVarSize; i < (sameRectVarSize + sameTileVarSize); ++i){
-        glp_set_row_bnds(lp, i+1, GLP_DB, 0.0, 1.0);
-    }
+//     glp_add_rows(lp, sameRectVarSize + sameTileVarSize);
+//     for(int i = 0; i < sameRectVarSize; ++i){
+//         Rectilinear *rect = involvedRect[i];
+//         area_t upperBound = rect->calculateActualArea() - rect->getLegalArea();
+//         glp_set_row_bnds(lp, i+1, GLP_DB, 0.0, double(upperBound));
+//     }
+//     // 2. Same overlap should be removed (overlap Rectilinear count - 1) times
+//     for(int i = sameRectVarSize; i < (sameRectVarSize + sameTileVarSize); ++i){
+//         glp_set_row_bnds(lp, i+1, GLP_DB, 0.0, 1.0);
+//     }
 
-    // variables_cloumns:
-    int ilpTotalVarCount = ilpVarVec.size();
-    glp_add_cols(lp, ilpTotalVarCount);
-    for(int i = 0; i < ilpTotalVarCount; ++i){
-        Tile *tl = ilpVarVec[i].second;
-        double upperBound = double(overlapTilePayload[tl].size() - 1);
-        glp_set_col_bnds(lp, i+1, GLP_DB, 0.0, upperBound);
-        glp_set_col_kind(lp, i+1, GLP_IV);
-    }
-    // ilp opmitization target:
-    glp_set_obj_dir(lp, GLP_MAX);
-    for(int i = 0; i < ilpVarWeight.size(); ++i){
-        glp_set_obj_coef(lp, i+1, ilpVarWeight[i]);
-    }
+//     // variables_cloumns:
+//     int ilpTotalVarCount = ilpVarVec.size();
+//     glp_add_cols(lp, ilpTotalVarCount);
+//     for(int i = 0; i < ilpTotalVarCount; ++i){
+//         Tile *tl = ilpVarVec[i].second;
+//         double upperBound = double(overlapTilePayload[tl].size() - 1);
+//         glp_set_col_bnds(lp, i+1, GLP_DB, 0.0, upperBound);
+//         glp_set_col_kind(lp, i+1, GLP_IV);
+//     }
+//     // ilp opmitization target:
+//     glp_set_obj_dir(lp, GLP_MAX);
+//     for(int i = 0; i < ilpVarWeight.size(); ++i){
+//         glp_set_obj_coef(lp, i+1, ilpVarWeight[i]);
+//     }
 
-    // constant_matrix
-    int constCount = ilpVarVec.size() + 1;
-    for(std::unordered_map<Tile *, std::vector<int>>::iterator it = sameTileVar.begin(); it != sameTileVar.end(); ++it ){
-        constCount += it->second.size();
-    }
-    int ia[constCount], ja[constCount];
-    double ar[constCount];
-    int fillConstIdx = 1;
-    for(int i = 0; i < sameRectVarSize; ++i){
-        for(int j = 0; j < sameRectVar[i].size(); ++j){
-            int varIdx = sameRectVar[i][j];
-            Tile *targetTile = ilpVarVec[varIdx].second;
-            ia[fillConstIdx] = i + 1;
-            ja[fillConstIdx] = varIdx + 1;
-            ar[fillConstIdx] = targetTile->getArea();
+//     // constant_matrix
+//     int constCount = ilpVarVec.size() + 1;
+//     for(std::unordered_map<Tile *, std::vector<int>>::iterator it = sameTileVar.begin(); it != sameTileVar.end(); ++it ){
+//         constCount += it->second.size();
+//     }
+//     int ia[constCount], ja[constCount];
+//     double ar[constCount];
+//     int fillConstIdx = 1;
+//     for(int i = 0; i < sameRectVarSize; ++i){
+//         for(int j = 0; j < sameRectVar[i].size(); ++j){
+//             int varIdx = sameRectVar[i][j];
+//             Tile *targetTile = ilpVarVec[varIdx].second;
+//             ia[fillConstIdx] = i + 1;
+//             ja[fillConstIdx] = varIdx + 1;
+//             ar[fillConstIdx] = targetTile->getArea();
 
-            fillConstIdx++;
-        }
-    }
+//             fillConstIdx++;
+//         }
+//     }
 
-    int iaCount = sameRectVarSize + 1;
-    for(std::unordered_map<Tile *, std::vector<int>>::iterator it = sameTileVar.begin(); it != sameTileVar.end(); ++it ){
-        for(int const &it : it->second){
-            ia[fillConstIdx] = iaCount;
-            ja[fillConstIdx] = it + 1;
-            ar[fillConstIdx] = 1;
-            fillConstIdx++;
-        }
-        iaCount++;
-    }
-    glp_load_matrix(lp, constCount-1, ia, ja, ar);
+//     int iaCount = sameRectVarSize + 1;
+//     for(std::unordered_map<Tile *, std::vector<int>>::iterator it = sameTileVar.begin(); it != sameTileVar.end(); ++it ){
+//         for(int const &it : it->second){
+//             ia[fillConstIdx] = iaCount;
+//             ja[fillConstIdx] = it + 1;
+//             ar[fillConstIdx] = 1;
+//             fillConstIdx++;
+//         }
+//         iaCount++;
+//     }
+//     glp_load_matrix(lp, constCount-1, ia, ja, ar);
 
-    // calculate:
-    glp_simplex(lp, NULL);
-    glp_intopt(lp, NULL);
+//     // calculate:
+//     glp_simplex(lp, NULL);
+//     glp_intopt(lp, NULL);
 
 
-    //use bilp answer to conduct removal
-    for(int i = 1 ; i < ilpVarVec.size() + 1; ++i){
-        int varAns = glp_mip_col_val(lp, i);
-        // std::cout << "Var " << i << " " << varAns << std::endl;
-        if(varAns != 0){
-            std::pair<Rectilinear *, Tile*> extractedPair = ilpVarVec[i-1];
-            Rectilinear *removeRT = extractedPair.first;
-            Tile *removeTile = extractedPair.second;
+//     //use bilp answer to conduct removal
+//     for(int i = 1 ; i < ilpVarVec.size() + 1; ++i){
+//         int varAns = glp_mip_col_val(lp, i);
+//         // std::cout << "Var " << i << " " << varAns << std::endl;
+//         if(varAns != 0){
+//             std::pair<Rectilinear *, Tile*> extractedPair = ilpVarVec[i-1];
+//             Rectilinear *removeRT = extractedPair.first;
+//             Tile *removeTile = extractedPair.second;
 
-            Rectilinear testRect = Rectilinear(*removeRT);
-            testRect.overlapTiles.erase(removeTile);
-            rectilinearIllegalType rectIllegalCode;
-            bool legalAfterRemoval = testRect.isLegal(rectIllegalCode);
+//             Rectilinear testRect = Rectilinear(*removeRT);
+//             testRect.overlapTiles.erase(removeTile);
+//             rectilinearIllegalType rectIllegalCode;
+//             bool legalAfterRemoval = testRect.isLegal(rectIllegalCode);
 
-            if(legalAfterRemoval){
-                area_t removeTileArea = removeTile->getArea();
-                area_t beforeArea = removeRT->calculateActualArea() - removeRT->getLegalArea();
-                if(verbose) std::cout << "[PrimitiveOverlapRemoval(2/2)] Remove " << *removeTile << " with " << removeRT->getName();
-                if(verbose) std::cout << " (" << beforeArea << " -> " << beforeArea - removeTileArea << ")" << std::endl;
-                decreaseTileOverlap(removeTile, removeRT);
-                if(removeTile->getType() == tileType::BLOCK){
-                    reshapeRectilinear(this->blockTilePayload[removeTile]);
-                }
-            }
+//             if(legalAfterRemoval){
+//                 area_t removeTileArea = removeTile->getArea();
+//                 area_t beforeArea = removeRT->calculateActualArea() - removeRT->getLegalArea();
+//                 if(verbose) std::cout << "[PrimitiveOverlapRemoval(2/2)] Remove " << *removeTile << " with " << removeRT->getName();
+//                 if(verbose) std::cout << " (" << beforeArea << " -> " << beforeArea - removeTileArea << ")" << std::endl;
+//                 decreaseTileOverlap(removeTile, removeRT);
+//                 if(removeTile->getType() == tileType::BLOCK){
+//                     reshapeRectilinear(this->blockTilePayload[removeTile]);
+//                 }
+//             }
 
-        }
-    }
+//         }
+//     }
 
-    // clean_up
-    glp_delete_prob(lp);
+//     // clean_up
+//     glp_delete_prob(lp);
     
-}
+// }
 
 Rectilinear *Floorplan::checkFloorplanLegal(rectilinearIllegalType &illegalType) const {
     // check if there is overlap tile
@@ -1504,9 +1504,9 @@ void Floorplan::visualiseRectiFloorplan(const std::string &outputFileName) const
     ofs << "SOFTBLOCK " << mSoftRectilinearCount << std::endl;
     for(Rectilinear *const &rect : softRectilinears){
         DoughnutPolygonSet dps;
-        if(!rect->overlapTiles.empty()){
-            throw(CSException("CORNERSTITCHING_22"));
-        }
+        // if(!rect->overlapTiles.empty()){
+        //     throw(CSException("CORNERSTITCHING_22"));
+        // }
         for(Tile *const &t : rect->blockTiles){
             dps += t->getRectangle();
         }
@@ -1560,9 +1560,9 @@ void Floorplan::visualiseRectiFloorplan(const std::string &outputFileName) const
     ofs << "PREPLACEDBLOCK " << mPreplacedRectilinearCount << std::endl;
     for(Rectilinear *const &rect : preplacedRectilinears){
         DoughnutPolygonSet dps;
-        if(!rect->overlapTiles.empty()){
-            throw(CSException("CORNERSTITCHING_22"));
-        }
+        // if(!rect->overlapTiles.empty()){
+        //     throw(CSException("CORNERSTITCHING_22"));
+        // }
 
         // added by ryan
         // case where zero area rectilinear
@@ -1767,9 +1767,9 @@ void Floorplan::visualiseFloorplan(const std::string &outputFileName) const {
             dps += t->getRectangle();
         }
 
-        if(dps.size() != 1){
-            throw(CSException("CORNERSTITCHING_23"));
-        }
+        // if(dps.size() != 1){
+        //     throw(CSException("CORNERSTITCHING_23"));
+        // }
         DoughnutPolygon dp = dps[0];
 
         boost::polygon::direction_1d direction = boost::polygon::winding(dp);
@@ -1810,58 +1810,6 @@ void Floorplan::visualiseFloorplan(const std::string &outputFileName) const {
     ofs.close();
 }
 
-void Floorplan::visualiseICCADFormat(const std::string &outputFileName, const std::string highlightModuleName) const {
-    using namespace boost::polygon::operators;
-	std::ofstream ofs;
-	ofs.open(outputFileName, std::fstream::out);
-	if(!ofs.is_open()){
-        throw(CSException("CORNERSTITCHING_21"));
-    } 
-    ofs << "HPWL " << calculateHPWL() << std::endl;
-    ofs << highlightModuleName << std::endl;
-    ofs << "SOFTMODULE " << softRectilinears.size() << std::endl;
-    for(Rectilinear *const &rect : softRectilinears){
-        
-        ofs << rect->getName() << " ";
-
-        DoughnutPolygonSet dps;
-
-        // if(!rect->overlapTiles.empty()){
-        //     throw(CSException("CORNERSTITCHING_22"));
-        // }
-
-        for(Tile *const &t : rect->blockTiles){
-            dps += t->getRectangle();
-        }
-
-        for(Tile *const &t : rect->overlapTiles){
-            dps += t->getRectangle();
-        }
-
-        if(dps.size() != 1){
-            throw(CSException("CORNERSTITCHING_23"));
-        }
-        DoughnutPolygon dp = dps[0];
-
-        boost::polygon::direction_1d direction = boost::polygon::winding(dp);
-        ofs << dp.size() << std::endl;  
-        
-        if(direction == boost::polygon::direction_1d_enum::CLOCKWISE){
-            for(auto it = dp.begin(); it != dp.end(); ++it){
-                ofs << (*it).x() << " " << (*it).y() << std::endl;
-            }
-        }else{
-            std::vector<Cord> buffer;
-            for(auto it = dp.begin(); it != dp.end(); ++it){
-                buffer.push_back(*it);
-            }
-            for(std::vector<Cord>::reverse_iterator it = buffer.rbegin(); it != buffer.rend(); ++it){
-                ofs << (*it).x() << " " << (*it).y() << std::endl;
-            }
-        }
-    }
-}
-
 void Floorplan::visualiseICCADFormat(const std::string &outputFileName) const {
     using namespace boost::polygon::operators;
 	std::ofstream ofs;
@@ -1870,6 +1818,7 @@ void Floorplan::visualiseICCADFormat(const std::string &outputFileName) const {
         throw(CSException("CORNERSTITCHING_21"));
     } 
     ofs << "HPWL " << calculateHPWL() << std::endl;
+
     ofs << "SOFTMODULE " << softRectilinears.size() << std::endl;
     for(Rectilinear *const &rect : softRectilinears){
         
