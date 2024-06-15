@@ -1,0 +1,199 @@
+CHIP 2058 1463
+SOFTMODULE 33
+bk1 44688
+bk10a 44982
+bk10b 22540
+bk10c 5831
+bk11 20825
+bk12 56840
+bk13 69580
+bk14a 23324
+bk14b 34986
+bk14c 19159
+bk15a 31654
+bk15b 39984
+bk16 14994
+bk17a 67522
+bk17b 36946
+bk18 36946
+bk19 9996
+bk2 39102
+bk20 63700
+bk21 44100
+bk3 41895
+bk4 74480
+bk5a 18620
+bk5b 23275
+bk5c 30723
+bk6 41895
+bk7 17836
+bk8a 44100
+bk8b 47628
+bk9a 21658
+bk9b 14161
+bk9c 42483
+bk9d 9996
+FIXEDMODULE 40
+VSS 1281 1463 0 0
+VDD 1687 0 0 0
+P9 266 0 0 0
+P8 168 0 0 0
+P7 924 0 0 0
+P6 826 0 0 0
+P5 721 0 0 0
+P4 1022 0 0 0
+P37 945 1463 0 0
+P36 714 1463 0 0
+POW 1960 0 0 0
+P35 0 483 0 0
+P34 0 343 0 0
+P33 0 196 0 0
+P32 0 623 0 0
+P31 0 1225 0 0
+P30 518 1463 0 0
+P3 1176 1463 0 0
+P29 616 1463 0 0
+P28 1484 0 0 0
+P27 336 1463 0 0
+P26 1267 0 0 0
+P25 553 0 0 0
+P24 2058 168 0 0
+P23 2058 861 0 0
+P22 2058 728 0 0
+P21 1400 1463 0 0
+P20 1645 1463 0 0
+P2 1127 0 0 0
+P19 2058 1421 0 0
+P18 2058 1365 0 0
+P17 2058 1106 0 0
+GND 0 1120 0 0
+P16 0 763 0 0
+P15 0 994 0 0
+P14 2058 343 0 0
+P13 2058 602 0 0
+P12 2058 476 0 0
+P11 455 0 0 0
+P10 364 0 0 0
+CONNECTION 122
+GND bk9d bk9c bk9b bk9a bk8b bk8a bk7 bk6 bk5c bk5b bk5a bk4 bk3 bk21 bk20 bk2 bk19 bk18 bk17b bk17a bk16 bk15b bk15a bk14c bk14b bk14a bk13 bk12 bk11 bk10c bk10b bk10a bk1 1
+bk9d bk9c bk9b bk9a bk7 bk6 bk5c bk5b bk5a bk4 bk3 bk21 bk20 bk2 bk18 bk17b bk17a bk16 bk15b bk15a bk14c bk14b bk14a bk13 bk12 bk11 bk10c bk10b bk10a bk1 1
+bk9d bk9c bk9b bk9a bk7 bk6 bk5c bk5b bk5a bk4 bk3 bk21 bk20 bk2 bk18 bk17b bk17a bk14b bk13 bk12 bk11 bk10c bk10b bk10a bk1 1
+bk9d bk9c bk9b bk9a bk7 bk6 bk5c bk5b bk5a bk4 bk3 bk21 bk20 bk2 bk18 bk17b bk17a bk15b bk15a bk14c bk14b bk14a bk13 bk12 bk11 bk10c bk10b bk10a bk1 1
+bk9d bk9c bk9b bk9a bk7 bk6 bk5c bk5b bk5a bk4 bk3 bk21 bk20 bk2 bk18 bk17b bk17a bk14b bk13 bk12 bk11 bk10c bk10b bk10a bk1 1
+bk9d bk9c 1
+POW bk9d bk9c bk9b bk9a bk8b bk8a bk7 bk6 bk5c bk5b bk5a bk4 bk3 bk21 bk20 bk2 bk19 bk18 bk17b bk17a bk16 bk15b bk15a bk14c bk14b bk14a bk13 bk12 bk11 bk10c bk10b bk10a bk1 1
+bk9d bk10a 1
+bk9d bk9b 1
+P30 bk9c 1
+P27 bk9c 1
+bk9c bk9b bk20 bk14b bk12 bk11 bk10b 1
+bk9c bk9a 1
+bk9c bk9b 1
+bk9b bk10a 1
+bk9b bk10b bk10a 1
+bk9a bk10c 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk19 bk16 1
+bk8b bk19 bk16 1
+bk8b bk19 1
+bk8b bk19 1
+bk8b bk19 1
+bk8b bk19 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8b bk8a 1
+bk8a bk20 bk16 1
+bk8a bk16 1
+bk8a bk16 1
+bk8a bk16 1
+bk8a bk16 1
+bk8a bk16 1
+bk8a bk16 1
+bk8a bk16 bk15b 1
+VSS bk7 1
+VDD bk7 1
+P23 bk7 1
+P22 bk7 1
+bk7 bk17b 1
+P21 bk6 1
+P20 bk6 1
+P19 bk6 1
+P18 bk6 1
+P17 bk6 1
+bk6 bk5c 1
+bk6 bk5c 1
+bk6 bk5c bk5b 1
+bk6 bk5c bk5b 1
+bk6 bk4 bk3 1
+bk6 bk4 1
+bk5c bk3 1
+bk5b bk5a 1
+bk5b bk5a bk2 1
+bk5b bk1 1
+bk5b bk5a 1
+bk5b bk1 1
+bk5b bk1 1
+bk5a bk2 1
+bk5a bk4 1
+P14 bk4 1
+P13 bk4 1
+P12 bk4 1
+bk4 bk17b 1
+bk4 bk3 1
+P16 bk3 1
+P15 bk3 1
+bk3 bk15a 1
+P3 bk21 1
+P24 bk20 1
+bk20 bk18 bk17b 1
+bk20 bk17a 1
+bk20 bk17a 1
+bk20 bk17a 1
+bk20 bk18 bk17a 1
+bk20 bk17a 1
+bk20 bk18 bk17b bk17a 1
+P28 bk2 1
+P35 bk19 1
+P34 bk19 1
+P33 bk19 1
+P32 bk19 1
+P37 bk18 1
+P36 bk18 1
+bk18 bk17a 1
+bk18 bk17a 1
+bk17b bk16 1
+bk16 bk14c 1
+bk16 bk14b 1
+bk16 bk14b 1
+P9 bk15b 1
+P8 bk15b 1
+P25 bk15b 1
+P11 bk15b 1
+P10 bk15b 1
+bk15b bk15a 1
+bk15b bk14c 1
+P7 bk15a 1
+P6 bk15a 1
+P5 bk15a 1
+bk15a bk14a 1
+bk14c bk14b 1
+bk14c bk14b 1
+bk14b bk14a 1
+P4 bk13 1
+P26 bk13 1
+P2 bk13 1
+P31 bk11 1
+bk10c bk10b 1
+bk10c bk10a 1
+bk10b bk10a 1
+P29 bk10a 1

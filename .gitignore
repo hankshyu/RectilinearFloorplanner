@@ -3,6 +3,7 @@
 bin/*
 !bin/.gitkeep
 inputs/*
+!inputs/*.txt
 !inputs/.gitkeep
 lib/boost*.tar
 lib/boost*/*
