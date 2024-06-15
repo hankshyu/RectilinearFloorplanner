@@ -12,7 +12,7 @@ enum class rectilinearType{
 };
 
 enum class rectilinearIllegalType{
-    LEGAL, OVERLAP, AREA, ASPECT_RATIO, UTILIZATION, HOLE, TWO_SHAPE, MIN_CLEARANCE, PREPLACE_FAIL
+    LEGAL, OVERLAP, AREA, ASPECT_RATIO, UTILIZATION, HOLE, TWO_SHAPE, PREPLACE_FAIL, INNER_WIDTH
 };
 
 class Rectilinear{
@@ -86,8 +86,8 @@ public:
     // check if rectilinear is disconnected, return false if violated
     bool isLegalOneShape() const;
     
-    // TODO: check miminum clearance
-    bool isLegalMinimumClearance() const;
+    // check if violate minimum inner width
+    bool isLegalInnerWidth() const;
 
     // use all legal checking methods, if any violated, return false an error code passed through illegalCode
     bool isLegal(rectilinearIllegalType &illegalCode) const;

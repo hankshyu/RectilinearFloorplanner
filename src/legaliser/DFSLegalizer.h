@@ -76,6 +76,8 @@ private:
     void legalizeUtil(Rectilinear* recti);
     void legalizeHole(Rectilinear* recti);
     void legalizeFragmented(Rectilinear* recti);
+    // Added by Hank
+    void legalizeInnerWidth(Rectilinear *recti);
     void fillBoundingBox(Rectilinear* recti, Rectangle& Bbox);
     RESULT checkLegal();
 

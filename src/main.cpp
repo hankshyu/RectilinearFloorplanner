@@ -22,6 +22,8 @@
 std::string INPUT_FILE_NAME = "";
 std::string CONFIG_FILE_NAME = "";
 std::string OUTPUT_FILE_NAME = "";
+std::string VISUALISE_FILE_NAME = "";
+
 
 std::ifstream cifs;
 std::ofstream ofs;
@@ -31,29 +33,29 @@ double SPEC_ASPECT_RATIO_MAX = 2.0;
 double SPEC_UTILIZATION_MIN = 0.8;
 
 
-double HYPERPARAM_GLOBAL_PUNISHMENT = 0.0054730000000000004;
+double HYPERPARAM_GLOBAL_PUNISHMENT = 0.005668000000000089;
 double HYPERPARAM_GLOBAL_MAX_ASPECTRATIO_RATE = 0.9;
 double HYPERPARAM_GLOBAL_LEARNING_RATE = 46e-4;
 
-double HYPERPARAM_POR_USAGE = 1.0; // Will downcast to boolean
+double HYPERPARAM_POR_USAGE = 0.0; // Will downcast to boolean
 
-double HYPERPARAM_LEG_MAX_COST_CUTOFF = 5000.0;
+double HYPERPARAM_LEG_MAX_COST_CUTOFF = 6000.0;
 
 double HYPERPARAM_LEG_OB_AREA_WEIGHT = 30.0;
 double HYPERPARAM_LEG_OB_UTIL_WEIGHT = 100.0;
-double HYPERPARAM_LEG_OB_ASP_WEIGHT = 70.0;
+double HYPERPARAM_LEG_OB_ASP_WEIGHT = 10.0;
 double HYPERPARAM_LEG_OB_UTIL_POS_REIN = -500.0;
 
-double HYPERPARAM_LEG_BW_UTIL_WEIGHT = 1000;
+double HYPERPARAM_LEG_BW_UTIL_WEIGHT = 200;
 double HYPERPARAM_LEG_BW_UTIL_POS_REIN = -500;
 double HYPERPARAM_LEG_BW_ASP_WEIGHT = 70.0;
 
 double HYPERPARAM_LEG_BB_AREA_WEIGHT = 10.0;
-double HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT = 500.0;
+double HYPERPARAM_LEG_BB_FROM_UTIL_WEIGHT = 150.0;
 double HYPERPARAM_LEG_BB_FROM_UTIL_POS_REIN = -500.0;
-double HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT = 500.0;
+double HYPERPARAM_LEG_BB_TO_UTIL_WEIGHT = 100.0;
 double HYPERPARAM_LEG_BB_TO_UTIL_POS_REIN = -500.0;
-double HYPERPARAM_LEG_BB_ASP_WEIGHT = 30.0;
+double HYPERPARAM_LEG_BB_ASP_WEIGHT = 20.0;
 double HYPERPARAM_LEG_BB_FLAT_COST = 5.0;
 
 // Legal Mode 0: resolve area big -> area small
@@ -64,7 +66,7 @@ double HYPERPARAM_LEG_BB_FLAT_COST = 5.0;
 double HYPERPARAM_LEG_LEGALMODE = 2;
 
 
-double REFINE_ENGINE_GRID_SEARCH = 1.0; // will cast to bool
+double REFINE_ENGINE_GRID_SEARCH = 0.0; // will cast to bool
 
 double HYPERPARAM_REF_MAX_ITERATION = 30; // will downcast to int
 double HYPERPARAM_REF_USE_GRADIENT_ORDER = 1.0; // will downcast to bool
@@ -123,16 +125,14 @@ void programExitFailTask(int failStage);
 void printTimingHPWLReport(Floorplan *&floorplan);
 void showChange(double before, double after, char *result);
 
-
 int main(int argc, char *argv[]) {
-
 
 	// parsing input argument
 
 	int opt;
 
     // Parsing command line arguments using getopt
-    while ((opt = getopt(argc, argv, "i:o:c:")) != -1) {
+    while ((opt = getopt(argc, argv, "i:o:c:d:")) != -1) {
         switch (opt) {
             case 'i':
                 INPUT_FILE_NAME = optarg;
@@ -142,6 +142,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'c':
 				CONFIG_FILE_NAME = optarg;
+                break;
+            case 'd':
+				VISUALISE_FILE_NAME = optarg;
                 break;
             case '?':
                 std::cout << "Unknown option or missing argument" << std::endl;
@@ -156,15 +159,15 @@ int main(int argc, char *argv[]) {
 		exit(4);
 	}else std::cout << "Input File: " << INPUT_FILE_NAME << std::endl;
 
-	if(CONFIG_FILE_NAME.empty()){
-		std::cout << "[Missing Arguments] Missing Configuration File " << std::endl;
-		exit(4);
-	}else std::cout << "Input File: " << CONFIG_FILE_NAME << std::endl;
-	cifs.open(CONFIG_FILE_NAME);
-	if(!cifs.is_open()){
-		std::cout << "Configuraton Stream Cannot Open" << std::endl;
-		exit(4);
-	}
+	if(!CONFIG_FILE_NAME.empty()){
+        std::cout << "Input File: " << CONFIG_FILE_NAME << std::endl;
+    	cifs.open(CONFIG_FILE_NAME);
+	    if(!cifs.is_open()){
+            std::cout << "Configuraton Stream Cannot Open" << std::endl;
+            exit(4);
+	    }
+    }
+
 
 	if(OUTPUT_FILE_NAME.empty()){
 		std::cout << "[Missing Arguments] Missing Output File " << std::endl;
@@ -175,11 +178,11 @@ int main(int argc, char *argv[]) {
 		std::cout << "Output Stream Open Fail" << std::endl;
 		exit(4);
 	}
-
+    
 	// parse input configs
-	parseConfigurations();
-
-
+    if(!CONFIG_FILE_NAME.empty()){
+        parseConfigurations();
+    }
     rectilinearIllegalType rit;
     /* PHASE 1: Global Floorplanning */
     GlobalResult globalResult;
@@ -225,49 +228,60 @@ int main(int argc, char *argv[]) {
 	}
 
 	/* PHASE 4: DFSL Legaliser: Overlap Migration via Graph Traversal */
-	runLegalization(floorplan);
+    try{
+        runLegalization(floorplan);
 
-
-	// floorplan->visualiseFloorplan("./outputs/case07-legalised.txt");
-
+    }catch(CSException c){
+        std::cout << c.what()  << std::endl;
+    }
+    // floorplan->visualiseFloorplan("./outputs/case02-legalized.txt");
 
 PHASE_REFINE_ENGINE:{
 	std::cout << std::endl;	
         /* PHASE 5: Refinement Engine */
 	if(bool(REFINE_ENGINE_GRID_SEARCH)){
-
+        bool refineBestFloorplanisFather = true;
         Floorplan *refineBestFloorplan = floorplan;
-        flen_t refineBestHPWL = FLEN_T_MAX;
 		LEGAL_REF = (floorplan->checkFloorplanLegal(rit) == nullptr);
+        flen_t refineBestHPWL = (LEGAL_REF)? HPWL_DONE_LEG : FLEN_T_MAX;
         bool refineBestUseGradientOrder;
         len_t refineBestMomentum;
         double refineBestMomentumGrowth;
         bool refineBestGrowGradient;
         bool refineBestShrinkGradient;
-
-        // Try momentum setup: (init growth) = (1, 2), (2, 1.5), (2, 1.75), (2, 2), (4, 2) (8, 2)
-        for(int xMomentum = 0; xMomentum < 4; ++xMomentum){
+        
+        // Try momentum setup: (init growth) = (1, 2), (2, 1.5), (2, 1.75), (2, 2), (4, 2) 
+        // For Academic benchmark: (1, 1.75), (2, 1.75) (2, 2)
+        for(int xMomentum = 0; xMomentum < 3; ++xMomentum){
             len_t expMomentum;
             double expMomentumGrowth;
+            // if(xMomentum == 0){
+            //     expMomentum = 1;
+            //     expMomentumGrowth = 2;
+            // }else if(xMomentum == 1){
+            //     expMomentum = 2;
+            //     expMomentumGrowth = 1.5;
+            // }else if(xMomentum == 2){ 
+            //     expMomentum = 2;
+            //     expMomentumGrowth = 1.75;
+            // }else if(xMomentum == 3){
+            //     expMomentum = 2;
+            //     expMomentumGrowth = 2;
+            // }else if(xMomentum == 4){
+            //     expMomentum = 4;
+            //     expMomentumGrowth = 2;
+            // }
+
             if(xMomentum == 0){
                 expMomentum = 1;
-                expMomentumGrowth = 2;
+                expMomentumGrowth = 1.75;
             }else if(xMomentum == 1){
                 expMomentum = 2;
-                expMomentumGrowth = 1.5;
-            }else if(xMomentum == 2){ 
-                expMomentum = 2;
                 expMomentumGrowth = 1.75;
-            }else if(xMomentum == 3){
+            }else{
                 expMomentum = 2;
                 expMomentumGrowth = 2;
-            }else if(xMomentum == 4){
-                expMomentum = 4;
-                expMomentumGrowth = 2;
-            }else{
-                expMomentum = 8;
-                expMomentumGrowth = 2;
-			}
+            }
             
             for(int xGradient = 0; xGradient < 4; ++ xGradient){
                 bool expGrowGradient = xGradient / 2;
@@ -290,13 +304,13 @@ PHASE_REFINE_ENGINE:{
 						bool(expGrowGradient), bool(expShrinkGradient), expResult);
 					}else{
 
-						printf("[LegaliseEngine] Legal floorplan Found Using (%d, %d, %4.2lf, %d, %d)\n",
+						printf("[LegaliseEngine] Illegal floorplan Found Using (%d, %d, %4.2lf, %d, %d)\n",
 						bool(expUseGradientOrder), len_t(expMomentum), expMomentumGrowth, 
 						bool(expGrowGradient), bool(expShrinkGradient));
 					}
 
                     if(expResult < refineBestHPWL && expResultLegal){
-                        if(refineBestHPWL != FLEN_T_MAX) delete refineBestFloorplan;
+                        if(!refineBestFloorplanisFather) delete refineBestFloorplan;
 						LEGAL_REF = true;
                         refineBestFloorplan = expFloorplan;
                         refineBestHPWL = expResult;
@@ -308,12 +322,14 @@ PHASE_REFINE_ENGINE:{
 
                         TIME_POINT_START_REF = expStartTime; 
                         TIME_POINT_END_REF = expEndTime;
+                        refineBestFloorplanisFather = false;
                     }else{
                         delete expFloorplan;
                     }
                 }
             }
         }
+        
 		floorplan = refineBestFloorplan;
         HPWL_DONE_REF = refineBestHPWL;
         OVERLAP_DONE_REF = refineBestFloorplan->calculateOverlapRatio();
@@ -325,7 +341,7 @@ PHASE_REFINE_ENGINE:{
 		double HYPERPARAM_REF_USE_GRADIENT_GROW = (refineBestGrowGradient)? 1.0 : 0.0;
 		double HYPERPARAM_REF_USE_GRADIENT_SHRINK = (refineBestShrinkGradient)? 1.0 : 0.0;
 
-        // refineBestFloorplan->visualiseFloorplan("./outputs/case05-refined.txt");
+        // refineBestFloorplan->visualiseFloorplan("./outputs/case02-refined.txt");
 
 	}else{
         TIME_POINT_START_REF = std::chrono::steady_clock::now();
@@ -346,21 +362,23 @@ PHASE_REFINE_ENGINE:{
 			bool(HYPERPARAM_REF_USE_GRADIENT_GROW), bool(HYPERPARAM_REF_USE_GRADIENT_SHRINK), HPWL_DONE_REF);
 		}else{
 
-			printf("[LegaliseEngine] Legal floorplan Found Using (%d, %d, %4.2lf, %d, %d)\n",
+			printf("[LegaliseEngine] Illegal solution found Using (%d, %d, %4.2lf, %d, %d)\n",
 			bool(HYPERPARAM_REF_USE_GRADIENT_ORDER), len_t(HYPERPARAM_REF_INITIAL_MOMENTUM), HYPERPARAM_REF_MOMENTUM_GROWTH, 
 			bool(HYPERPARAM_REF_USE_GRADIENT_GROW), bool(HYPERPARAM_REF_USE_GRADIENT_SHRINK));
 		}
 	}
 
 
-        // floorplan->visualiseFloorplan("./outputs/case07-refined.txt");
+        // floorplan->visualiseFloorplan("./outputs/case01R-refined.txt");
+        // floorplan->visualiseICCADFormat("./outputs/case02-refined.txt");
 
-		std::cout << std::endl;
 		if(!LEGAL_REF) programExitFailTask(5);
+        if(VISUALISE_FILE_NAME != "") floorplan->visualiseFloorplan(VISUALISE_FILE_NAME);
 
         programExitSuccessTask(floorplan);
 
 }
+
 }
 
 void parseConfigurations(){
@@ -422,6 +440,7 @@ void runGlobalFloorplanning(GlobalResult &globalResult){
     solver.readConfig(parser);
 
     // learning rate: case02&09: 50e-4, others: 2e-4;
+    std::cout << "Attempt to set learning rate as: " << HYPERPARAM_GLOBAL_LEARNING_RATE << std::endl;
     solver.setLearningRate(HYPERPARAM_GLOBAL_LEARNING_RATE);
 
     TIME_POINT_START_GLOBAL = std::chrono::steady_clock::now();
@@ -488,7 +507,7 @@ void runLegalization(Floorplan *&floorplan){
 	configs.setConfigValue<double>("BBAspWeight"        ,HYPERPARAM_LEG_BB_ASP_WEIGHT);
 	configs.setConfigValue<double>("BBFlatCost"         ,HYPERPARAM_LEG_BB_FLAT_COST);
 
-	// configs.setConfigValue<int>("OutputLevel", DFSL::DFSL_PRINTLEVEL::dfs);
+	configs.setConfigValue<int>("OutputLevel", DFSL::DFSL_PRINTLEVEL::DFSL_STANDARD);
 	
 	// Create Legalise Object
 	DFSL::DFSLegalizer dfsl;
@@ -502,13 +521,18 @@ void runLegalization(Floorplan *&floorplan){
 	TIME_POINT_END_LEG = std::chrono::steady_clock::now();
 	bool legalResultSuccess = (legalResult == DFSL::RESULT::SUCCESS);
 	bool legalResultAreaFail = (legalResult == DFSL::RESULT::AREA_CONSTRAINT_FAIL);
+    // floorplan->visualiseFloorplan("./outputs/case02-legalised.txt");
 	if(legalResultSuccess || legalResultAreaFail){
 		if(legalResultSuccess) LEGAL_LEG = true;
 
 		HPWL_DONE_LEG = floorplan->calculateHPWL(); 
 		OVERLAP_DONE_LEG = floorplan->calculateOverlapRatio();
 		DONE_LEG = 1;
+        if(legalResultSuccess) std::cout << "[DFSL] Legal Soluton Acquired! HPWL = " << HPWL_DONE_LEG << std::endl;
+        if(legalResultAreaFail) std::cout << "[DFSL] Area Flawed Soluton Acquired, continue process, current HPWL = " << HPWL_DONE_LEG << std::endl;
+        // std::cout << (floorplan->checkFloorplanLegal(rit) == nullptr) << " " << rectilinearIllegalType << 
 	}else{
+        std::cout << "[DFSL] Illegal Solution, give up" << std::endl;
 		programExitFailTask(4);
 	}
 
@@ -646,6 +670,7 @@ void printTimingHPWLReport(Floorplan *&floorplan){
 		else if(rectIllegalCause == rectilinearIllegalType::UTILIZATION) strcpy(refLegal, "UTILIZATION_ILLEGAL ");
 		else if(rectIllegalCause == rectilinearIllegalType::HOLE) strcpy(refLegal, "    HOLE_ILLEGAL    ");
 		else if(rectIllegalCause == rectilinearIllegalType::TWO_SHAPE) strcpy(refLegal, " TWO_SHAPE_ILLEGAL  ");
+        else if(rectIllegalCause == rectilinearIllegalType::INNER_WIDTH) strcpy(refLegal, "    INNER_WIDTH     ");
 		else  strcpy(refLegal, "  STRANGE_ILLEGAL   ");
 	}
 	

@@ -7,6 +7,8 @@
 #include "floorplan.h"
 #include "units.h"
 
+
+
 class RefineEngine{
 private:
     std::unordered_map<Rectilinear *, double> rectConnWeightSum;
@@ -20,12 +22,14 @@ private:
     bool REFINE_USE_GRADIENT_GROW = true;
     bool REFINE_USE_GRADIENT_SHRINK = true;
 
+    int dbgrfCounter = 0;
+
 public:
     Floorplan *fp;
     RefineEngine(Floorplan *floorplan, int maxIter, bool useGradientOrder, len_t initMomentum, double momentumGrowth, bool growGradient, bool shrinkGradient);
 
     Floorplan *refine();
-    bool refineRectilinear(Rectilinear *rect) const;
+    bool refineRectilinear(Rectilinear *rect);
     
     bool fillBoundingBox(Rectilinear *rect) const;
 

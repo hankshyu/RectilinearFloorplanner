@@ -113,7 +113,7 @@ public:
     Tile *divideTileVertically(Tile *origRight, len_t newLeftWidth);
 
     // calculate the HPWL (cost) of the floorplan system, using the connections information stored inside "allConnections"
-    double calculateHPWL();
+    double calculateHPWL() const;
 
     // calculate the optimal centre of a soft rectilnear, return Cord(-1, -1) if no connection is present
     Cord calculateOptimalCentre(Rectilinear *rect) const;
@@ -129,6 +129,8 @@ public:
     // check if the floorplan is legal, return nullptr if floorplan legal, otherwise return first met faulty Rectilinear
     Rectilinear *checkFloorplanLegal(rectilinearIllegalType &illegalType) const;
 
+    bool debugFloorplanLegal() const;
+
     // added by ryan
     // visuailseLegalFloorplan with 2 modifications
     // 1. can handle case with fragmented modules 
@@ -137,10 +139,13 @@ public:
     
     // added by ryan
     // visualizes each tile in the floorplan (for use in utils/draw_tile_layout.py)
-    void visualizeTiledFloorplan(const std::string& outputFileName);
+    void visualizeTiledFloorplan(const std::string& outputFileName) const;
 
     // write Floorplan class for presenting software (renderFloorplan.py)
     void visualiseFloorplan(const std::string &outputFileName) const;
+
+    void visualiseICCADFormat(const std::string &outputFileName) const;
+    void visualiseICCADFormat(const std::string &outputFileName, const std::string highlightModuleName) const;
 
     // added by ryan
     // given a tile that belongs in fromRect, remove that tile from fromRect, and place it in toRect

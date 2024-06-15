@@ -15,3 +15,6 @@ obj/*
 outputs/*
 !outputs/.gitkeep
 rf/*
+experiments/*
+!experiments/.gitkeep
+pastruns/

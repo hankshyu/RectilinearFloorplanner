@@ -6,7 +6,8 @@
 RefineEngine::RefineEngine(Floorplan *floorplan, int maxIter, bool useGradientOrder, len_t initMomentum, double momentumGrowth, bool growGradient, bool shrinkGradient)
 	: REFINE_MAX_ITERATION(maxIter), REFINE_USE_GRADIENT_ORDER(useGradientOrder),
 	REFINE_INITIAL_MOMENTUM(initMomentum), REFINE_MOMENTUM_GROWTH(momentumGrowth), REFINE_USE_GRADIENT_GROW(growGradient), REFINE_USE_GRADIENT_SHRINK(shrinkGradient) {
-    this->fp = floorplan;
+    
+	this->fp = floorplan;
     for(Rectilinear *const &rt : fp->softRectilinears){
         rectConnOrder.push_back(rt);
         std::unordered_map<Rectilinear *, std::vector<Connection *>>::iterator it = fp->connectionMap.find(rt);
@@ -36,6 +37,7 @@ Floorplan *RefineEngine::refine(){
 
 	double iterationHPWLRecord = initialHPWL;
     while(hasMovement){
+
         hasMovement = false;
 
 		// arrange the order of refining
@@ -101,7 +103,8 @@ Floorplan *RefineEngine::refine(){
 		// std::cout << "Iteration " << iterationCounter + 1 << " Current HPWL = " << doneIterationHPWL;
 		// if(hpwlDeltaRecord[0] < 0) std::cout << GREEN << " +" << (hpwlDeltaRecord[0])<< COLORRST << std::endl;
 		// else std::cout << " " << RED  << (hpwlDeltaRecord[0]) << COLORRST << std::endl;
-
+		// rectilinearIllegalType rit;
+		// std::cout << "Floorplan Legality = " << (this->fp->checkFloorplanLegal(rit) == nullptr) << std::endl;
 
 		if((++iterationCounter) == REFINE_MAX_ITERATION) break;
     }
@@ -109,15 +112,30 @@ Floorplan *RefineEngine::refine(){
 
 }
 
-bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
-	
+bool RefineEngine::refineRectilinear(Rectilinear *rect) {
+	// rectilinearIllegalType rit;
+	// bool legcheck0 = (this->fp->checkFloorplanLegal(rit) == nullptr);
+	// if(!legcheck0) std::cout << "Legalizing " << rect->getName() << " is illegal in station 0" << std::endl;
 	// double hpwl0 = fp->calculateHPWL();
 	
+
 	bool hasImprovements = false;
 	fillBoundingBox(rect);
 
+	std::string videoFrame = "./videoFrames/" + std::to_string(++dbgrfCounter) + ".txt";
+	this->fp->visualiseICCADFormat(videoFrame, rect->getName());
+
+	// bool legcheck1 = (this->fp->checkFloorplanLegal(rit) == nullptr);
+	// if((!legcheck1) && legcheck0) std::cout << "Legalizing " << rect->getName() << " is illegal in station 1" << std::endl;
+
 	bool growRefineImproves = refineByGrowing(rect);
 	hasImprovements |= growRefineImproves;
+
+	videoFrame = "./videoFrames/" + std::to_string(++dbgrfCounter) + ".txt";
+	this->fp->visualiseICCADFormat(videoFrame, rect->getName());
+	
+	// bool legcheck2 = (this->fp->checkFloorplanLegal(rit) == nullptr);
+	// if((!legcheck2) && legcheck1) std::cout << "Legalizing " << rect->getName() << " is illegal in station 2" << std::endl;
 	
 	// double hpwl1 = fp->calculateHPWL();	
 	// if(!growRefineImproves){
@@ -132,6 +150,9 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 	// }
 	
 	fillBoundingBox(rect);
+	videoFrame = "./videoFrames/" + std::to_string(++dbgrfCounter) + ".txt";
+	this->fp->visualiseICCADFormat(videoFrame, rect->getName());
+		// std::cout << "Floorplan Legality4 = " << (this->fp->checkFloorplanLegal(rit) == nullptr) << std::endl;
 	// double hpwl2 = fp->calculateHPWL();
 	// double imp2 = hpwl1 - hpwl2;
 
@@ -143,6 +164,10 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 
 	bool trimRefineImproves = refineByTrimming(rect);
 	hasImprovements |= trimRefineImproves;
+
+	videoFrame = "./videoFrames/" + std::to_string(++dbgrfCounter) + ".txt";
+	this->fp->visualiseICCADFormat(videoFrame, rect->getName());
+		// std::cout << "Floorplan Legality5 = " << (this->fp->checkFloorplanLegal(rit) == nullptr) << std::endl;
 
 	// double hpwl3 = fp->calculateHPWL();
 
@@ -158,6 +183,13 @@ bool RefineEngine::refineRectilinear(Rectilinear *rect) const {
 	// }
 	// std::cout << "End HPWL = " << fp->calculateHPWL() << std::endl;
 
+	// bool afterlegality = (this->fp->checkFloorplanLegal(rit) == nullptr);
+	// if(!afterlegality){
+	// 	Rectilinear *illegalRect = fp->checkFloorplanLegal(rit);
+	// 	std::cout << "Refining " << rect->getName() << "Makes illegal! illegal guy = " << illegalRect->getName() << " " << rit << std::endl;
+	// }
+
+	
 	return hasImprovements;
 }
 
@@ -255,7 +287,8 @@ bool RefineEngine::fillBoundingBox(Rectilinear *rect) const {
 
 			DoughnutPolygonSet xSelfDPS(currentRectDPS);
 			xSelfDPS += markedDP;
-			if(!(dps::oneShape(xSelfDPS) && dps::noHole(xSelfDPS))){
+			// April 29, 2024: Add inner Width constraint
+			if(!(dps::oneShape(xSelfDPS) && dps::noHole(xSelfDPS) && dps::innerWidthLegal(xSelfDPS))){
 				// intrducing the markedDP would cause dpSet to generate strange shape, give up on the tile
 				continue;
 			}
@@ -267,9 +300,8 @@ bool RefineEngine::fillBoundingBox(Rectilinear *rect) const {
 				DoughnutPolygonSet xVictimDPS(rectCurrentShapeDPS[victimRect]);
 				xVictimDPS -= markedDP;
 
-				// if removing the piece makes the victim rectilinear illegal, quit	
-				if(!dps::checkIsLegal(xVictimDPS, victimRect->getLegalArea(), fp->getGlobalAspectRatioMin(), 
-				fp->getGlobalAspectRatioMax(), fp->getGlobalUtilizationMin())){
+				if(!dps::checkIsLegal(xVictimDPS, victimRect->getLegalArea(), this->fp->getGlobalAspectRatioMin(), 
+				this->fp->getGlobalAspectRatioMax(), this->fp->getGlobalUtilizationMin())){
 					continue;
 				}
 
@@ -329,10 +361,20 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 
 
 		double beforehpwl = fp->calculateHPWL();	
+		rectilinearIllegalType rit;
+		Rectilinear *ilr = this->fp->checkFloorplanLegal(rit);
+		bool stageLegal = (ilr == nullptr);
+		// if(!stageLegal){
+		// 	std::cout << "Refining " << rect->getName() << "With momentum = " << momentum;
+		// 	std::cout << " is illegal, cause = " << ilr->getName() << " " << rit << std::endl;
+		// }else{
+		// 	std::cout << "Refining " << rect->getName() << "With momentum = " << momentum << "is currently legal" << std::endl;
 
+		// }
+		// std::cout << "Selecting toward " << rectTowardSector << std::endl;
 		
-		switch (rectTowardSector)
-		{
+
+		switch (rectTowardSector){
 			case sector::ONE: {
 				// Try East, then North
 				bool growEast = growingTowardEast(rect, momentum);
@@ -376,6 +418,8 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 			case sector::THREE: {
 				// Try North, then West
 				bool growNorth = growingTowardNorth(rect, momentum);
+				// std::cout << "Grow North Result = " << growNorth << std::endl;
+				// this->fp->debugFloorplanLegal();
 				if(growNorth){
 					keepMoving = true;
 					hasMove = true;
@@ -384,6 +428,8 @@ bool RefineEngine::refineByGrowing(Rectilinear *rect) const {
 				}
 
 				bool growWest = growingTowardWest(rect, momentum);
+				// std::cout << "Grow West Result = " << growWest << std::endl;
+				// this->fp->debugFloorplanLegal();
 				if(growWest){
 					keepMoving = true;
 					hasMove = true;
@@ -577,7 +623,7 @@ bool RefineEngine::growingTowardNorth(Rectilinear *rect, len_t depth) const {
 
 				DoughnutPolygonSet xShed(currentRectDPS);
 				xShed -= shedOffArea;
-				if(dps::oneShape(xShed) && dps::noHole(xShed) && (!xShed.empty())){ // the shed would not affect the shape too much, accept change
+				if(dps::oneShape(xShed) && dps::noHole(xShed) && dps::innerWidthLegal(xShed) &&(!xShed.empty())){ // the shed would not affect the shape too much, accept change
 					currentRectDPS -= shedOffArea;
 					roundShedOffLen = len_t(REFINE_INITIAL_MOMENTUM * REFINE_MOMENTUM_GROWTH + 0.5);
 					currentBB = dps::calculateBoundingBox(currentRectDPS);
@@ -775,7 +821,7 @@ bool RefineEngine::growingTowardSouth(Rectilinear *rect, len_t depth) const {
 
 				DoughnutPolygonSet xShed(currentRectDPS);
 				xShed -= shedOffArea;
-				if(dps::oneShape(xShed) && dps::noHole(xShed) && (!xShed.empty())){ // the shed would not affect the shape too much, accept change
+				if(dps::oneShape(xShed) && dps::noHole(xShed) && dps::innerWidthLegal(xShed) &&(!xShed.empty())){ // the shed would not affect the shape too much, accept change
 					currentRectDPS -= shedOffArea;
 					roundShedOffLen = len_t(REFINE_INITIAL_MOMENTUM * REFINE_MOMENTUM_GROWTH + 0.5);
 					currentBB = dps::calculateBoundingBox(currentRectDPS);
@@ -975,7 +1021,7 @@ bool RefineEngine::growingTowardEast(Rectilinear *rect, len_t depth) const {
 
 				DoughnutPolygonSet xShed(currentRectDPS);
 				xShed -= shedOffArea;
-				if(dps::oneShape(xShed) && dps::noHole(xShed) && (!xShed.empty())){ // the shed would not affect the shape too much, accept change
+				if(dps::oneShape(xShed) && dps::noHole(xShed) && dps::innerWidthLegal(xShed) && (!xShed.empty())){ // the shed would not affect the shape too much, accept change
 					currentRectDPS -= shedOffArea;
 					roundShedOffLen = len_t(REFINE_INITIAL_MOMENTUM * REFINE_MOMENTUM_GROWTH + 0.5);
 					currentBB = dps::calculateBoundingBox(currentRectDPS);
@@ -1144,6 +1190,16 @@ bool RefineEngine::growingTowardWest(Rectilinear *rect, len_t depth) const {
 
 	// The process of growing up
 	bool growWest = trialGrow(currentRectDPS, rect, posGrowArea, affectedNeighbors);
+	// std::cout << "Trial grow west result: " << growWest << " dd " << std::endl;
+	// fp->debugFloorplanLegal();
+	// std::cout << "Check if current state legal: " << std::endl;
+	// std::cout << "currentRectDPS: ";
+	// std::cout << dps::checkIsLegal(currentRectDPS, rect->getLegalArea(), fp->getGlobalAspectRatioMin(), fp->getGlobalAspectRatioMax(), fp->getGlobalUtilizationMin()) << std::endl;
+	// for(std::unordered_map<Rectilinear *, DoughnutPolygonSet>::iterator it = affectedNeighbors.begin(); it != affectedNeighbors.end(); ++it){
+		// std::cout << it->first->getName() << ": ";
+		// std::cout << dps::checkIsLegal(currentRectDPS, it->first->getLegalArea(), fp->getGlobalAspectRatioMin(), fp->getGlobalAspectRatioMax(), fp->getGlobalUtilizationMin()) << std::endl;
+	// }
+	// std::cout << "End check current state" << std::endl;
 	if(!growWest) return false;
 
 	/* STEP 2: Attempt fix the aspect ratio flaw caused by introducing the growth toward specified direction */
@@ -1177,7 +1233,7 @@ bool RefineEngine::growingTowardWest(Rectilinear *rect, len_t depth) const {
 
 				DoughnutPolygonSet xShed(currentRectDPS);
 				xShed -= shedOffArea;
-				if(dps::oneShape(xShed) && dps::noHole(xShed) && (!xShed.empty())){ // the shed would not affect the shape too much, accept change
+				if(dps::oneShape(xShed) && dps::noHole(xShed) && dps::innerWidthLegal(xShed) && (!xShed.empty())){ // the shed would not affect the shape too much, accept change
 					currentRectDPS -= shedOffArea;
 					roundShedOffLen = len_t(REFINE_INITIAL_MOMENTUM * REFINE_MOMENTUM_GROWTH + 0.5);
 					currentBB = dps::calculateBoundingBox(currentRectDPS);
@@ -2022,7 +2078,7 @@ bool RefineEngine::trialGrow(DoughnutPolygonSet &dpSet, Rectilinear *dpSetRect ,
 
 			DoughnutPolygonSet xSelfDPS(dpSet);
 			xSelfDPS += markedDP;
-			if(!(dps::oneShape(xSelfDPS) && dps::noHole(xSelfDPS))){
+			if(!(dps::oneShape(xSelfDPS) && dps::noHole(xSelfDPS) && dps::innerWidthLegal(xSelfDPS))){
 				// intrducing the markedDP would cause dpSet to generate strange shape, give up on the tile
 				continue;
 			}
@@ -2030,15 +2086,14 @@ bool RefineEngine::trialGrow(DoughnutPolygonSet &dpSet, Rectilinear *dpSetRect ,
 			// test if pulling off the marked part would harm the victim too bad, skip if markedDP belongs to blank
 			Rectilinear *victimRect = growCandidatesRectilinear[i];
 			if(victimRect != nullptr){
-				// markedDP belongs to other Rectilinear
+
 				DoughnutPolygonSet xVictimDPS(affectedNeighbor[victimRect]);
 				xVictimDPS -= markedDP;
-				// if removing the piece makes the victim rectilinear illegal, quit	
+
 				if(!dps::checkIsLegal(xVictimDPS, victimRect->getLegalArea(), fp->getGlobalAspectRatioMin(), 
-				fp->getGlobalAspectRatioMax(), fp->getGlobalUtilizationMin())){
+					fp->getGlobalAspectRatioMax(), fp->getGlobalUtilizationMin())){
 					continue;
 				}
-
 				if(rectConnWeightSum.at(victimRect) > rectConnWeightSum.at(dpSetRect)){
 					Cord optimalCentre = fp->calculateOptimalCentre(victimRect);
 

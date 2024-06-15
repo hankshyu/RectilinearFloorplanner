@@ -240,6 +240,20 @@ bool Rectilinear::isLegalOneShape() const {
     return dps::oneShape(curRectSet);
 }
 
+bool Rectilinear::isLegalInnerWidth() const {
+    using namespace boost::polygon::operators;
+    DoughnutPolygonSet curRectSet;
+
+    for(Tile *const &t : this->blockTiles){
+        curRectSet += t->getRectangle();
+    }
+    for(Tile *const &t : this->overlapTiles){
+        curRectSet += t->getRectangle();
+    }
+
+    return dps::innerWidthLegal(curRectSet);
+}
+
 bool Rectilinear::isLegal(rectilinearIllegalType &illegalCode) const {
 
     // check if any tiles overlap
@@ -296,6 +310,12 @@ bool Rectilinear::isLegal(rectilinearIllegalType &illegalCode) const {
     double minUtilizationArea = double(rec::getArea(boundingBox)) * mUtilizationMin;
     if(double(actualArea) < minUtilizationArea){
         illegalCode = rectilinearIllegalType::UTILIZATION;
+        return false;
+    }
+
+    // check minimum inner width
+    if(!dps::innerWidthLegal(curRectSet)){
+        illegalCode = rectilinearIllegalType::INNER_WIDTH;
         return false;
     }
 
@@ -427,11 +447,11 @@ std::ostream &operator << (std::ostream &os, const rectilinearIllegalType &t){
     case rectilinearIllegalType::TWO_SHAPE:
         os << "TWO_SHAPE";
         break;
-    case rectilinearIllegalType::MIN_CLEARANCE:
-        os << "MIN_CLEARANCE";
-        break;
     case rectilinearIllegalType::PREPLACE_FAIL:
         os << "PREPLACE_FAIL";
+        break;
+    case rectilinearIllegalType::INNER_WIDTH:
+        os << "INNER_WIDTH";
         break;
     default:
         throw CSException("RECTILINEAR_06");

@@ -603,9 +603,9 @@ RESULT DFSLegalizer::legalize(int mode){
 void DFSLegalizer::lastDitchLegalize(){
     int softStart = getSoftBegin();
     int softEnd = getSoftEnd();
-
-    // fragmented -> hole -> legalArea -> aspectRatio -> util
-    for (int i = 0; i < 5; i++){
+    // April 29, 2024, Hank: add inner width checking
+    // fragmented -> hole -> innerWidth -> util -> aspectRatio -> legalArea
+    for (int i = 0; i < 6; i++){
         for (int softIndex = softStart; softIndex < softEnd; softIndex++){
             DFSLNode& block = mAllNodes[softIndex];
             Rectilinear* recti = block.recti;
@@ -630,14 +630,24 @@ void DFSLegalizer::lastDitchLegalize(){
                     legalizeHole(recti);
                 }
                 break;
+
             case 2:
-                if (!recti->isLegalEnoughArea()){
-                    DFSLPrint(3, "Required area for soft block %s fail (%d < %d)\n", block.nodeName.c_str(), recti->calculateActualArea(), recti->getLegalArea());
+                if( !recti->isLegalInnerWidth()){
+                    DFSLPrint(3, "Block %s has glitch, violating inner width constraint\n", block.nodeName.c_str());
                     DFSLPrint(3, "Attempting Fix...\n");
-                    legalizeArea(block, recti);
+                    legalizeInnerWidth(recti);
+                }
+				break;
+            case 3:
+                if (!recti->isLegalUtilization()){
+                    double util = recti->calculateUtilization();
+                    DFSLPrint(3, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, this->mFP->getGlobalUtilizationMin());
+                    DFSLPrint(3, "Attempting Fix...\n");
+                    legalizeUtil(recti);
                 }
                 break;
-            case 3:
+
+            case 4:
                 if (!recti->isLegalAspectRatio()){
                     double aspectRatio = rec::calculateAspectRatio(recti->calculateBoundingBox());
                     if (aspectRatio > this->mFP->getGlobalAspectRatioMax()){
@@ -650,14 +660,14 @@ void DFSLegalizer::lastDitchLegalize(){
                     legalizeAspectRatio(recti, aspectRatio);
                 }
                 break;
-            case 4:
-                if (!recti->isLegalUtilization()){
-                    double util = recti->calculateUtilization();
-                    DFSLPrint(3, "util for %1% fail (%2$4.3f < %3$4.3f)\n", block.nodeName.c_str(), util, this->mFP->getGlobalUtilizationMin());
+            case 5:
+                if (!recti->isLegalEnoughArea()){
+                    DFSLPrint(3, "Required area for soft block %s fail (%d < %d)\n", block.nodeName.c_str(), recti->calculateActualArea(), recti->getLegalArea());
                     DFSLPrint(3, "Attempting Fix...\n");
-                    legalizeUtil(recti);
+                    legalizeArea(block, recti);
                 }
                 break;
+
             default:
                 break;
             }
@@ -703,6 +713,22 @@ void DFSLegalizer::legalizeArea(DFSLNode& block, Rectilinear* recti){
 
     Rectangle expandedBbox = recti->calculateBoundingBox();
     gtl::bloat(expandedBbox, requiredExpansionLength);
+    len_t expandedBboxXL = rec::getXL(expandedBbox);
+    len_t expandedBboxYL = rec::getYL(expandedBbox);
+    len_t expandedBboxXH = rec::getXH(expandedBbox);
+    len_t expandedBboxYH = rec::getYH(expandedBbox);
+    
+    Rectangle chipSnapshot = mFP->getChipContour();
+    len_t chipSnapshotXL = rec::getXL(chipSnapshot);
+    len_t chipSnapshotYL = rec::getYL(chipSnapshot);
+    len_t chipSnapshotXH = rec::getXH(chipSnapshot);
+    len_t chipSnapshotYH = rec::getYH(chipSnapshot);
+    if(expandedBboxXL < chipSnapshotXL) expandedBboxXL = chipSnapshotXL;
+    if(expandedBboxYL < chipSnapshotYL) expandedBboxYL = chipSnapshotYL;
+    if(expandedBboxXH > chipSnapshotXH) expandedBboxXH = chipSnapshotXH;
+    if(expandedBboxYH > chipSnapshotYH) expandedBboxYH = chipSnapshotYH;
+
+    expandedBbox = Rectangle(expandedBboxXL, expandedBboxYL, expandedBboxXH, expandedBboxYH);
 
     fillBoundingBox(recti, expandedBbox);
 }
@@ -734,6 +760,75 @@ void DFSLegalizer::legalizeFragmented(Rectilinear* recti){
         }
     }
     this->mFP->shrinkRectilinear(toRemoveParts, recti);
+}
+
+void DFSLegalizer::legalizeInnerWidth(Rectilinear *recti){
+	// using namespace boost::polygon::operators;
+    const len_t minInnerWidth = 30;	
+    DoughnutPolygonSet reshapePart;
+
+    for(Tile *const &t : recti->blockTiles){
+        reshapePart += t->getRectangle();
+    }
+
+	// dice the rectangle vertically and measure the height
+	bool foundVerticalIllegal = true;
+    int maxFixVerticalAttempt = 10;
+	while(foundVerticalIllegal && ((maxFixVerticalAttempt--) > 0)){
+		foundVerticalIllegal = false;
+		DoughnutPolygonSet reshapePart;
+		for(Tile *const &t : recti->blockTiles){
+			reshapePart += t->getRectangle();
+		}
+		std::vector<Rectangle> verticalFragments;
+		boost::polygon::get_rectangles(verticalFragments, reshapePart, orientation2D::VERTICAL);
+		for(Rectangle &vrec : verticalFragments){
+			if(rec::getHeight(vrec) < minInnerWidth){
+				foundVerticalIllegal = true;
+				reshapePart -= vrec;
+				DoughnutPolygonSet toRemovePart;
+				toRemovePart += vrec;
+				this->mFP->shrinkRectilinear(toRemovePart, recti);
+				// find the bounding box after shrink
+				Rectangle BBAfterFixGlitch = dps::calculateBoundingBox(reshapePart);
+				fillBoundingBox(recti, BBAfterFixGlitch);
+				if (!recti->isLegalOneShape()) legalizeFragmented(recti);
+				if (!recti->isLegalNoHole()) legalizeHole(recti);
+				break;
+			}
+		}
+	}
+
+	bool foundHorizontalIllegal = true;
+    int maxFixHorizontalAttempt = 10;
+
+	while(foundHorizontalIllegal && ((maxFixHorizontalAttempt--) > 0)){
+		foundHorizontalIllegal = false;
+		DoughnutPolygonSet reshapePart;
+		for(Tile *const &t : recti->blockTiles){
+			reshapePart += t->getRectangle();
+		}
+		std::vector<Rectangle> horizontalFragments;
+		boost::polygon::get_rectangles(horizontalFragments, reshapePart, orientation2D::HORIZONTAL);
+		for(Rectangle &hrec : horizontalFragments){
+			if(rec::getWidth(hrec) < minInnerWidth){
+				foundHorizontalIllegal = true;
+				reshapePart -= hrec;
+				DoughnutPolygonSet toRemovePart;
+				toRemovePart += hrec;
+				this->mFP->shrinkRectilinear(toRemovePart, recti);
+				// find the bounding box after shrink
+				Rectangle BBAfterFixGlitch = dps::calculateBoundingBox(reshapePart);
+				fillBoundingBox(recti, BBAfterFixGlitch);
+				if (!recti->isLegalOneShape()) legalizeFragmented(recti);
+				if (!recti->isLegalNoHole()) legalizeHole(recti);
+				break;
+			}
+		}
+	}
+
+    if (!recti->isLegalOneShape()) legalizeFragmented(recti);
+    if (!recti->isLegalNoHole()) legalizeHole(recti);
 }
 
 void DFSLegalizer::legalizeAspectRatio(Rectilinear* recti, double aspectRatio){
@@ -905,8 +1000,10 @@ void DFSLegalizer::fillBoundingBox(Rectilinear* recti, Rectangle& rectBB){
 			// test if installing this marked part would turn the current shape strange
 
 			DoughnutPolygonSet xSelfDPS(currentRectDPS);
+            bool beforeNoGlitch = dps::innerWidthLegal(xSelfDPS);
 			xSelfDPS += markedDP;
-			if(!(dps::oneShape(xSelfDPS) && dps::noHole(xSelfDPS))){
+            bool afterNoGlicth = dps::innerWidthLegal(xSelfDPS);
+			if((!dps::oneShape(xSelfDPS)) || (!dps::noHole(xSelfDPS)) || (beforeNoGlitch && (!afterNoGlicth))){
 				// intrducing the markedDP would cause dpSet to generate strange shape, give up on the tile
 				continue;
 			}
@@ -943,7 +1040,6 @@ void DFSLegalizer::fillBoundingBox(Rectilinear* recti, Rectangle& rectBB){
 	return;
 }
 
-
 RESULT DFSLegalizer::checkLegal(){
     RESULT result = RESULT::SUCCESS;
     int violations = 0;
@@ -961,7 +1057,9 @@ RESULT DFSLegalizer::checkLegal(){
 
         if (!recti->isLegalEnoughArea()){
             DFSLPrint(1, "Required area for soft block %s fail (%d < %d)\n", block.nodeName.c_str(), recti->calculateActualArea(), recti->getLegalArea());
-            result = RESULT::AREA_CONSTRAINT_FAIL; 
+			if((result != RESULT::OTHER_CONSTRAINT_FAIL) && (result != RESULT::OVERLAP_NOT_RESOLVED)){
+				result = RESULT::AREA_CONSTRAINT_FAIL; 
+			}
             violations++;           
         } 
         
@@ -994,6 +1092,24 @@ RESULT DFSLegalizer::checkLegal(){
             DFSLPrint(1, "Block %s has holes\n", block.nodeName.c_str());
             result = RESULT::OTHER_CONSTRAINT_FAIL;
             violations++;
+        }
+
+        if(!recti->isLegalInnerWidth()){
+            DFSLPrint(1, "Block %s has illegal glitch\n", block.nodeName.c_str());
+            DoughnutPolygonSet dpset;
+            for(Tile *t : recti->blockTiles){
+                dpset += t->getRectangle();
+            }
+            std::vector<Rectangle> dicedResult;
+            dps::diceIntoRectangles(dpset, dicedResult);
+            for(Rectangle rt : dicedResult){
+                DFSLPrint(1, "R[(%d, %d), %d, %d (%d, %d)]\n", boost::polygon::xl(rt), boost::polygon::yl(rt), rec::getWidth(rt), rec::getHeight(rt), rec::getXH(rt), rec::getYH(rt));
+            }
+
+            // dps::diceIntoRectangles()
+            result = RESULT::OTHER_CONSTRAINT_FAIL;
+            violations++;
+
         }
     }
 
@@ -1032,6 +1148,24 @@ RESULT DFSLegalizer::checkLegal(){
             result = RESULT::OTHER_CONSTRAINT_FAIL;
             violations++;
         }
+        if(!recti->isLegalInnerWidth()){
+            DFSLPrint(1, "Block %s has illegal glitch\n", block.nodeName.c_str());
+            DoughnutPolygonSet dpset;
+            for(Tile *t : recti->blockTiles){
+                dpset += t->getRectangle();
+            }
+            std::vector<Rectangle> dicedResult;
+            dps::diceIntoRectangles(dpset, dicedResult);
+            for(Rectangle rt : dicedResult){
+                DFSLPrint(1, "R[(%d, %d), %d, %d (%d, %d)]\n", boost::polygon::xl(rt), boost::polygon::yl(rt), rec::getWidth(rt), rec::getHeight(rt), rec::getXH(rt), rec::getYH(rt));
+            }
+
+            // dps::diceIntoRectangles()
+            result = RESULT::OTHER_CONSTRAINT_FAIL;
+            violations++;
+
+        }
+
     }
 
     DFSLPrint(2, "Total Violations: %d\n", violations);

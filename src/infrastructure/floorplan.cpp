@@ -958,7 +958,7 @@ Tile *Floorplan::divideTileVertically(Tile *origRight, len_t newLeftWidth){
 
 }
 
-double Floorplan::calculateHPWL(){
+double Floorplan::calculateHPWL() const{
     double floorplanHPWL = 0;
     for(Connection *const &c : this->allConnections){
         floorplanHPWL += c->calculateCost();
@@ -1236,6 +1236,7 @@ void Floorplan::removePrimitiveOvelaps(bool verbose){
                 }
                 tiletoRect.erase(overlapTile);
                 newOverlapRemoved = true;
+                break;
 
 			}
 		}
@@ -1468,6 +1469,19 @@ Rectilinear *Floorplan::checkFloorplanLegal(rectilinearIllegalType &illegalType)
 
 }
 
+bool Floorplan::debugFloorplanLegal() const{
+    rectilinearIllegalType rit;
+    Rectilinear *ilr = checkFloorplanLegal(rit);
+    if(ilr == nullptr){
+        std::cout << "[DFL] Floorplan is currently Legal" << std::endl;
+        return true;
+    }else{
+        std::cout << "[DFP] Floorplan Illegal Detected! " << ilr->getName() << " " << rit << std::endl;
+        return false;
+    }
+}
+
+
 // two modifications compared to visualiseLegalFloorplan()
 // 1. removed error_22, change so it outputs all polygons in set
 // this is so that it is easier to visualize and debug if polygons are fragmented
@@ -1622,7 +1636,7 @@ void Floorplan::visualiseRectiFloorplan(const std::string &outputFileName) const
     }
 }
 
-void Floorplan::visualizeTiledFloorplan(const std::string& outputFileName){
+void Floorplan::visualizeTiledFloorplan(const std::string& outputFileName) const {
 
     std::ofstream ofs(outputFileName);
 	if (!ofs.is_open()){
@@ -1794,6 +1808,109 @@ void Floorplan::visualiseFloorplan(const std::string &outputFileName) const {
     }
 
     ofs.close();
+}
+
+void Floorplan::visualiseICCADFormat(const std::string &outputFileName, const std::string highlightModuleName) const {
+    using namespace boost::polygon::operators;
+	std::ofstream ofs;
+	ofs.open(outputFileName, std::fstream::out);
+	if(!ofs.is_open()){
+        throw(CSException("CORNERSTITCHING_21"));
+    } 
+    ofs << "HPWL " << calculateHPWL() << std::endl;
+    ofs << highlightModuleName << std::endl;
+    ofs << "SOFTMODULE " << softRectilinears.size() << std::endl;
+    for(Rectilinear *const &rect : softRectilinears){
+        
+        ofs << rect->getName() << " ";
+
+        DoughnutPolygonSet dps;
+
+        // if(!rect->overlapTiles.empty()){
+        //     throw(CSException("CORNERSTITCHING_22"));
+        // }
+
+        for(Tile *const &t : rect->blockTiles){
+            dps += t->getRectangle();
+        }
+
+        for(Tile *const &t : rect->overlapTiles){
+            dps += t->getRectangle();
+        }
+
+        if(dps.size() != 1){
+            throw(CSException("CORNERSTITCHING_23"));
+        }
+        DoughnutPolygon dp = dps[0];
+
+        boost::polygon::direction_1d direction = boost::polygon::winding(dp);
+        ofs << dp.size() << std::endl;  
+        
+        if(direction == boost::polygon::direction_1d_enum::CLOCKWISE){
+            for(auto it = dp.begin(); it != dp.end(); ++it){
+                ofs << (*it).x() << " " << (*it).y() << std::endl;
+            }
+        }else{
+            std::vector<Cord> buffer;
+            for(auto it = dp.begin(); it != dp.end(); ++it){
+                buffer.push_back(*it);
+            }
+            for(std::vector<Cord>::reverse_iterator it = buffer.rbegin(); it != buffer.rend(); ++it){
+                ofs << (*it).x() << " " << (*it).y() << std::endl;
+            }
+        }
+    }
+}
+
+void Floorplan::visualiseICCADFormat(const std::string &outputFileName) const {
+    using namespace boost::polygon::operators;
+	std::ofstream ofs;
+	ofs.open(outputFileName, std::fstream::out);
+	if(!ofs.is_open()){
+        throw(CSException("CORNERSTITCHING_21"));
+    } 
+    ofs << "HPWL " << calculateHPWL() << std::endl;
+    ofs << "SOFTMODULE " << softRectilinears.size() << std::endl;
+    for(Rectilinear *const &rect : softRectilinears){
+        
+        ofs << rect->getName() << " ";
+
+        DoughnutPolygonSet dps;
+
+        // if(!rect->overlapTiles.empty()){
+        //     throw(CSException("CORNERSTITCHING_22"));
+        // }
+
+        for(Tile *const &t : rect->blockTiles){
+            dps += t->getRectangle();
+        }
+
+        for(Tile *const &t : rect->overlapTiles){
+            dps += t->getRectangle();
+        }
+
+        if(dps.size() != 1){
+            throw(CSException("CORNERSTITCHING_23"));
+        }
+        DoughnutPolygon dp = dps[0];
+
+        boost::polygon::direction_1d direction = boost::polygon::winding(dp);
+        ofs << dp.size() << std::endl;  
+        
+        if(direction == boost::polygon::direction_1d_enum::CLOCKWISE){
+            for(auto it = dp.begin(); it != dp.end(); ++it){
+                ofs << (*it).x() << " " << (*it).y() << std::endl;
+            }
+        }else{
+            std::vector<Cord> buffer;
+            for(auto it = dp.begin(); it != dp.end(); ++it){
+                buffer.push_back(*it);
+            }
+            for(std::vector<Cord>::reverse_iterator it = buffer.rbegin(); it != buffer.rend(); ++it){
+                ofs << (*it).x() << " " << (*it).y() << std::endl;
+            }
+        }
+    }
 }
 
 void Floorplan::moveTileParent(Tile* tile, Rectilinear* fromRect, Rectilinear* toRect){

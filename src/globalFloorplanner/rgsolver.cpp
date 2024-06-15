@@ -198,7 +198,9 @@ void GlobalSolver::readConfig(Parser &parser) {
     }
 }
 
+/* This is the old version for running ICCAD benchmarks */
 void GlobalSolver::solve() {
+
     // specify gradient descent parameters
     this->setMaxMovement(0.001);
     int iteration = 1000;
@@ -243,7 +245,31 @@ void GlobalSolver::solve() {
     }
     std::cout << std::endl << std::endl;
 }
+// This is for Academic Benchmarks
+/*
+void GlobalSolver::solve() {
+    // specify gradient descent parameters
+    this->setMaxMovement(0.001);
 
+    // apply gradient descent
+    for ( int p = 1; p <= 50; p++ ) {
+        // solver.setPunishment(punishment * phase);
+        if ( p > 1 ) {
+            std::cout << "\r";
+            // solver.setPunishment(punishment);
+        }
+        std::cout << "[GlobalSolver] Phase " << std::setw(2) << p << " / 50" << std::flush;
+        this->setSizeScalar(p * 0.02 * p * 0.02, p >= 40);
+        this->resetOptimizer();
+        for ( int i = 0; i < 1000; i++ ) {
+            this->calcGradient();
+            this->gradientDescent(lr_, p >= 40);
+        }
+        this->checkShapeConstraint();
+        // solver.currentPosition2txt("animation/" + std::to_string(phase) + ".txt");
+    }
+}
+*/
 void GlobalSolver::inflate() {
     int iteration = 1000;
     // inflate soft modules

@@ -11,7 +11,7 @@
 typedef std::vector<DoughnutPolygon> DoughnutPolygonSet;
 
 enum class doughnutPolygonSetIllegalType{
-    DPS_LEGAL, DPS_AREA,  DPS_ASPECT_RATIO, DPS_UTILIZATION, DPS_HOLE, DPS_TWO_SHAPE
+    DPS_LEGAL, DPS_AREA,  DPS_ASPECT_RATIO, DPS_UTILIZATION, DPS_HOLE, DPS_TWO_SHAPE, DPS_INNER_WIDTH
 };
 
 namespace dps{
@@ -37,6 +37,8 @@ namespace dps{
 
         return true;
     }
+
+    bool innerWidthLegal(const DoughnutPolygonSet &dpSet);
 
     Rectangle calculateBoundingBox(const DoughnutPolygonSet &dpSet);
     

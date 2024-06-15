@@ -1,6 +1,29 @@
 #include "doughnutPolygonSet.h"
 #include "cSException.h"
 
+bool dps::innerWidthLegal(const DoughnutPolygonSet &dpSet){
+    
+    if (dpSet.empty()) return true;
+    const len_t minInnerWidth = 30;
+    using namespace boost::polygon::operators;
+    
+    // dice the rectangle vertically and measure the height
+    std::vector<Rectangle> verticalFragments;
+    boost::polygon::get_rectangles(verticalFragments, dpSet, orientation2D::VERTICAL);
+    for(Rectangle &vrec : verticalFragments){
+        if(rec::getHeight(vrec) < minInnerWidth) return false;
+    }
+
+    // dice the rectangle horizontally and measure the width
+    std::vector<Rectangle> horizontalFragments;
+    boost::polygon::get_rectangles(horizontalFragments, dpSet, orientation2D::HORIZONTAL);
+    for(Rectangle &hrec : horizontalFragments){
+        if(rec::getWidth(hrec) < minInnerWidth) return false;
+    }
+
+    return true;
+}
+
 Rectangle dps::calculateBoundingBox(const DoughnutPolygonSet &dpSet){
     std::vector<Rectangle> fragments;
     boost::polygon::get_rectangles(fragments, dpSet);
@@ -62,6 +85,11 @@ bool dps::checkIsLegal(const DoughnutPolygonSet &dpSet, doughnutPolygonSetIllega
         return false;
     }
 
+    if(!innerWidthLegal(dpSet)){
+        illegalType = doughnutPolygonSetIllegalType::DPS_INNER_WIDTH;
+        return false;
+    }
+
     // pass all test
     illegalType = doughnutPolygonSetIllegalType::DPS_LEGAL;
     return true;
@@ -95,6 +123,10 @@ bool dps::checkIsLegal(const DoughnutPolygonSet &dpSet, area_t legalArea, double
         return false;
     }
 
+    if(!innerWidthLegal(dpSet)){
+        return false;
+    }
+
     // pass all test
     return true;
 
@@ -119,6 +151,9 @@ std::ostream &operator << (std::ostream &os, const doughnutPolygonSetIllegalType
         break;
     case doughnutPolygonSetIllegalType::DPS_TWO_SHAPE:
         os << "DPS_TWO_SHAPE";
+        break;
+    case doughnutPolygonSetIllegalType::DPS_INNER_WIDTH:
+        os << "DPS_INNER_WIDTH";
         break;
     default:
         throw CSException("DOUGHNUTPOLYGONSET_01");
